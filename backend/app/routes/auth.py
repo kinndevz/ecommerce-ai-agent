@@ -60,7 +60,6 @@ def refresh_token(
 def logout(
     data: LogoutRequest,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
 ):
     """Logout user and invalidate refresh token"""
     return AuthService.logout(db, data.refresh_token)

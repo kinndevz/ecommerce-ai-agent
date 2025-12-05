@@ -30,7 +30,7 @@ class AuthService:
         if not verification:
             ResponseHandler.invalid_otp()
 
-        if verification.expires_at < datetime.utcnow():
+        if verification.expires_at < datetime.now(timezone.utc):
             ResponseHandler.invalid_otp()
 
         # Check if user exists
@@ -78,7 +78,8 @@ class AuthService:
 
         # Generate OTP
         code = generate_otp()
-        expires_at = datetime.utcnow() + timedelta(minutes=settings.OTP_EXPIRE_MINUTES)
+        expires_at = datetime.now(timezone.utc) + \
+            timedelta(minutes=settings.OTP_EXPIRE_MINUTES)
 
         # Delete old OTP
         db.query(VerificationCode).filter(
@@ -190,7 +191,7 @@ class AuthService:
             ResponseHandler.invalid_token("refresh")
 
         # Check if token expired
-        if db_refresh_token.expires_at < datetime.utcnow():
+        if db_refresh_token.expires_at < datetime.now(timezone.utc):
             db.delete(db_refresh_token)
             db.commit()
             ResponseHandler.expired_token("refresh")

@@ -34,6 +34,7 @@ class RegisterOut(BaseModel):
     email: str
     full_name: str
     phone_number: str
+    status: str
 
 
 class RegisterResponse(BaseModel):
