@@ -10,7 +10,7 @@ from app.models.user import User
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
-@router.post("/register")
+@router.post("/register", response_model=RegisterResponse)
 def register(
     data: RegisterRequest,
     db: Session = Depends(get_db)
@@ -18,11 +18,7 @@ def register(
     """Register new user account"""
     return AuthService.register(
         db=db,
-        email=data.email,
-        password=data.password,
-        full_name=data.full_name,
-        phone_number=data.phone_number,
-        code=data.code
+        register=data
     )
 
 
@@ -44,10 +40,7 @@ def login(
 
     return AuthService.login(
         db=db,
-        email=data.email,
-        password=data.password,
-        totp_code=data.totp_code,
-        otp_code=data.code
+        loginRequest=data
     )
 
 

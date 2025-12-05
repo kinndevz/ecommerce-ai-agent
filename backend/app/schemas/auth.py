@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field, model_validator
+from pydantic import BaseModel, EmailStr, Field, model_validator, field_validator, ConfigDict, ValidationInfo
 from typing import Optional
 from datetime import datetime
 from enum import Enum
@@ -30,14 +30,19 @@ class RegisterRequest(BaseModel):
         return self
 
 
-class RegisterResponse(BaseModel):
-    id: str
+class RegisterOut(BaseModel):
     email: str
     full_name: str
-    status: str
+    phone_number: str
 
-    class Config:
-        from_attributes = True
+
+class RegisterResponse(BaseModel):
+    success: bool
+    message: str
+    data: RegisterOut
+
+    class Config(ConfigDict):
+        pass
 
 # ========== OTP ==========
 
@@ -82,11 +87,12 @@ class ForgotPasswordRequest(BaseModel):
     new_password: str = Field(..., min_length=6, max_length=100)
     confirm_new_password: str = Field(..., min_length=6, max_length=100)
 
-    @model_validator(mode='after')
-    def check_passwords_match(self) -> Self:
-        if self.new_password != self.confirm_new_password:
+    @field_validator('confirm_new_password')
+    @classmethod
+    def check_passwords_match(cls, v: str, info: ValidationInfo) -> str:
+        if 'new_password' in info.data and v != info.data['new_password']:
             raise ValueError('Passwords do not match')
-        return self
+        return v
 
 
 # ========== 2FA ==========

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import uuid
 
 from app.models.user import User, RefreshToken, VerificationCode, UserStatus, VerificationCodeType
@@ -12,18 +12,19 @@ from app.core.security import (
 from app.core.config import settings
 from app.utils.email import send_otp_email
 from app.utils.responses import ResponseHandler
+from app.schemas.auth import RegisterRequest, LoginRequest
 
 
 class AuthService:
 
     @staticmethod
-    def register(db: Session, email: str, password: str, full_name: str, phone_number: str, code: str):
+    def register(db: Session, register: RegisterRequest):
         """Register new user"""
         # Verify OTP
         verification = db.query(VerificationCode).filter(
-            VerificationCode.email == email,
+            VerificationCode.email == register.email,
             VerificationCode.type == VerificationCodeType.REGISTER,
-            VerificationCode.code == code
+            VerificationCode.code == register.code
         ).first()
 
         if not verification:
@@ -33,7 +34,8 @@ class AuthService:
             ResponseHandler.invalid_otp()
 
         # Check if user exists
-        existing_user = db.query(User).filter(User.email == email).first()
+        existing_user = db.query(User).filter(
+            User.email == register.email).first()
         if existing_user:
             ResponseHandler.already_exists_error("User", "email")
 
@@ -45,10 +47,10 @@ class AuthService:
         # Create user
         user = User(
             id=str(uuid.uuid4()),
-            email=email,
-            password=hash_password(password),
-            full_name=full_name,
-            phone_number=phone_number,
+            email=register.email,
+            password=hash_password(register.password),
+            full_name=register.full_name,
+            phone_number=register.phone_number,
             role_id=customer_role.id,
             status=UserStatus.ACTIVE
         )
@@ -102,16 +104,16 @@ class AuthService:
         return ResponseHandler.otp_sent_success(email)
 
     @staticmethod
-    def login(db: Session, email: str, password: str, totp_code: str = None, otp_code: str = None):
+    def login(db: Session, loginRequest: LoginRequest):
         """Login user"""
         # Find user
-        user = db.query(User).filter(User.email == email,
+        user = db.query(User).filter(User.email == loginRequest.email,
                                      User.deleted_at.is_(None)).first()
         if not user:
             ResponseHandler.invalid_credentials()
 
         # Verify password
-        if not verify_password(password, user.password):
+        if not verify_password(loginRequest.password, user.password):
             ResponseHandler.invalid_credentials()
 
         # Check if account is active
@@ -120,20 +122,20 @@ class AuthService:
 
         # Check 2FA
         if user.is_2fa_enabled and user.totp_secret:
-            if not totp_code and not otp_code:
+            if not loginRequest.totp_code and not loginRequest.otp_code:
                 ResponseHandler.bad_request("2FA code required")
 
-            if totp_code:
-                if not verify_totp(user.totp_secret, totp_code):
+            if loginRequest.totp_code:
+                if not verify_totp(user.totp_secret, loginRequest.totp_code):
                     ResponseHandler.bad_request("Invalid 2FA code")
-            elif otp_code:
+            elif loginRequest.otp_code:
                 verification = db.query(VerificationCode).filter(
-                    VerificationCode.email == email,
+                    VerificationCode.email == loginRequest.email,
                     VerificationCode.type == VerificationCodeType.LOGIN,
-                    VerificationCode.code == otp_code
+                    VerificationCode.code == loginRequest.otp_code
                 ).first()
 
-                if not verification or verification.expires_at < datetime.utcnow():
+                if not verification or verification.expires_at < datetime.now(timezone.utc):
                     ResponseHandler.invalid_otp()
 
                 db.delete(verification)
@@ -305,7 +307,7 @@ class AuthService:
                 VerificationCode.code == otp_code
             ).first()
 
-            if not verification or verification.expires_at < datetime.utcnow():
+            if not verification or verification.expires_at < datetime.now(timezone.utc):
                 ResponseHandler.invalid_otp()
 
             db.delete(verification)
@@ -329,7 +331,7 @@ class AuthService:
         if not verification:
             ResponseHandler.invalid_otp()
 
-        if verification.expires_at < datetime.utcnow():
+        if verification.expires_at < datetime.now(timezone.utc):
             ResponseHandler.invalid_otp()
 
         # Get user
