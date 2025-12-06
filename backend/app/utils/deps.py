@@ -7,7 +7,8 @@ from typing import Optional
 from app.db.database import get_db
 from app.core.security import verify_access_token
 from app.models.user import User
-from app.models.role import Role, Permission
+from app.models.role import Role
+from app.utils.responses import ResponseHandler
 
 security = HTTPBearer()
 
@@ -24,10 +25,7 @@ def get_current_user(
         user_id = payload.get("user_id")
 
         if not user_id:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid authentication credentials"
-            )
+            ResponseHandler.invalid_credentials()
 
         user = db.query(User).filter(
             User.id == user_id,
@@ -35,18 +33,12 @@ def get_current_user(
         ).first()
 
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="User not found"
-            )
+            ResponseHandler.not_found_error("User", user_id)
 
         return user
 
     except JWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials"
-        )
+        ResponseHandler.invalid_token()
 
 
 def get_current_active_user(
@@ -54,10 +46,7 @@ def get_current_active_user(
 ) -> User:
     """Get current active user"""
     if current_user.status != "ACTIVE":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Inactive user"
-        )
+        ResponseHandler.forbidden_error(message="Inactive User")
     return current_user
 
 
@@ -66,10 +55,7 @@ def require_role(required_role: str):
     def role_checker(current_user: User = Depends(get_current_active_user), db: Session = Depends(get_db)):
         role = db.query(Role).filter(Role.id == current_user.role_id).first()
         if not role or role.name != required_role:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Insufficient permissions"
-            )
+            ResponseHandler.forbidden_error()
         return current_user
     return role_checker
 
@@ -87,10 +73,7 @@ def require_permission(path: str, method: str):
         ).first()
 
         if not role:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="No role assigned"
-            )
+            ResponseHandler.forbidden_error(message="No role assigned")
 
         # Check if user has the required permission
         has_permission = any(
@@ -99,10 +82,7 @@ def require_permission(path: str, method: str):
         )
 
         if not has_permission:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Insufficient permissions"
-            )
+            ResponseHandler.forbidden_error()
 
         return current_user
 

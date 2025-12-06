@@ -30,7 +30,7 @@ class AuthService:
         if not verification:
             ResponseHandler.invalid_otp()
 
-        if verification.expires_at < datetime.now(timezone.utc):
+        if verification.expires_at.replace(tzinfo=timezone.utc) < datetime.now(timezone.utc):
             ResponseHandler.invalid_otp()
 
         # Check if user exists
@@ -136,7 +136,7 @@ class AuthService:
                     VerificationCode.code == loginRequest.otp_code
                 ).first()
 
-                if not verification or verification.expires_at < datetime.now(timezone.utc):
+                if not verification or verification.expires_at.replace(tzinfo=timezone.utc) < datetime.now(timezone.utc):
                     ResponseHandler.invalid_otp()
 
                 db.delete(verification)
@@ -151,7 +151,7 @@ class AuthService:
 
         # Save refresh token
         payload = verify_refresh_token(refresh_token)
-        expires_at = datetime.fromtimestamp(payload["exp"])
+        expires_at = datetime.fromtimestamp(payload["exp"], tz=timezone.utc)
 
         db_refresh_token = RefreshToken(
             id=str(uuid.uuid4()),
@@ -191,7 +191,7 @@ class AuthService:
             ResponseHandler.invalid_token("refresh")
 
         # Check if token expired
-        if db_refresh_token.expires_at < datetime.now(timezone.utc):
+        if db_refresh_token.expires_at.replace(tzinfo=timezone.utc) < datetime.now(timezone.utc):
             db.delete(db_refresh_token)
             db.commit()
             ResponseHandler.expired_token("refresh")
@@ -215,7 +215,8 @@ class AuthService:
 
         # Save new refresh token
         new_payload = verify_refresh_token(new_refresh_token)
-        expires_at = datetime.fromtimestamp(new_payload["exp"])
+        expires_at = datetime.fromtimestamp(
+            new_payload["exp"], tz=timezone.utc)
 
         new_db_refresh_token = RefreshToken(
             id=str(uuid.uuid4()),
@@ -308,7 +309,7 @@ class AuthService:
                 VerificationCode.code == otp_code
             ).first()
 
-            if not verification or verification.expires_at < datetime.now(timezone.utc):
+            if not verification or verification.expires_at.replace(tzinfo=timezone.utc) < datetime.now(timezone.utc):
                 ResponseHandler.invalid_otp()
 
             db.delete(verification)
@@ -332,7 +333,7 @@ class AuthService:
         if not verification:
             ResponseHandler.invalid_otp()
 
-        if verification.expires_at < datetime.now(timezone.utc):
+        if verification.expires_at.replace(tzinfo=timezone.utc) < datetime.now(timezone.utc):
             ResponseHandler.invalid_otp()
 
         # Get user

@@ -23,3 +23,10 @@ def update_my_profile(updated_data: UpdateUserProfileRequest,
                       current_user: User = Depends(get_current_user),
                       db: Session = Depends(get_db)):
     return AccountService.update_profile(db, current_user.id, updated_data)
+
+
+@router.put("/change-password")
+def change_my_password(password_data: ChangePasswordRequest,
+                       current_user: User = Depends(get_current_user),
+                       db: Session = Depends(get_db)):
+    return AccountService.change_password(db, current_user.id, password_data)
