@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session, joinedload
 from app.models.user import User
-from app.models.role import Role, Permission
+from app.models.role import Role
 from app.utils.responses import ResponseHandler
 from app.schemas.account import UpdateUserProfileRequest, ChangePasswordRequest
 from app.core.security import verify_password, hash_password

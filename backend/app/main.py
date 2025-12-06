@@ -4,7 +4,7 @@ from fastapi.exceptions import RequestValidationError
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from app.core.config import settings
-from app.routes import auth, account
+from app.routes import auth, account, users
 from app.utils.exceptions import (
     http_exception_handler,
     validation_exception_handler,
@@ -40,6 +40,7 @@ app.add_exception_handler(Exception, generic_exception_handler)
 # Include routers
 app.include_router(auth.router)
 app.include_router(account.router)
+app.include_router(users.router)
 
 
 @app.get("/")

@@ -1,12 +1,16 @@
-from pydantic import BaseModel, EmailStr, Field, model_validator, field_validator, ConfigDict, ValidationInfo
+from pydantic import BaseModel, EmailStr, Field, model_validator, field_validator,  ValidationInfo
 from typing import Optional
 from datetime import datetime
 from enum import Enum
 from typing_extensions import Self
 
+
+# Base
+class BaseConfig:
+    from_attributes = True
+
+
 # ========== Enums ==========
-
-
 class VerificationCodeType(str, Enum):
     REGISTER = "REGISTER"
     FORGOT_PASSWORD = "FORGOT_PASSWORD"
@@ -42,7 +46,7 @@ class RegisterResponse(BaseModel):
     message: str
     data: RegisterOut
 
-    class Config(ConfigDict):
+    class Config(BaseConfig):
         pass
 
 # ========== OTP ==========

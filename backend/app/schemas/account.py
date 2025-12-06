@@ -1,10 +1,12 @@
 from pydantic import BaseModel
 from typing import Optional
-from app.schemas.users import UserStatus, RoleOut
+from app.schemas.users import RoleOut
 from datetime import datetime
-
+from app.core.constant import UserStatus
 
 # ========== User Profile Schema ==========
+
+
 class AccountBase(BaseModel):
     """User profile with full role & permissions"""
     id: str
