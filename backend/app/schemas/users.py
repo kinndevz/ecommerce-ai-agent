@@ -78,6 +78,17 @@ class UserCreateRequest(BaseModel):
         pass
 
 
+class UserUpdateRequest(BaseModel):
+    """Update user information"""
+    full_name: Optional[str] = Field(None, min_length=1, max_length=100)
+    phone_number: Optional[str] = Field(None, max_length=15)
+    avatar: Optional[str] = None
+    role_id: Optional[str] = None
+
+    class Config(BaseConfig):
+        pass
+
+
 class UserListResponse(BaseModel):
     """User list with pagination"""
     success: bool
@@ -97,3 +108,10 @@ class UserDetailResponse(BaseModel):
 
     class Config(BaseConfig):
         pass
+
+
+class MessageResponse(BaseModel):
+    """Generic message response"""
+    success: bool
+    message: str
+    data: Optional[dict] = None

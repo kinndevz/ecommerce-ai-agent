@@ -3,10 +3,12 @@ from app.db.database import get_db
 from app.models.user import User
 from sqlalchemy.orm import Session
 from typing import Optional
-from app.schemas.users import UserListResponse, UserDetailResponse, UserCreateRequest
+from app.schemas.users import UserListResponse, UserDetailResponse, UserCreateRequest, UserUpdateRequest, MessageResponse
 from app.services.users import UserService
 from app.utils.deps import require_permission
 router = APIRouter(prefix="/users", tags=["Users"])
+
+# (Admin only)
 
 
 @router.get("", response_model=UserListResponse)
@@ -31,6 +33,17 @@ def get_all_users(
         status=status)
 
 
+@router.get("/stats")
+def get_user_statistics(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission())
+):
+    """
+    Get user statistics
+    """
+    return UserService.get_user_stats(db)
+
+
 @router.get("/{user_id}", response_model=UserDetailResponse)
 def get_user_by_id(
     user_id: str = Path(..., description="User ID"),
@@ -50,6 +63,39 @@ def create_user(
     current_user: User = Depends(require_permission())
 ):
     """
-    Create new user (Admin only)
+    Create new user
     """
     return UserService.create_user(db, data, current_user.id)
+
+
+@router.put("/{user_id}", response_model=UserDetailResponse)
+def update_user(
+    data: UserUpdateRequest,
+    user_id: str = Path(..., description="User ID"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission())
+):
+    """Update user information"""
+    return UserService.update_user(db, user_id, data, current_user.id)
+
+
+@router.delete("/{user_id}", response_model=MessageResponse)
+def delete_user(
+    user_id: str = Path(..., description="User ID"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission())
+):
+    """Delete User (soft)"""
+    return UserService.delete_user(db, user_id, current_user.id)
+
+
+@router.put("/{user_id}/toggle-status", response_model=UserDetailResponse)
+def toggle_user_status(
+    user_id: str = Path(..., description="User ID"),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission())
+):
+    """
+    Toggle user status (ACTIVE <-> INACTIVE)
+    """
+    return UserService.toggle_status(db, user_id, current_user.id)
