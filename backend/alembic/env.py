@@ -1,32 +1,31 @@
+from alembic import context
+from sqlalchemy import engine_from_config, pool
+from logging.config import fileConfig
+from app.models.conversation import Conversation, Message, UserPreference, ProductView
+from app.models.wishlist import Wishlist
+from app.models.order import Order, OrderItem
+from app.models.cart import Cart, CartItem
+from app.models.review import Review
+from app.models.product import Product, ProductImage, ProductVariant, Tag, product_tags
+from app.models.category import Category
+from app.models.brand import Brand
 from app.models.role import Role, Permission, role_permissions
 from app.models.user import User, RefreshToken, VerificationCode
-from app.core.config import settings
 from app.db.database import Base
-from logging.config import fileConfig
-from sqlalchemy import engine_from_config, pool
-from alembic import context
+from app.core.config import settings
 import sys
 import os
 
-# Add project root to Python path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-# Import your models' Base
-
-# Import ALL models to ensure they're registered with Base.metadata
-# IMPORTANT: Import association tables explicitly
-
-# Alembic Config object
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 config = context.config
 
-# Override sqlalchemy.url with your DATABASE_URL from .env
 config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 
-# Interpret the config file for Python logging
+
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Target metadata from your models
 target_metadata = Base.metadata
 
 

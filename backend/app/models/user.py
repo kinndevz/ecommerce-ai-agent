@@ -44,6 +44,14 @@ class User(Base):
     # Relationships
     refresh_tokens = relationship(
         "RefreshToken", back_populates="user", cascade="all, delete-orphan")
+    cart = relationship("Cart", back_populates="user", uselist=False)
+    orders = relationship("Order", back_populates="user")
+    reviews = relationship("Review", back_populates="user")
+    wishlists = relationship("Wishlist", back_populates="user")
+    conversations = relationship("Conversation", back_populates="user")
+    preference = relationship(
+        "UserPreference", back_populates="user", uselist=False)
+    product_views = relationship("ProductView", back_populates="user")
 
 
 class RefreshToken(Base):
