@@ -5,12 +5,19 @@ from app.db.database import get_db
 from app.models.user import User
 from app.utils.deps import require_permission
 from app.services.brands import BrandService
-from app.schemas.brands import *
+from app.schemas.brands import (
+    BrandCreateRequest,
+    BrandUpdateRequest,
+    BrandResponse,
+    BrandListResponse,
+    BrandStatsResponse,
+    BrandMessageResponse
+)
 
 router = APIRouter(prefix="/brands", tags=["Brands"])
 
 
-@router.get("")
+@router.get("", response_model=BrandListResponse)
 def get_all_brands(
     include_inactive: bool = Query(
         False, description="Include inactive brands"),
@@ -23,23 +30,18 @@ def get_all_brands(
     return BrandService.get_all_brands(db, include_inactive)
 
 
-@router.get("/stats")
+@router.get("/stats", response_model=BrandStatsResponse)
 def get_brand_statistics(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_permission())
 ):
     """
     Get brand statistics (Admin only)
-
-    Returns:
-    - Total brands
-    - Active/Inactive count
-    - Top brands by product count
     """
     return BrandService.get_brand_stats(db)
 
 
-@router.get("/{brand_id}")
+@router.get("/{brand_id}", response_model=BrandResponse)
 def get_brand_detail(
     brand_id: str,
     db: Session = Depends(get_db)
@@ -51,7 +53,7 @@ def get_brand_detail(
     return BrandService.get_brand_by_id(db, brand_id)
 
 
-@router.post("")
+@router.post("", response_model=BrandResponse, status_code=201)
 def create_brand(
     data: BrandCreateRequest,
     db: Session = Depends(get_db),
@@ -63,7 +65,7 @@ def create_brand(
     return BrandService.create_brand(db, data, current_user.id)
 
 
-@router.put("/{brand_id}")
+@router.put("/{brand_id}", response_model=BrandResponse)
 def update_brand(
     brand_id: str,
     data: BrandUpdateRequest,
@@ -76,7 +78,7 @@ def update_brand(
     return BrandService.update_brand(db, brand_id, data, current_user.id)
 
 
-@router.delete("/{brand_id}")
+@router.delete("/{brand_id}", response_model=BrandMessageResponse)
 def delete_brand(
     brand_id: str,
     db: Session = Depends(get_db),
@@ -89,7 +91,7 @@ def delete_brand(
     return BrandService.delete_brand(db, brand_id, current_user.id)
 
 
-@router.patch("/{brand_id}/toggle-status")
+@router.patch("/{brand_id}/toggle-status", response_model=BrandResponse)
 def toggle_brand_status(
     brand_id: str,
     db: Session = Depends(get_db),

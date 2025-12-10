@@ -1,12 +1,14 @@
-from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional
+from pydantic import BaseModel, Field
+from typing import Optional, List
 from datetime import datetime
 
 
-# Base
+# Base Config
 class BaseConfig:
     from_attributes = True
 
+
+# ========== Request Schemas ==========
 
 class BrandCreateRequest(BaseModel):
     """Create brand (Admin only)"""
@@ -34,9 +36,10 @@ class BrandUpdateRequest(BaseModel):
         pass
 
 
-# ========== Response Schemas ==========
-class BrandResponse(BaseModel):
-    """Brand response"""
+# ========== Response Data Schemas ==========
+
+class BrandData(BaseModel):
+    """Brand data"""
     id: str
     name: str
     slug: str
@@ -47,30 +50,68 @@ class BrandResponse(BaseModel):
     is_active: bool
     created_at: datetime
     updated_at: datetime
-
-    # Stats (optional, can be None if not joined)
     product_count: Optional[int] = 0
 
     class Config(BaseConfig):
         pass
 
 
-class BrandListResponse(BaseModel):
-    """List of brands"""
-    success: bool
-    message: str
-    data: list[BrandResponse]
+class BrandListData(BaseModel):
+    """Brand list data"""
+    brands: List[BrandData]
     total: int
 
     class Config(BaseConfig):
         pass
 
 
-class BrandDetailResponse(BaseModel):
-    """Single brand detail"""
+class BrandStatsData(BaseModel):
+    """Brand statistics data"""
+    total_brands: int
+    active_brands: int
+    inactive_brands: int
+    top_brands: List[dict]
+
+    class Config(BaseConfig):
+        pass
+
+
+# ========== Response Schemas ==========
+
+class BrandResponse(BaseModel):
+    """Single brand response"""
     success: bool
     message: str
-    data: BrandResponse
+    data: BrandData
+
+    class Config(BaseConfig):
+        pass
+
+
+class BrandListResponse(BaseModel):
+    """Brand list response"""
+    success: bool
+    message: str
+    data: BrandListData
+
+    class Config(BaseConfig):
+        pass
+
+
+class BrandStatsResponse(BaseModel):
+    """Brand statistics response"""
+    success: bool
+    message: str
+    data: BrandStatsData
+
+    class Config(BaseConfig):
+        pass
+
+
+class BrandMessageResponse(BaseModel):
+    """Brand message response (for delete)"""
+    success: bool
+    message: str
 
     class Config(BaseConfig):
         pass

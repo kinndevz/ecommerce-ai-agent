@@ -44,10 +44,10 @@ class CategoryMoveRequest(BaseModel):
         pass
 
 
-# ========== Response Schemas ==========
+# ========== Response Data Schemas ==========
 
-class CategoryResponse(BaseModel):
-    """Category response"""
+class CategoryData(BaseModel):
+    """Category data"""
     id: str
     parent_id: Optional[str]
     name: str
@@ -77,6 +77,78 @@ class CategoryTreeNode(BaseModel):
     is_active: bool
     product_count: int
     children: List['CategoryTreeNode'] = []
+
+    class Config(BaseConfig):
+        pass
+
+
+class CategoryListData(BaseModel):
+    """Category list data"""
+    categories: List[CategoryData]
+    total: int
+
+    class Config(BaseConfig):
+        pass
+
+
+class CategoryStatsData(BaseModel):
+    """Category statistics data"""
+    total_categories: int
+    active_categories: int
+    parent_categories: int
+    child_categories: int
+    top_categories: List[dict]
+
+    class Config(BaseConfig):
+        pass
+
+
+# ========== Response Schemas ==========
+
+class CategoryResponse(BaseModel):
+    """Single category response"""
+    success: bool
+    message: str
+    data: CategoryData
+
+    class Config(BaseConfig):
+        pass
+
+
+class CategoryListResponse(BaseModel):
+    """Category list response"""
+    success: bool
+    message: str
+    data: CategoryListData
+
+    class Config(BaseConfig):
+        pass
+
+
+class CategoryTreeResponse(BaseModel):
+    """Category tree response"""
+    success: bool
+    message: str
+    data: List[CategoryTreeNode]
+
+    class Config(BaseConfig):
+        pass
+
+
+class CategoryStatsResponse(BaseModel):
+    """Category statistics response"""
+    success: bool
+    message: str
+    data: CategoryStatsData
+
+    class Config(BaseConfig):
+        pass
+
+
+class CategoryMessageResponse(BaseModel):
+    """Category message response (for delete)"""
+    success: bool
+    message: str
 
     class Config(BaseConfig):
         pass

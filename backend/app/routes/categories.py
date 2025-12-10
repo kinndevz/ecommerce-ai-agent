@@ -5,12 +5,21 @@ from app.db.database import get_db
 from app.models.user import User
 from app.utils.deps import require_permission
 from app.services.categories import CategoryService
-from app.schemas.categories import *
+from app.schemas.categories import (
+    CategoryCreateRequest,
+    CategoryUpdateRequest,
+    CategoryMoveRequest,
+    CategoryResponse,
+    CategoryListResponse,
+    CategoryTreeResponse,
+    CategoryStatsResponse,
+    CategoryMessageResponse
+)
 
 router = APIRouter(prefix="/categories", tags=["Categories"])
 
 
-@router.get("")
+@router.get("", response_model=CategoryListResponse)
 def get_all_categories(
     include_inactive: bool = Query(
         False, description="Include inactive categories"),
@@ -23,7 +32,7 @@ def get_all_categories(
     return CategoryService.get_all_categories(db, include_inactive)
 
 
-@router.get("/tree")
+@router.get("/tree", response_model=CategoryTreeResponse)
 def get_category_tree(
     include_inactive: bool = Query(
         False, description="Include inactive categories"),
@@ -32,12 +41,11 @@ def get_category_tree(
     """
     Get categories as hierarchical tree
     Public endpoint
-    Returns nested structure with parent-child relationships
     """
     return CategoryService.get_category_tree(db, include_inactive)
 
 
-@router.get("/stats")
+@router.get("/stats", response_model=CategoryStatsResponse)
 def get_category_statistics(
     db: Session = Depends(get_db),
     current_user: User = Depends(require_permission())
@@ -48,7 +56,7 @@ def get_category_statistics(
     return CategoryService.get_category_stats(db)
 
 
-@router.get("/{category_id}")
+@router.get("/{category_id}", response_model=CategoryResponse)
 def get_category_detail(
     category_id: str,
     db: Session = Depends(get_db)
@@ -60,7 +68,7 @@ def get_category_detail(
     return CategoryService.get_category_by_id(db, category_id)
 
 
-@router.post("")
+@router.post("", response_model=CategoryResponse, status_code=201)
 def create_category(
     data: CategoryCreateRequest,
     db: Session = Depends(get_db),
@@ -68,14 +76,11 @@ def create_category(
 ):
     """
     Create new category (Admin only)
-    Can create:
-    - Root category (parent_id = null)
-    - Child category (parent_id = existing category)
     """
     return CategoryService.create_category(db, data, current_user.id)
 
 
-@router.put("/{category_id}")
+@router.put("/{category_id}", response_model=CategoryResponse)
 def update_category(
     category_id: str,
     data: CategoryUpdateRequest,
@@ -88,7 +93,7 @@ def update_category(
     return CategoryService.update_category(db, category_id, data, current_user.id)
 
 
-@router.delete("/{category_id}")
+@router.delete("/{category_id}", response_model=CategoryMessageResponse)
 def delete_category(
     category_id: str,
     db: Session = Depends(get_db),
@@ -96,12 +101,12 @@ def delete_category(
 ):
     """
     Delete category (Admin only)
-    Note: Cannot delete category with products or subcategories
+    Note: Will cascade delete all child categories
     """
     return CategoryService.delete_category(db, category_id, current_user.id)
 
 
-@router.patch("/{category_id}/toggle-status")
+@router.patch("/{category_id}/toggle-status", response_model=CategoryResponse)
 def toggle_category_status(
     category_id: str,
     db: Session = Depends(get_db),
@@ -113,7 +118,7 @@ def toggle_category_status(
     return CategoryService.toggle_status(db, category_id, current_user.id)
 
 
-@router.patch("/{category_id}/move")
+@router.patch("/{category_id}/move", response_model=CategoryResponse)
 def move_category(
     category_id: str,
     data: CategoryMoveRequest,
@@ -122,6 +127,5 @@ def move_category(
 ):
     """
     Move category to different parent (Admin only)
-    Set new_parent_id = null to make it root category
     """
     return CategoryService.move_category(db, category_id, data.new_parent_id, current_user.id)
