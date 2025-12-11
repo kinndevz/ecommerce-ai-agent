@@ -219,8 +219,10 @@ class ProductDiscoveryService:
             Product.is_available == True
         )
 
-        if product.concerns:
-            query = query.filter(Product.concerns.overlap(product.concerns))
+        if product.concerns and len(product.concerns) > 0:
+            query = query.filter(
+                Product.concerns.op('&&')(product.concerns)
+            )
 
         products = query.order_by(
             desc(Product.rating_average)).limit(limit).all()
