@@ -2,8 +2,6 @@ import uuid
 from decimal import Decimal
 from datetime import datetime, timezone
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import func
-
 from app.models.cart import Cart, CartItem
 from app.models.product import Product, ProductVariant
 from app.utils.responses import ResponseHandler

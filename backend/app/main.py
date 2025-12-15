@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from contextlib import asynccontextmanager
 from app.elastic.controller import init_elasticsearch
 from app.core.config import settings
-from app.routes import auth, account, users, brands, categories, products, tags, carts
+from app.routes import auth, account, users, brands, categories, products, tags, carts, orders
 from app.utils.exceptions import (
     http_exception_handler,
     validation_exception_handler,
@@ -57,6 +57,7 @@ app.include_router(categories.router)
 app.include_router(products.router)
 app.include_router(tags.router)
 app.include_router(carts.router)
+app.include_router(orders.router)
 
 
 @app.get("/")
