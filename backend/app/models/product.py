@@ -157,7 +157,7 @@ class Tag(Base, TimestampMixin):
     id = Column(String, primary_key=True, index=True)
     name = Column(String(100), unique=True, nullable=False, index=True)
     slug = Column(String(100), unique=True, nullable=False, index=True)
-
+    usage_count = Column(Integer, default=0, nullable=False)
     # Relationships
     products = relationship(
         "Product", secondary=product_tags, back_populates="tags")

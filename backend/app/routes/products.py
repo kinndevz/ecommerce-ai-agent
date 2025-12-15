@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-
+from typing import Optional
 from app.db.database import get_db
 from app.models.user import User
 from app.utils.deps import require_permission
@@ -33,6 +33,27 @@ router = APIRouter(prefix="/products", tags=["Products"])
 
 
 # ========== Main Product CRUD ==========
+@router.get("/search")
+def search_api(
+    q: Optional[str] = Query(
+        None, description="Từ khóa tìm kiếm (VD: kem chống nắng da dầu)"),
+    min_price: Optional[float] = None,
+    max_price: Optional[float] = None,
+    page: int = 1,
+    limit: int = 20
+):
+    """
+    API tìm kiếm thông minh bằng Elasticsearch
+    """
+    return ProductService.search_products_with_es(
+        keyword=q,
+        min_price=min_price,
+        max_price=max_price,
+        page=page,
+        limit=limit
+    )
+
+
 @router.get("", response_model=ProductListResponse)
 def get_all_products(
     filters: dict = Depends(get_product_filters),
@@ -55,6 +76,37 @@ def get_product_statistics(
 ):
     """Get product statistics (Admin only)"""
     return ProductService.get_product_stats(db)
+
+
+# ========== Product Stock Management ==========
+@router.patch("/{product_id}/stock", response_model=ProductResponse)
+def update_product_stock(
+    product_id: str,
+    data: UpdateStockRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission())
+):
+    """Update product stock quantity (Admin only)"""
+    return ProductService.update_stock(db, product_id, data, current_user.id)
+
+
+@router.get("/low-stock", response_model=ProductListResponse)
+def get_low_stock_products(
+    threshold: int = Query(10, ge=1),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission())
+):
+    """Get products with low stock (Admin only)"""
+    return ProductStockService.get_low_stock(db, threshold)
+
+
+@router.get("/out-of-stock", response_model=ProductListResponse)
+def get_out_of_stock_products(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission())
+):
+    """Get out of stock products (Admin only)"""
+    return ProductStockService.get_out_of_stock(db)
 
 
 # ========== Product Discovery ==========
@@ -186,37 +238,6 @@ def toggle_product_featured(
 ):
     """Toggle product featured status (Admin only)"""
     return ProductService.toggle_featured(db, product_id, current_user.id)
-
-
-# ========== Product Stock Management ==========
-@router.patch("/{product_id}/stock", response_model=ProductResponse)
-def update_product_stock(
-    product_id: str,
-    data: UpdateStockRequest,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(require_permission())
-):
-    """Update product stock quantity (Admin only)"""
-    return ProductService.update_stock(db, product_id, data, current_user.id)
-
-
-@router.get("/low-stock", response_model=ProductListResponse)
-def get_low_stock_products(
-    threshold: int = Query(10, ge=1),
-    db: Session = Depends(get_db),
-    current_user: User = Depends(require_permission())
-):
-    """Get products with low stock (Admin only)"""
-    return ProductStockService.get_low_stock(db, threshold)
-
-
-@router.get("/out-of-stock", response_model=ProductListResponse)
-def get_out_of_stock_products(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(require_permission())
-):
-    """Get out of stock products (Admin only)"""
-    return ProductStockService.get_out_of_stock(db)
 
 
 # ========== Product Tags Management ==========

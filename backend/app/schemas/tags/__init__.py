@@ -1,6 +1,3 @@
-"""
-Tag schemas - Public exports
-"""
 from .requests import TagCreateRequest, TagUpdateRequest
 from .responses import (
     TagResponse,

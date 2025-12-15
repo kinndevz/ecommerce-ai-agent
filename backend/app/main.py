@@ -2,9 +2,10 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
-
+from contextlib import asynccontextmanager
+from app.elastic.controller import init_elasticsearch
 from app.core.config import settings
-from app.routes import auth, account, users, brands, categories, products, tags
+from app.routes import auth, account, users, brands, categories, products, tags, carts
 from app.utils.exceptions import (
     http_exception_handler,
     validation_exception_handler,
@@ -13,10 +14,20 @@ from app.utils.exceptions import (
     generic_exception_handler
 )
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await init_elasticsearch()
+
+    yield
+
+    print("Server Shutting down...")
+
 # Create FastAPI app
 app = FastAPI(
     title=settings.APP_NAME,
     debug=settings.DEBUG,
+    lifespan=lifespan,
     description="RESTful API for Cosmetic E-commerce Platform",
     version="1.0.0"
 )
@@ -45,6 +56,7 @@ app.include_router(brands.router)
 app.include_router(categories.router)
 app.include_router(products.router)
 app.include_router(tags.router)
+app.include_router(carts.router)
 
 
 @app.get("/")

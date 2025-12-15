@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, model_validator
 from typing import Optional, List
 from decimal import Decimal
 from fastapi import Query
@@ -91,11 +91,12 @@ class ProductCreateRequest(BaseModel):
 
     tag_ids: Optional[List[str]] = None
 
-    @field_validator('sale_price')
-    def validate_sale_price(cls, v, values):
-        if v is not None and 'price' in values and v >= values['price']:
+    @model_validator(mode='after')
+    def validate_sale_price(self):
+        """Validate that sale_price is less than price"""
+        if self.sale_price is not None and self.sale_price >= self.price:
             raise ValueError('sale_price must be less than price')
-        return v
+        return self
 
     class Config(BaseConfig):
         pass

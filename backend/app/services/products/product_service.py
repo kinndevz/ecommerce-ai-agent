@@ -14,9 +14,33 @@ from app.schemas.products import (
     UpdateStockRequest
 )
 from .helpers import format_product_list_item, format_product_detail
+from app.elastic.service import search_products_query
 
 
 class ProductService:
+    @staticmethod
+    def search_products_with_es(keyword, min_price, max_price, limit, page):
+        try:
+            response = search_products_query(
+                keyword, min_price, max_price, limit, page)
+
+            total = response['hits']['total']['value']
+            hits = response['hits']['hits']
+            products_data = [hit['_source'] for hit in hits]
+            total_pages = (total + limit - 1) // limit if limit > 0 else 1
+
+            return ResponseHandler.success(
+                message="Products retrieved successfully",
+                data={
+                    "products": products_data,
+                    "total": total,
+                    "page": page,
+                    "limit": limit,
+                    "total_pages": total_pages
+                }
+            )
+        except Exception as e:
+            return ResponseHandler.error_response(message=str(e))
 
     @staticmethod
     def get_all_products(db: Session, filters: dict, page: int = 1, limit: int = 20):
