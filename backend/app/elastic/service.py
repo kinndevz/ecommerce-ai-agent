@@ -26,7 +26,7 @@ def index_product(product: Product):
     """Upsert a product"""
     try:
         doc = product_to_doc(product)
-        es_client.index(index=PRODUCT_INDEX, id=str(product.id), document=doc)
+        es_client.index(index=PRODUCT_INDEX, id=str(product.id), body=doc)
     except Exception as e:
         print(f"Indexing failed: {e}")
 

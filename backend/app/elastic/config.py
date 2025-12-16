@@ -1,6 +1,7 @@
-from elasticsearch import Elasticsearch
+# from elasticsearch import Elasticsearch
 import urllib3
 from app.core.config import settings
+from opensearchpy import OpenSearch as Elasticsearch
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 ELASTIC_PASSWORD = settings.ELASTIC_PASSWORD
@@ -9,8 +10,9 @@ ELASTIC_URL = settings.ELASTIC_URL
 PRODUCT_INDEX = settings.PRODUCT_DOCUMENT_INDEX
 
 es_client = Elasticsearch(
-    ELASTIC_URL,
-    basic_auth=(ELASTIC_ACCOUNT, ELASTIC_PASSWORD),
+    hosts=[ELASTIC_URL],
+    http_auth=(ELASTIC_ACCOUNT, ELASTIC_PASSWORD),
+    use_ssl=True,
     verify_certs=False,
     ssl_show_warn=False
 )

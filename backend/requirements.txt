@@ -36,4 +36,4 @@ watchfiles
 websockets
 pyotp
 pgvector
-elasticsearch
+opensearch-py
