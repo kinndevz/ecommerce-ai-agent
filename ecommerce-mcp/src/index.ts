@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { McpAgent } from "agents/mcp";
 import axios from "axios";
 import { z } from "zod";
+import { createToolDescription } from "./utils/helper";
 
 const ProductSchema = z.object({
   id: z.string(),
@@ -10,7 +11,7 @@ const ProductSchema = z.object({
   sku: z.string().optional(),
   brand_name: z.string().optional(),
   category_name: z.string().optional(),
-
+  stock_quantity: z.number().optional().nullable(),
   price: z.number(),
   is_available: z.boolean(),
   concerns: z.array(z.string()).optional(),
@@ -38,15 +39,16 @@ export class MyMCP extends McpAgent {
 
   async init() {
     this.server.registerTool(
-      "search-products",
+      "search_products",
       {
         title: "Search products (AI Powered)",
-        description:
-          "Search for products using natural language. The search engine automatically matches brand names, categories, skin concerns, and product types. Just put everything in the 'search' query.",
+        description: createToolDescription(
+          { agent: "product", category: "search", requires_auth: false },
+          "Search for cosmetics products..."
+        ),
         inputSchema: {
           search: z
             .string()
-            .nullable()
             .describe(
               "Keywords like 'kem chống nắng laroche' or 'trị mụn da dầu'"
             ),
@@ -74,7 +76,7 @@ export class MyMCP extends McpAgent {
           );
 
           const response = await axios.get(
-            "https://fit-tables-installing-accessing.trycloudflare.com/products/search",
+            "https://ecommerce-ai-agent-b2lc.onrender.com/products/search",
             {
               params: cleanParams,
               headers: {

@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from contextlib import asynccontextmanager
 from app.elastic.controller import init_elasticsearch
 from app.core.config import settings
-from app.routes import auth, account, users, brands, categories, products, tags, carts, orders
+from app.routes import auth, account, users, brands, categories, products, tags, carts, orders, chat
 from app.utils.exceptions import (
     http_exception_handler,
     validation_exception_handler,
@@ -13,15 +13,18 @@ from app.utils.exceptions import (
     sqlalchemy_exception_handler,
     generic_exception_handler
 )
+from app.agents.mcp_manager import mcp_manager
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_elasticsearch()
+    await mcp_manager.get_all_tools()
 
     yield
 
     print("Server Shutting down...")
+    await mcp_manager.close()
 
 # Create FastAPI app
 app = FastAPI(
@@ -58,6 +61,7 @@ app.include_router(products.router)
 app.include_router(tags.router)
 app.include_router(carts.router)
 app.include_router(orders.router)
+app.include_router(chat.router)
 
 
 @app.get("/")

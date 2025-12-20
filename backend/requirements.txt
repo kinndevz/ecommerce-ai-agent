@@ -37,3 +37,9 @@ websockets
 pyotp
 pgvector
 opensearch-py
+langchain
+langgraph
+langchain-openai
+langchain-core
+langchain-mcp-adapters
+httpx

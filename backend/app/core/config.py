@@ -44,6 +44,12 @@ class Settings(BaseSettings):
     ELASTIC_URL: str
     PRODUCT_DOCUMENT_INDEX: str
 
+    # MCP
+    MCP_SERVER_URL: str
+
+    # Open api key
+    OPENAI_API_KEY: str
+
     class Config:
         env_file = ".env"
         case_sensitive = True
