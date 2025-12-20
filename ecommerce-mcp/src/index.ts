@@ -3,6 +3,7 @@ import { McpAgent } from "agents/mcp";
 import axios from "axios";
 import { z } from "zod";
 import { createToolDescription } from "./utils/helper";
+import { FlatProductListOutput, RichProductListOutput } from "./types";
 
 const ProductSchema = z.object({
   id: z.string(),
@@ -57,7 +58,7 @@ export class MyMCP extends McpAgent {
           page: z.number().nullable().default(1),
           limit: z.number().nullable().default(10),
         },
-        outputSchema: ProductListOutputSchema,
+        outputSchema: FlatProductListOutput,
       },
       async (args) => {
         try {
@@ -105,6 +106,86 @@ export class MyMCP extends McpAgent {
               : `Network Error: ${error.message}`;
           } else {
             errorMessage = error.message;
+          }
+
+          return {
+            content: [{ type: "text", text: errorMessage }],
+            isError: true,
+          };
+        }
+      }
+    );
+    this.server.registerTool(
+      "search_product_new_arrival",
+      {
+        title: "Search Product New Arrival",
+        description: createToolDescription(
+          { agent: "product", category: "search", requires_auth: false },
+          "Search for cosmetics products new arrival"
+        ),
+        inputSchema: {
+          days: z
+            .number()
+            .optional()
+            .default(30)
+            .describe("Days range to consider new"),
+          limit: z
+            .number()
+            .optional()
+            .default(10)
+            .describe("Number of products to return"),
+        },
+        outputSchema: RichProductListOutput.omit({
+          page: true,
+          limit: true,
+          total_pages: true,
+        }),
+      },
+      async (args) => {
+        try {
+          console.log(
+            `[MCP] Fetching New Arrivals: limit=${args.limit}, days=${args.days}`
+          );
+
+          const response = await axios.get(
+            "https://ecommerce-ai-agent-b2lc.onrender.com/products/new-arrivals",
+            {
+              params: {
+                days: args.days,
+                limit: args.limit,
+              },
+              headers: {
+                "Content-Type": "application/json",
+              },
+              timeout: 5000,
+            }
+          );
+
+          const apiResponse = response.data;
+
+          if (!apiResponse.success || !apiResponse.data) {
+            throw new Error("Invalid API response structure");
+          }
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(apiResponse.data, null, 2),
+              },
+            ],
+            structuredContent: apiResponse.data,
+          };
+        } catch (error: any) {
+          let errorMessage = "Unknown error";
+          if (axios.isAxiosError(error)) {
+            errorMessage = error.response
+              ? `API Error ${error.response.status}: ${JSON.stringify(error.response.data)}`
+              : `Network Error: ${error.message}`;
+            console.error(`[MCP Error] ${errorMessage}`);
+          } else {
+            errorMessage = error.message;
+            console.error(`[MCP Error] ${errorMessage}`);
           }
 
           return {

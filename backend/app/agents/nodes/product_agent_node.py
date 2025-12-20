@@ -33,11 +33,11 @@ Help customers find products, verify prices, and ANSWER QUESTIONS based on searc
 3. **Present Results Clearly:**
    Format:
    "Tìm thấy [X] sản phẩm:
-   
+
    1. **[Name]** - [Price]đ
       Brand: [Brand]
       [Brief description]
-   
+
    2. **[Name]** - [Price]đ
       ..."
 
@@ -95,8 +95,7 @@ Be brief and polite."""
 
     def _process_tool_result(self, tool_name: str, result_content: str, context_accumulator: Dict):
         """
-        Private method: Xử lý kết quả tool dựa trên METADATA (Clean Code Pattern)
-        Không quan tâm tên tool là gì, chỉ quan tâm category của nó.
+        Private method: Xử lý kết quả tool dựa trên METADATA
         """
         tool = self.tool_map.get(tool_name)
         if not tool:
@@ -113,7 +112,7 @@ Be brief and polite."""
                 # Validate cấu trúc dữ liệu cơ bản
                 if isinstance(data, (list, dict)):
                     print(
-                        f"      💾 Auto-saving '{tool_name}' output (Category: search)")
+                        f"💾 Auto-saving '{tool_name}' output (Category: search)")
                     # Merge thông minh hoặc overwrite
                     context_accumulator["found_products"] = data
             except json.JSONDecodeError:
@@ -136,7 +135,7 @@ Be brief and polite."""
 
         generated_messages = []
 
-        found_products_context = {}
+        found_products_context = state.get("shared_context", {}).copy()
 
         max_iterations = 5
         iteration = 0
@@ -168,6 +167,8 @@ Be brief and polite."""
                 tool_args = tool_call["args"]
                 tool_id = tool_call["id"]
 
+                print(f"   👉 DEBUG CALL: {tool_name} | Args: {tool_args}")
+
                 tool = self.tool_map.get(tool_name)
                 result_content = ""
 
@@ -179,6 +180,9 @@ Be brief and polite."""
                         })
                         result_content = await tool.ainvoke(tool_args, config=config)
 
+                        print(
+                            f">>>>>DEBUG RESULT: {str(result_content)[:200]}...")
+
                         self._process_tool_result(
                             tool_name, result_content, found_products_context)
 
@@ -186,6 +190,7 @@ Be brief and polite."""
 
                     except Exception as e:
                         result_content = f"Error: {str(e)}"
+                        print(">>>>> result_contetn Error", result_content)
                 else:
                     result_content = f"Error: Tool {tool_name} not found"
 
