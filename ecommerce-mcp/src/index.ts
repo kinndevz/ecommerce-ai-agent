@@ -127,12 +127,12 @@ export class MyMCP extends McpAgent {
           days: z
             .number()
             .optional()
-            .default(30)
+            .default(7)
             .describe("Days range to consider new"),
           limit: z
             .number()
             .optional()
-            .default(10)
+            .default(3)
             .describe("Number of products to return"),
         },
         outputSchema: RichProductListOutput.omit({
@@ -157,7 +157,6 @@ export class MyMCP extends McpAgent {
               headers: {
                 "Content-Type": "application/json",
               },
-              timeout: 5000,
             }
           );
 

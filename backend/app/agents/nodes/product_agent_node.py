@@ -3,7 +3,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, AIMessage, ToolMessage
 from langchain_core.tools import BaseTool
 from langchain_core.runnables import RunnableConfig
-
+import traceback
 from app.agents.state import AgentState
 from app.agents.mcp_manager import mcp_manager
 from app.core.config import settings
@@ -190,6 +190,7 @@ Be brief and polite."""
 
                     except Exception as e:
                         result_content = f"Error: {str(e)}"
+                        traceback.print_exc()
                         print(">>>>> result_contetn Error", result_content)
                 else:
                     result_content = f"Error: Tool {tool_name} not found"

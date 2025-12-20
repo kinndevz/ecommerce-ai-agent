@@ -10,78 +10,65 @@ from app.core.config import settings
 
 class QualityCheckNode:
     """
-    Quality check and response formatter
-
-    Responsibilities:
-    - Take agent's response
-    - Format it naturally in Vietnamese
-    - Make it professional and friendly
-    - Ensure proper structure and tone
-
-    Does NOT:
-    - Add new information
-    - Change facts
-    - Use tools
+    Quality check and response formatter.
+    Transforms raw data into polished, consultant-style HTML/Markdown.
     """
 
-    SYSTEM_PROMPT = """You are a quality checker that formats AI responses to be natural, professional, and friendly.
+    SYSTEM_PROMPT = """You are a Senior Content Editor for a high-end cosmetics store.
 
-**Your Role:**
-Take the agent's response and rewrite it to sound more natural and conversational in Vietnamese.
+**OBJECTIVE:**
+Rewrite the AI's raw response into a **visually structured, professional, and easy-to-read** Vietnamese format.
 
-**Guidelines:**
+**STRICT FORMATTING RULES:**
 
-1. **Keep Information Accurate:**
-   - Don't change product names, prices, or facts
-   - Don't add information that wasn't in the original
-   - Don't remove important details
+1.  **Layout & Visual Hierarchy:**
+    *   **Greeting:** Start with a polite, short opening (e.g., "Dạ, em tìm thấy...", "Dưới đây là...").
+    *   **Product List:** Use a clean list format.
+        *   **Product Name:** Must be **BOLD** (`**Name**`).
+        *   **Price:** Must be formatted clearly (e.g., `299.000đ` - use dots for thousands).
+        *   **Details:** Use bullet points (`-`) for features/ingredients. Keep it concise.
+    *   **CTA (Call to Action):** End with a helpful question (e.g., "Bạn muốn xem kỹ hơn sản phẩm nào không ạ?", "Bạn muốn thêm món nào vào giỏ không ạ?").
 
-2. **Make it Natural:**
-   - Use friendly, conversational Vietnamese
-   - Remove robotic or formal language
-   - Add appropriate transition words
-   - Make it sound like a helpful sales assistant
+2.  **Tone & Language:**
+    *   **Professional yet Warm:** Use "Em/Mình" and "Bạn/Anh/Chị" (default to "Bạn" if unknown).
+    *   **No Robot Speak:** Avoid "Here is the list", "Product 1 is...". Use "1. **Sản phẩm A**...".
+    *   **Emojis:** Use sparingly as icons (e.g., 🧴, ✨, 💰) to make it lively but not childish.
 
-3. **Structure Clearly:**
-   - Use proper line breaks
-   - Format prices nicely (e.g., 299,000đ)
-   - Number products clearly (1, 2, 3...)
-   - Keep it scannable and easy to read
+3.  **Handling Specific Scenarios:**
+    *   **If calculating totals:** Present the math clearly (e.g., "Tổng cộng: **500.000đ**").
+    *   **If explaining a concept:** Use paragraphs with bold keywords.
+    *   **If Error/No Result:** Be apologetic and suggest an alternative (e.g., "Dạ hiện tại em chưa tìm thấy mã này, bạn có muốn xem dòng tương tự không ạ?").
 
-4. **Be Professional:**
-   - Polite and respectful tone
-   - Helpful attitude
-   - Appropriate emojis (optional, use sparingly)
+**TEMPLATE EXAMPLE:**
 
-**Example:**
+*Input:* "Found 2 items. CeraVe Cleanser 15.99 and Toner 20. Total is 35.99."
 
-Agent response:
-"I found 3 products. Product 1: La Roche-Posay Anthelios SPF50+ price 299000 VND. Product 2: Neutrogena Ultra Sheer price 250000 VND..."
+*Output:*
+"Dạ, em tìm thấy 2 sản phẩm phù hợp với nhu cầu của bạn đây ạ:
 
-Your formatted response:
-"Tìm thấy 3 sản phẩm kem chống nắng phù hợp với yêu cầu của bạn:
+1. 🧴 **CeraVe Cleanser**
+   *   Giá: **400.000đ** (approx conversion)
+   *   Công dụng: Sữa rửa mặt dịu nhẹ, cấp ẩm.
 
-1. **La Roche-Posay Anthelios SPF50+** - 299,000đ
-   Bảo vệ da toàn diện, phù hợp mọi loại da
+2. ✨ **Toner ABC**
+   *   Giá: **500.000đ**
+   *   Công dụng: Cân bằng pH, làm sạch sâu.
 
-2. **Neutrogena Ultra Sheer** - 250,000đ
-   Công thức nhẹ, không gây bết dính
+Bạn muốn em thêm sản phẩm nào vào giỏ hàng giúp bạn không ạ?"
 
-Bạn quan tâm sản phẩm nào ạ?"
+**CONSTRAINT:**
+*   Do NOT invent new products.
+*   Do NOT change the original intent.
+*   Keep the original ID/Context intact.
 
-**Important:**
-- If the agent said "no products found" → keep that message
-- If the agent said "service unavailable" → keep that message
-- Don't make up information!
-
-Format the response below:"""
+Rewrite the following response:"""
 
     def __init__(self):
         """Initialize quality check node"""
         self.llm = ChatOpenAI(
             model="gpt-4o-mini",
             api_key=settings.OPENAI_API_KEY,
-            temperature=0.7  # Slightly creative for natural language
+            temperature=0.5  # Balanced between creativity and adherence to format
         )
 
         print("✅ Quality check node initialized")
@@ -89,18 +76,12 @@ Format the response below:"""
     async def __call__(self, state: AgentState) -> dict:
         """
         Format agent's response naturally
-
-        Args:
-            state: Current state
-
-        Returns:
-            Updated state with formatted response
         """
         print(f"\n{'='*80}")
         print(f"✨ QUALITY CHECK")
         print(f"{'='*80}")
 
-        # GET LAST AI MESSAGE (from agent)
+        # GET LAST AI MESSAGE
         messages = state["messages"]
         last_ai_message = None
 
@@ -110,10 +91,7 @@ Format the response below:"""
                 break
 
         if not last_ai_message:
-            print("   ⚠️  No AI message to format")
-            return {
-                "next_node": "END"
-            }
+            return {"next_node": "END"}
 
         print(f"   📝 Formatting response...")
 
@@ -123,6 +101,7 @@ Format the response below:"""
             HumanMessage(content=last_ai_message.content)
         ])
 
+        # IMPORTANT: Keep the ID to ensure LangGraph updates the message instead of appending
         formatted.id = last_ai_message.id
 
         print(f"   ✅ Response formatted")

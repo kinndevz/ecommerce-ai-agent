@@ -54,6 +54,8 @@ export const FlatProductSchema = z.object({
  */
 export const RichProductSchema = z.object({
   ...BaseProductFields,
+  is_featured: z.boolean(),
+  sale_price: z.number().nullable().optional(),
   brand: BrandSchema.optional().nullable(),
   category: CategorySchema.optional().nullable(),
   tags: z.array(TagSchema).optional(),
