@@ -1,4 +1,4 @@
-from typing import Annotated, TypedDict, Optional
+from typing import Annotated, TypedDict, Optional, Any
 from langgraph.graph.message import add_messages
 from langchain_core.messages import BaseMessage
 
@@ -17,3 +17,5 @@ class AgentState(TypedDict):
     user_id: str
     auth_token: str
     conversation_id: Optional[str]
+
+    shared_context: dict[str, Any]

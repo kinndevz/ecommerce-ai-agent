@@ -96,15 +96,14 @@ export const CartItemSchema = z.object({
   product_id: z.string(),
   variant_id: z.string().nullable().optional(),
   quantity: z.number().int(),
-  price: z.number(),
-
+  price: z.coerce.number(),
   // Product details
   product_name: z.string(),
   product_slug: z.string(),
   product_image: z.string().nullable().optional(),
   variant_name: z.string().nullable().optional(),
 
-  subtotal: z.number(),
+  subtotal: z.coerce.number(),
 
   created_at: z.string(),
   updated_at: z.string(),
@@ -117,7 +116,7 @@ export const CartResponseSchema = z.object({
 
   // Summary
   total_items: z.number().int(),
-  subtotal: z.number(),
+  subtotal: z.coerce.number(),
 
   created_at: z.string(),
   updated_at: z.string(),

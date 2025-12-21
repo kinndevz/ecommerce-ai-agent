@@ -4,45 +4,28 @@ from langchain_mcp_adapters.interceptors import MCPToolCallRequest
 
 @dataclass
 class UserContext:
-    """Context for user authentication"""
+    """Context schema matching the create_agent definition"""
     user_id: str
     auth_token: str
 
 
 async def inject_auth_token(
     request: MCPToolCallRequest,
-    handler
+    handler,
 ):
-    """
-    Interceptor to inject authentication token into MCP tool requests.
+    """Inject auth token into tool arguments from runtime context."""
 
-    Reads auth_token from runtime context and adds it to HTTP headers
-    before calling the actual MCP tool.
-    """
-
-    # ✅ Get context from runtime
+    # 1. Access runtime context directly (như template)
     runtime = request.runtime
+    auth_token = runtime.context.auth_token
 
-    if hasattr(runtime, 'context') and isinstance(runtime.context, UserContext):
-        context: UserContext = runtime.context
+    # Debug log nhẹ để biết code đang chạy
+    print(f"🔐 [Interceptor] Injecting Token: {auth_token[:15]}...")
 
-        # ⚠️ QUAN TRỌNG: Inject vào ARGS (Tham số), không phải Headers
-        # Vì MCP Server tool logic nhận data từ args.
-        current_args = request.args
+    # 2. Inject into arguments using dictionary unpacking
+    # Chỉ inject __auth_token như bạn yêu cầu
+    modified_request = request.override(
+        args={**request.args, "__auth_token": auth_token}
+    )
 
-        # Merge token vào args hiện tại
-        new_args = {
-            **current_args,
-            "token": context.auth_token
-        }
-
-        print(f"🔐 [Interceptor] Injecting auth for user: {context.user_id}")
-
-        # Override request with auth headers
-        modified_request = request.override(args=new_args)
-
-        return await handler(modified_request)
-
-    # No auth → proceed without auth (for public tools)
-    print("⚠️ [Interceptor] No auth context - calling tool without authentication")
-    return await handler(request)
+    return await handler(modified_request)

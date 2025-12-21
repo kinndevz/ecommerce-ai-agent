@@ -10,6 +10,7 @@ from app.models.conversation import Conversation, Message
 from app.utils.responses import ResponseHandler
 from app.agents.graph import get_agent_graph
 from app.agents.state import AgentState
+from langchain_core.runnables import RunnableConfig
 
 
 class ChatService:
@@ -68,26 +69,20 @@ class ChatService:
 
         # CREATE INITIAL STATE
         initial_state: AgentState = {
-            # Conversation messages
             "messages": [HumanMessage(content=message_content)],
-
-            # User context (secure - not visible to LLM)
             "user_id": user_id,
             "auth_token": auth_token or "",
-            "conversation_id": conversation.id,
-
-            # Loop control
             "loop_count": 0,
-            "max_loops": 5  # Safety limit
+            "max_loops": 5
         }
+
+        # ✅ DEBUG: Print để kiểm tra
+        print(f"🔐 [ChatService] Initializing state with:")
+        print(f"   user_id: {user_id}")
+        print(f"   auth_token: {auth_token[:20] if auth_token else 'NONE'}...")
 
         # RUN AGENT GRAPH
         graph = await get_agent_graph()
-
-        context = UserContext(
-            user_id=user_id,
-            auth_token=auth_token or ""
-        )
 
         try:
             print("\n" + "="*80)
@@ -98,11 +93,13 @@ class ChatService:
             print(f"   Thread: {conversation.thread_id}")
             print("="*80 + "\n")
 
-            # Run workflow with thread_id for conversation memory
-            config = {
-                "configurable": {"thread_id": conversation.thread_id},
-                "context": context
-            }
+            config = RunnableConfig(
+                configurable={
+                    "thread_id": conversation.thread_id,
+                    "user_id": user_id,
+                    "auth_token": auth_token or ""
+                },
+            )
 
             final_state = await graph.ainvoke(initial_state, config)
 
@@ -124,7 +121,6 @@ class ChatService:
                 ai_response = "Xin lỗi, tôi không thể tạo phản hồi phù hợp."
 
         except Exception as e:
-            print(f"\n❌ WORKFLOW ERROR: {e}")
             import traceback
             traceback.print_exc()
 

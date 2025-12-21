@@ -8,7 +8,6 @@ from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_core.tools import BaseTool
 from app.core.config import settings
 from app.agents.interceptors import inject_auth_token
-# --- 1. Define Metadata Schema ---
 
 
 class ToolMetadata(BaseModel):

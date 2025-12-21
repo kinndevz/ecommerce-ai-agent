@@ -183,89 +183,70 @@ export class MyMCP extends McpAgent {
             category: "cart",
             requires_auth: true,
           },
-          "Add a specific product to the shopping cart. Requires Product ID."
+          "Add a specific product to the shopping cart."
         ),
         inputSchema: {
           product_id: z.string().describe("Product ID"),
-
-          variant_id: z
-            .string()
-            .optional()
-            .describe("Variant ID (if applicable, e.g. size/color)"),
-
+          variant_id: z.string().optional().describe("Variant ID"),
           quantity: z
             .number()
             .int()
             .min(1)
             .max(100)
             .default(1)
-            .describe("Quantity to add (1-100)"),
+            .describe("Quantity"),
 
-          token: z
-            .string()
-            .optional()
-            .describe("Auth token injected by client"),
+          __auth_token: z.string().optional().describe("Internal Auth Token"),
         },
         outputSchema: CartAPIResponse,
       },
       async (args) => {
         try {
-          console.log(
-            `[MCP] Adding to cart: ${args.product_id}, qty: ${args.quantity}`
-          );
+          console.log(`[MCP] Adding to cart: ${args.product_id}`);
 
-          // 1. Cấu hình Headers (Auth)
-          const headers: Record<string, string> = {
-            "Content-Type": "application/json",
-          };
+          const authToken = args.__auth_token;
 
-          if (args.token) {
-            headers["Authorization"] = `Bearer ${args.token}`;
+          console.log(`🔐 [MCP] Auth from ARGS: ${authToken ? "YES" : "NO"}`);
+
+          if (!authToken) {
+            return {
+              content: [
+                {
+                  type: "text",
+                  text: "Error: No auth token provided (internal error).",
+                },
+              ],
+              isError: true,
+            };
           }
 
-          // 2. Chuẩn bị Body
-          const requestBody = {
-            product_id: args.product_id,
-            variant_id: args.variant_id,
-            quantity: args.quantity,
-          };
-
-          // 3. Gọi API (POST)
+          // Gọi Backend
           const response = await axios.post(
-            "https://ecommerce-ai-agent-b2lc.onrender.com/cart/items",
-            requestBody,
+            "https://conducted-father-caught-destinations.trycloudflare.com/cart/items",
             {
-              headers: headers,
+              product_id: args.product_id,
+              variant_id: args.variant_id,
+              quantity: args.quantity,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authToken}`,
+              },
             }
           );
 
           const apiResponse = response.data;
-
+          const cleanData = CartAPIResponse.parse(apiResponse);
           return {
             content: [
-              {
-                type: "text",
-                text: JSON.stringify(apiResponse.data, null, 2),
-              },
+              { type: "text", text: JSON.stringify(apiResponse.data, null, 2) },
             ],
-            structuredContent: apiResponse.data,
+            structuredContent: cleanData,
           };
         } catch (error: any) {
-          let errorMessage = "Unknown error";
-          if (axios.isAxiosError(error)) {
-            errorMessage = error.response
-              ? `API Error ${error.response.status}: ${JSON.stringify(
-                  error.response.data
-                )}`
-              : `Network Error: ${error.message}`;
-            console.error(`[MCP Error] ${errorMessage}`);
-          } else {
-            errorMessage = error.message;
-            console.error(`[MCP Error] ${errorMessage}`);
-          }
-
           return {
-            content: [{ type: "text", text: errorMessage }],
+            content: [{ type: "text", text: error.message }],
             isError: true,
           };
         }
