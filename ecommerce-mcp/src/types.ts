@@ -1,5 +1,21 @@
 import { z } from "zod";
 
+// Base API Response
+export const createApiResponseSchema = <T extends z.ZodTypeAny>(
+  dataSchema: T
+) =>
+  z.object({
+    success: z.boolean(),
+    message: z.string(),
+    data: dataSchema.optional().nullable(),
+    meta: z.record(z.string(), z.any()).optional().nullable(),
+  });
+
+export const MessageResponseSchema = z.object({
+  success: z.boolean(),
+  message: z.string(),
+});
+
 const BaseProductFields = {
   id: z.string(),
   name: z.string(),
@@ -72,5 +88,42 @@ export const createPaginatedResponse = <T extends z.ZodTypeAny>(
     total_pages: z.number(),
   });
 
+/**
+ * Cart Schema
+ */
+export const CartItemSchema = z.object({
+  id: z.string(),
+  product_id: z.string(),
+  variant_id: z.string().nullable().optional(),
+  quantity: z.number().int(),
+  price: z.number(),
+
+  // Product details
+  product_name: z.string(),
+  product_slug: z.string(),
+  product_image: z.string().nullable().optional(),
+  variant_name: z.string().nullable().optional(),
+
+  subtotal: z.number(),
+
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export const CartResponseSchema = z.object({
+  id: z.string(),
+  user_id: z.string(),
+  items: z.array(CartItemSchema), // List[CartItemResponse]
+
+  // Summary
+  total_items: z.number().int(),
+  subtotal: z.number(),
+
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+export const CartAPIResponse = createApiResponseSchema(CartResponseSchema);
 export const FlatProductListOutput = createPaginatedResponse(FlatProductSchema);
 export const RichProductListOutput = createPaginatedResponse(RichProductSchema);
+export type MessageResponse = z.infer<typeof MessageResponseSchema>;

@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Header
 from sqlalchemy.orm import Session
-
+from typing import Tuple
 from app.db.database import get_db
 from app.models.user import User
-from app.utils.deps import get_current_user
+from app.utils.deps import get_current_user, get_current_user_with_token
 from app.agents.chat_service import ChatService
 from app.schemas.chat import ChatRequest, ChatResponse
 from app.schemas.common import APIResponse
@@ -14,8 +14,8 @@ router = APIRouter(prefix="/chat", tags=["AI Chat"])
 @router.post("", response_model=APIResponse[ChatResponse])
 async def send_message(
     data: ChatRequest,
+    user_and_token: Tuple[User, str] = Depends(get_current_user_with_token),
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
 ):
     """
     Send message to AI assistant
@@ -23,11 +23,14 @@ async def send_message(
     Creates new conversation if conversation_id not provided.
     Routes to appropriate specialized agent based on query type.
     """
+    user, token = user_and_token
+    print(">>> token: ", token)
     return await ChatService.send_message(
         db,
-        current_user.id,
+        user.id,
         data.message,
-        data.conversation_id
+        data.conversation_id,
+        auth_token=token
     )
 
 

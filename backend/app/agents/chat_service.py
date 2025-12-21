@@ -5,7 +5,7 @@ import uuid
 from datetime import datetime
 from sqlalchemy.orm import Session
 from langchain_core.messages import HumanMessage, AIMessage
-
+from app.agents.interceptors import UserContext
 from app.models.conversation import Conversation, Message
 from app.utils.responses import ResponseHandler
 from app.agents.graph import get_agent_graph
@@ -84,6 +84,11 @@ class ChatService:
         # RUN AGENT GRAPH
         graph = await get_agent_graph()
 
+        context = UserContext(
+            user_id=user_id,
+            auth_token=auth_token or ""
+        )
+
         try:
             print("\n" + "="*80)
             print("🚀 STARTING AGENT WORKFLOW")
@@ -95,9 +100,8 @@ class ChatService:
 
             # Run workflow with thread_id for conversation memory
             config = {
-                "configurable": {
-                    "thread_id": conversation.thread_id
-                }
+                "configurable": {"thread_id": conversation.thread_id},
+                "context": context
             }
 
             final_state = await graph.ainvoke(initial_state, config)

@@ -11,7 +11,7 @@ class RouteDecision(BaseModel):
     """
     Routing decision structure
     """
-    next_node: Literal["product_agent", "general_agent", "quality_check", "END"] = Field(
+    next_node: Literal["product_agent", "order_agent", "general_agent", "quality_check", "END"] = Field(
         description="Which node to visit next"
     )
     reasoning: str = Field(
@@ -42,16 +42,21 @@ class SupervisorNode:
 1. **product_agent** - Product specialist
    Use for: Finding products, price checking, product details.
 
-2. **general_agent** - General conversation
+2. **order_agent** - Order specialist (Buying, Cart management).
+   Use for:
+   - "Add to cart", "Buy it", "I want this one".
+   - "Show my cart", "Checkout".
+
+3. **general_agent** - General conversation
    Use for:
    - Greetings ("xin chào", "hi", "hello")
    - Thanks/Closing ("cảm ơn", "tạm biệt")
    - Small talk ("bạn là ai")
 
-3. **quality_check** - Formatter
+4. **quality_check** - Formatter
    (Only used after agent execution)
 
-4. **END**
+5. **END**
    (Rarely used directly now, unless system error)
 
 **Routing Rules:**
@@ -65,7 +70,7 @@ class SupervisorNode:
         self.llm = ChatOpenAI(
             model="gpt-4o-mini",
             api_key=settings.OPENAI_API_KEY,
-            temperature=0  # Deterministic routing
+            temperature=0
         ).with_structured_output(RouteDecision)
 
         print("✅ Supervisor node initialized")
@@ -108,6 +113,7 @@ Decide which specialist should handle this query.
 
 Your options:
 - product_agent (for product-related queries)
+- order_agent (buying, cart)
 - quality_check (if an agent just finished responding)
 - END (for greetings/goodbyes)
 

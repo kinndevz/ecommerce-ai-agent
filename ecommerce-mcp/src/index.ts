@@ -3,34 +3,11 @@ import { McpAgent } from "agents/mcp";
 import axios from "axios";
 import { z } from "zod";
 import { createToolDescription } from "./utils/helper";
-import { FlatProductListOutput, RichProductListOutput } from "./types";
-
-const ProductSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  slug: z.string().optional(),
-  sku: z.string().optional(),
-  brand_name: z.string().optional(),
-  category_name: z.string().optional(),
-  stock_quantity: z.number().optional().nullable(),
-  price: z.number(),
-  is_available: z.boolean(),
-  concerns: z.array(z.string()).optional(),
-  skin_types: z.array(z.string()).optional(),
-  benefits: z.array(z.string()).optional(),
-  tags: z.array(z.string()).optional(),
-
-  description: z.string().nullable().optional(),
-  rating_average: z.number().nullable().optional(),
-});
-
-const ProductListOutputSchema = z.object({
-  products: z.array(ProductSchema),
-  total: z.number(),
-  page: z.number(),
-  limit: z.number(),
-  total_pages: z.number(),
-});
+import {
+  CartAPIResponse,
+  FlatProductListOutput,
+  RichProductListOutput,
+} from "./types";
 
 export class MyMCP extends McpAgent {
   server = new McpServer({
@@ -180,6 +157,106 @@ export class MyMCP extends McpAgent {
           if (axios.isAxiosError(error)) {
             errorMessage = error.response
               ? `API Error ${error.response.status}: ${JSON.stringify(error.response.data)}`
+              : `Network Error: ${error.message}`;
+            console.error(`[MCP Error] ${errorMessage}`);
+          } else {
+            errorMessage = error.message;
+            console.error(`[MCP Error] ${errorMessage}`);
+          }
+
+          return {
+            content: [{ type: "text", text: errorMessage }],
+            isError: true,
+          };
+        }
+      }
+    );
+
+    // Cart
+    this.server.registerTool(
+      "add_to_cart",
+      {
+        title: "Add product to cart",
+        description: createToolDescription(
+          {
+            agent: "order",
+            category: "cart",
+            requires_auth: true,
+          },
+          "Add a specific product to the shopping cart. Requires Product ID."
+        ),
+        inputSchema: {
+          product_id: z.string().describe("Product ID"),
+
+          variant_id: z
+            .string()
+            .optional()
+            .describe("Variant ID (if applicable, e.g. size/color)"),
+
+          quantity: z
+            .number()
+            .int()
+            .min(1)
+            .max(100)
+            .default(1)
+            .describe("Quantity to add (1-100)"),
+
+          token: z
+            .string()
+            .optional()
+            .describe("Auth token injected by client"),
+        },
+        outputSchema: CartAPIResponse,
+      },
+      async (args) => {
+        try {
+          console.log(
+            `[MCP] Adding to cart: ${args.product_id}, qty: ${args.quantity}`
+          );
+
+          // 1. Cấu hình Headers (Auth)
+          const headers: Record<string, string> = {
+            "Content-Type": "application/json",
+          };
+
+          if (args.token) {
+            headers["Authorization"] = `Bearer ${args.token}`;
+          }
+
+          // 2. Chuẩn bị Body
+          const requestBody = {
+            product_id: args.product_id,
+            variant_id: args.variant_id,
+            quantity: args.quantity,
+          };
+
+          // 3. Gọi API (POST)
+          const response = await axios.post(
+            "https://ecommerce-ai-agent-b2lc.onrender.com/cart/items",
+            requestBody,
+            {
+              headers: headers,
+            }
+          );
+
+          const apiResponse = response.data;
+
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(apiResponse.data, null, 2),
+              },
+            ],
+            structuredContent: apiResponse.data,
+          };
+        } catch (error: any) {
+          let errorMessage = "Unknown error";
+          if (axios.isAxiosError(error)) {
+            errorMessage = error.response
+              ? `API Error ${error.response.status}: ${JSON.stringify(
+                  error.response.data
+                )}`
               : `Network Error: ${error.message}`;
             console.error(`[MCP Error] ${errorMessage}`);
           } else {

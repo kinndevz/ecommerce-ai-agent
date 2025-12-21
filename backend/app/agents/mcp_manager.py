@@ -7,7 +7,7 @@ from pydantic import BaseModel, ValidationError
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_core.tools import BaseTool
 from app.core.config import settings
-
+from app.agents.interceptors import inject_auth_token
 # --- 1. Define Metadata Schema ---
 
 
@@ -44,7 +44,8 @@ class MCPManager:
         if self.client is None:
             if not self.server_config:
                 raise ValueError("No MCP server configured.")
-            self.client = MultiServerMCPClient(self.server_config)
+            self.client = MultiServerMCPClient(
+                self.server_config, tool_interceptors=[inject_auth_token])
             print(f"🔗 MCP Client connected")
         return self.client
 

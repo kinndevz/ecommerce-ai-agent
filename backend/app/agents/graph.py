@@ -1,15 +1,16 @@
 from typing import Literal
 from langgraph.graph import StateGraph, START, END
 from langgraph.checkpoint.memory import InMemorySaver
-
+from app.agents.interceptors import UserContext
 from app.agents.state import AgentState
 from app.agents.nodes.supervisor_node import SupervisorNode
 from app.agents.nodes.product_agent_node import ProductAgentNode
 from app.agents.nodes.quality_check_node import QualityCheckNode
 from app.agents.nodes.general_agent_node import GeneralAgentNode
+from app.agents.nodes.order_agent_node import OrderAgentNode
 
 
-def route_after_supervisor(state: AgentState) -> Literal["product_agent", "general_agent", "quality_check", "END"]:
+def route_after_supervisor(state: AgentState) -> Literal["product_agent", "order_agent", "general_agent", "quality_check", "END"]:
     """
     Route based on supervisor's decision
 
@@ -74,16 +75,20 @@ def create_agent_graph():
     # INITIALIZE NODES
     supervisor = SupervisorNode()
     product_agent = ProductAgentNode()
+    order_agent = OrderAgentNode()
     general_agent = GeneralAgentNode()
     quality_check = QualityCheckNode()
 
     # CREATE GRAPH
-    workflow = StateGraph(AgentState)
+    workflow = StateGraph(
+        state_schema=AgentState,
+        context_schema=UserContext)
 
     # Add nodes
     print("\n📍 Adding nodes...")
     workflow.add_node("supervisor", supervisor)
     workflow.add_node("product_agent", product_agent)
+    workflow.add_node("order_agent", order_agent)
     workflow.add_node("general_agent", general_agent)
     workflow.add_node("quality_check", quality_check)
     print("   ✅ All nodes added")
@@ -100,6 +105,7 @@ def create_agent_graph():
         route_after_supervisor,
         {
             "product_agent": "product_agent",
+            "order_agent": "order_agent",
             "general_agent": "general_agent",
             "quality_check": "quality_check",
             "END": END
@@ -109,6 +115,16 @@ def create_agent_graph():
     # Product Agent → quality_check
     workflow.add_conditional_edges(
         "product_agent",
+        route_after_agent,
+        {
+            "quality_check": "quality_check",
+            "END": END
+        }
+    )
+
+    # Order Agent -> quality_check
+    workflow.add_conditional_edges(
+        "order_agent",
         route_after_agent,
         {
             "quality_check": "quality_check",

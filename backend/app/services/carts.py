@@ -159,7 +159,7 @@ class CartService:
             db.commit()
             db.refresh(cart_item)
 
-            message = "Item added to cart"
+        message = "Item added to cart"
 
         # Get updated cart
         db.refresh(cart)

@@ -3,7 +3,7 @@ from fastapi import Depends, Header, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from jose import JWTError
-from typing import Optional
+from typing import Optional, Tuple
 from app.db.database import get_db
 from app.core.security import verify_access_token
 from app.models.user import User
@@ -14,6 +14,24 @@ from app.core.constant import UserRole
 
 logger = logging.getLogger(__name__)
 security = HTTPBearer()
+
+
+def get_current_user_with_token(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    db: Session = Depends(get_db)
+) -> Tuple[User, str]:
+    """Get current user and token"""
+    token = credentials.credentials
+
+    # Verify & get user
+    payload = verify_access_token(token)
+    user_id = payload.get("user_id")
+    user = db.query(User).filter(User.id == user_id).first()
+
+    if not user:
+        ResponseHandler.not_found_error("User", user_id)
+
+    return user, token
 
 
 def get_current_user(
