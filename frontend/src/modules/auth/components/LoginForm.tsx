@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Mail, Lock, Eye, EyeOff, Loader2, ArrowRight } from 'lucide-react'
-import { FaGoogle, FaGithub } from 'react-icons/fa'
+import { FaFacebook } from 'react-icons/fa'
+import { FcGoogle } from 'react-icons/fc'
 import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
 import { Separator } from '@/shared/components/ui/separator'
@@ -16,10 +17,12 @@ import {
   FormMessage,
 } from '@/shared/components/ui/form'
 import { loginSchema, type LoginFormValues } from '../auth.schema'
+import { useAuth } from '@/hooks/useAuth'
 
 export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isFetching, setIsFetching] = useState(false)
+  const { login, isLoading } = useAuth()
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -30,15 +33,18 @@ export const LoginForm = () => {
   })
 
   const onSubmit = async (values: LoginFormValues) => {
-    setIsLoading(true)
+    try {
+      await login(values)
+      // Success! Context will:
+      // 1. Save access token
 
-    // TODO: Implement actual login API call
-    console.log('Login values:', values)
-
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    setIsLoading(false)
+      // 2. Fetch user profile
+      // 3. Show success toast
+      // 4. Redirect to home
+    } catch (error) {
+      // Error already handled by context (toast shown)
+      // Form stays on page for user to retry
+    }
   }
 
   return (
@@ -72,7 +78,7 @@ export const LoginForm = () => {
                       type='email'
                       placeholder='you@example.com'
                       className='pl-10 h-12 bg-muted/30 border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all hover:border-primary/30'
-                      disabled={isLoading}
+                      disabled={isFetching}
                       {...field}
                     />
                   </div>
@@ -98,14 +104,14 @@ export const LoginForm = () => {
                       type={showPassword ? 'text' : 'password'}
                       placeholder='Enter your password'
                       className='pl-10 pr-12 h-12 bg-muted/30 border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all hover:border-primary/30'
-                      disabled={isLoading}
+                      disabled={isFetching}
                       {...field}
                     />
                     <button
                       type='button'
                       onClick={() => setShowPassword(!showPassword)}
                       className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors'
-                      disabled={isLoading}
+                      disabled={isFetching}
                     >
                       {showPassword ? (
                         <EyeOff className='w-5 h-5' />
@@ -143,9 +149,9 @@ export const LoginForm = () => {
           <Button
             type='submit'
             className='w-full h-12 bg-linear-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-bold rounded-xl shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300 group'
-            disabled={isLoading}
+            disabled={isFetching}
           >
-            {isLoading ? (
+            {isFetching ? (
               <>
                 <Loader2 className='w-5 h-5 mr-2 animate-spin' />
                 Signing in...
@@ -178,21 +184,21 @@ export const LoginForm = () => {
           type='button'
           variant='outline'
           className='h-11 border-border/50 hover:border-primary/30 hover:bg-primary/5 transition-all group'
-          disabled={isLoading}
+          disabled={isFetching}
           onClick={() => console.log('Google OAuth - Coming soon')}
         >
-          <FaGoogle className='w-5 h-5 mr-2 text-primary group-hover:scale-110 transition-transform' />
-          <span className='font-semibold'>Google</span>
+          <FcGoogle className='w-5 h-5 mr-2 group-hover:scale-110 transition-transform' />
+          <span className='font-semibold text-foreground'>Google</span>
         </Button>
         <Button
           type='button'
           variant='outline'
           className='h-11 border-border/50 hover:border-primary/30 hover:bg-primary/5 transition-all group'
-          disabled={isLoading}
+          disabled={isFetching}
           onClick={() => console.log('GitHub OAuth - Coming soon')}
         >
-          <FaGithub className='w-5 h-5 mr-2 group-hover:scale-110 transition-transform' />
-          <span className='font-semibold'>GitHub</span>
+          <FaFacebook className='w-5 text-blue-500 h-5 mr-2 group-hover:scale-110 transition-transform' />
+          <span className='font-semibold text-foreground'>Facebook</span>
         </Button>
       </div>
     </div>
