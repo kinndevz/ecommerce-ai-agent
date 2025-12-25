@@ -1,12 +1,12 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response, Cookie
 from sqlalchemy.orm import Session
-
 from app.db.database import get_db
 from app.schemas.auth import *
 from app.services.auth import AuthService
 from app.utils.deps import get_current_active_user
 from app.models.user import User
-
+from app.core.config import settings
+from app.utils.responses import ResponseHandler
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
@@ -34,35 +34,52 @@ def send_otp(
 @router.post("/login")
 def login(
     data: LoginRequest,
+    response: Response,
     db: Session = Depends(get_db)
 ):
     """Login with email and password"""
 
     return AuthService.login(
         db=db,
-        loginRequest=data
+        loginRequest=data,
+        response=response
     )
 
 
 @router.post("/refresh")
 def refresh_token(
-    data: RefreshTokenRequest,
-    db: Session = Depends(get_db)
+    response: Response,
+    db: Session = Depends(get_db),
+    refresh_token: Optional[str] = Cookie(None, alias=settings.COOKIE_NAME)
 ):
-    """Refresh access token using refresh token"""
+    """Refresh access token using httpOnly cookie"""
+    if not refresh_token:
+        ResponseHandler.invalid_token("refresh")
+
     return AuthService.refresh_token_handler(
         db=db,
-        refresh_token=data.refresh_token,
+        refresh_token=refresh_token,
+        response=response
     )
 
 
 @router.post("/logout")
 def logout(
-    data: LogoutRequest,
+    response: Response,
     db: Session = Depends(get_db),
+    refresh_token: Optional[str] = Cookie(
+        None, alias=settings.COOKIE_NAME)
+
 ):
-    """Logout user and invalidate refresh token"""
-    return AuthService.logout(db, data.refresh_token)
+    """Logout user and invalidate refresh token - Clears cookie"""
+    if not refresh_token:
+        ResponseHandler.invalid_token("refresh")
+
+    return AuthService.logout(
+        db=db,
+        refresh_token=refresh_token,
+        response=response
+    )
 
 
 @router.post("/forgot-password")

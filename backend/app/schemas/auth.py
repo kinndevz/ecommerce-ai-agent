@@ -71,18 +71,18 @@ class LoginRequest(BaseModel):
 
 class TokenResponse(BaseModel):
     access_token: str
-    refresh_token: str
+    # refresh_token: str
     token_type: str = "bearer"
 
 
 # ========== Refresh Token ==========
 class RefreshTokenRequest(BaseModel):
-    refresh_token: str
+    refresh_token: Optional[str] = None
 
 
 # ========== Logout ==========
 class LogoutRequest(BaseModel):
-    refresh_token: str
+    refresh_token: Optional[str] = None
 
 
 # ========== Forgot Password ==========

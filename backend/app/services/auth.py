@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta, timezone
 import uuid
-
+from fastapi import Response
 from app.models.user import User, RefreshToken, VerificationCode, UserStatus, VerificationCodeType
 from app.models.role import Role
 from app.core.security import (
@@ -105,7 +105,7 @@ class AuthService:
         return ResponseHandler.otp_sent_success(email)
 
     @staticmethod
-    def login(db: Session, loginRequest: LoginRequest):
+    def login(db: Session, loginRequest: LoginRequest, response: Response):
         """Login user"""
         # Find user
         user = db.query(User).filter(User.email == loginRequest.email,
@@ -162,16 +162,28 @@ class AuthService:
         db.add(db_refresh_token)
         db.commit()
 
+        # SET REFRESH TOKEN IN HTTPONLY COOKIE
+        response.set_cookie(
+            key=settings.COOKIE_NAME,
+            value=refresh_token,
+            httponly=settings.COOKIE_HTTPONLY,
+            secure=settings.COOKIE_SECURE,
+            samesite=settings.COOKIE_SAMESITE,
+            max_age=settings.COOKIE_MAX_AGE,
+            domain=settings.COOKIE_DOMAIN,
+            path="/"
+        )
+
         token_data = {
             "access_token": access_token,
-            "refresh_token": refresh_token,
+            # "refresh_token": refresh_token,
             "token_type": "bearer"
         }
 
         return ResponseHandler.success("Login successful", token_data)
 
     @staticmethod
-    def refresh_token_handler(db: Session, refresh_token: str):
+    def refresh_token_handler(db: Session, refresh_token: str, response: Response):
         """Refresh access token"""
         try:
             payload = verify_refresh_token(refresh_token)
@@ -227,16 +239,28 @@ class AuthService:
         db.add(new_db_refresh_token)
         db.commit()
 
+        #  SET NEW REFRESH TOKEN IN COOKIE
+        response.set_cookie(
+            key=settings.COOKIE_NAME,
+            value=new_refresh_token,
+            httponly=settings.COOKIE_HTTPONLY,
+            secure=settings.COOKIE_SECURE,
+            samesite=settings.COOKIE_SAMESITE,
+            max_age=settings.COOKIE_MAX_AGE,
+            domain=settings.COOKIE_DOMAIN,
+            path="/"
+        )
+
         token_data = {
             "access_token": new_access_token,
-            "refresh_token": new_refresh_token,
+            # "refresh_token": new_refresh_token,
             "token_type": "bearer"
         }
 
         return ResponseHandler.success("Token refreshed successfully", token_data)
 
     @staticmethod
-    def logout(db: Session, refresh_token: str):
+    def logout(db: Session, refresh_token: str, response: Response):
         """Logout user"""
         db_refresh_token = db.query(RefreshToken).filter(
             RefreshToken.token == refresh_token
@@ -248,6 +272,13 @@ class AuthService:
         # Delete refresh token
         db.delete(db_refresh_token)
         db.commit()
+
+        # CLEAR COOKIE
+        response.delete_cookie(
+            key=settings.COOKIE_NAME,
+            path="/",
+            domain=settings.COOKIE_DOMAIN
+        )
 
         return ResponseHandler.logout_success()
 

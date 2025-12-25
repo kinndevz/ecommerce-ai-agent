@@ -16,6 +16,14 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_SECRET: str
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
+    # Cookie Settings
+    COOKIE_NAME: str = "refreshToken"
+    COOKIE_HTTPONLY: bool = True
+    COOKIE_SECURE: bool = True
+    COOKIE_SAMESITE: str = "lax"
+    COOKIE_DOMAIN: str | None = None
+    COOKIE_MAX_AGE: int = 30 * 24 * 60 * 60  # 30 days in seconds
+
     # Admin Account
     ADMIN_EMAIL: str
     ADMIN_PASSWORD: str

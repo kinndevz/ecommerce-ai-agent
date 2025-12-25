@@ -22,16 +22,21 @@ def get_current_user_with_token(
 ) -> Tuple[User, str]:
     """Get current user and token"""
     token = credentials.credentials
+    try:
+        # Verify & get user
+        payload = verify_access_token(token)
+        user_id = payload.get("user_id")
+        user = db.query(User).filter(User.id == user_id).first()
 
-    # Verify & get user
-    payload = verify_access_token(token)
-    user_id = payload.get("user_id")
-    user = db.query(User).filter(User.id == user_id).first()
+        if not user_id:
+            ResponseHandler.invalid_credentials()
 
-    if not user:
-        ResponseHandler.not_found_error("User", user_id)
+        if not user:
+            ResponseHandler.not_found_error("User", user_id)
 
-    return user, token
+        return user, token
+    except JWTError:
+        ResponseHandler.invalid_token()
 
 
 def get_current_user(

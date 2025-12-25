@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Mail, Eye, EyeOff, ArrowRight, Loader2 } from 'lucide-react'
-import { FaGithub, FaGoogle } from 'react-icons/fa'
-import { IoLockClosedOutline } from 'react-icons/io5'
+import { Mail, Lock, Eye, EyeOff, Loader2, ArrowRight } from 'lucide-react'
+import { FaGoogle, FaGithub } from 'react-icons/fa'
 import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
 import { Separator } from '@/shared/components/ui/separator'
+import { Checkbox } from '@/shared/components/ui/checkbox'
 import {
   Form,
   FormControl,
@@ -16,219 +16,184 @@ import {
   FormMessage,
 } from '@/shared/components/ui/form'
 import { loginSchema, type LoginFormValues } from '../auth.schema'
-import { NavLink } from 'react-router-dom'
 
 export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false)
-  const [isLogin, setIsLogin] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: '', password: '' },
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   })
 
-  const onSubmit = (values: LoginFormValues) => {}
+  const onSubmit = async (values: LoginFormValues) => {
+    setIsLoading(true)
+
+    // TODO: Implement actual login API call
+    console.log('Login values:', values)
+
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+
+    setIsLoading(false)
+  }
 
   return (
-    <div className='flex flex-col h-full bg-card p-6 sm:p-8 overflow-hidden relative'>
-      <div className='flex justify-between items-center shrink-0 h-10'>
-        <span className='font-serif text-2xl font-bold tracking-wide text-foreground'>
-          LUMIÈRE
-        </span>
-        <NavLink to='/home'>
-          <Button
-            variant='ghost'
-            className='text-[10px] font-medium tracking-widest text-muted-foreground hover:text-primary uppercase gap-2 h-8'
-          >
-            Back to Shop <ArrowRight className='w-3 h-3' />
-          </Button>
-        </NavLink>
+    <div className='space-y-6'>
+      {/* Header */}
+      <div className='space-y-2 text-center lg:text-left'>
+        <h3 className='text-2xl font-serif font-bold text-foreground'>
+          Welcome Back
+        </h3>
+        <p className='text-sm text-muted-foreground'>
+          Sign in to access your beauty collection
+        </p>
       </div>
 
-      <div className='flex-1 flex flex-col justify-center w-full max-w-95 mx-auto z-10'>
-        {/* Toggle Buttons */}
-        <div className='flex p-1 bg-muted rounded-full w-fit mx-auto border border-border mb-5'>
-          <Button
-            type='button'
-            variant={isLogin ? 'default' : 'ghost'}
-            onClick={() => setIsLogin(true)}
-            className={`px-6 h-7 rounded-full text-[10px] font-bold tracking-widest transition-all ${
-              isLogin
-                ? 'bg-primary text-primary-foreground'
-                : 'text-muted-foreground hover:text-foreground hover:bg-transparent'
-            }`}
-          >
-            SIGN IN
-          </Button>
-          <Button
-            type='button'
-            variant={!isLogin ? 'default' : 'ghost'}
-            onClick={() => setIsLogin(false)}
-            className={`px-6 h-7 rounded-full text-[10px] font-bold tracking-widest transition-all ${
-              !isLogin
-                ? 'bg-primary text-primary-foreground'
-                : 'text-muted-foreground hover:text-foreground hover:bg-transparent'
-            }`}
-          >
-            SIGN UP
-          </Button>
-        </div>
-
-        <div className='text-center space-y-1 mb-5'>
-          <h2 className='font-serif text-3xl text-foreground'>
-            {isLogin ? 'Welcome Back' : 'Create Account'}
-          </h2>
-          <p className='text-muted-foreground font-light text-xs'>
-            {isLogin
-              ? 'Enter details to access your collection.'
-              : 'Sign up to start your beauty journey.'}
-          </p>
-        </div>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-3'>
-            <FormField
-              control={form.control}
-              name='email'
-              render={({ field }) => (
-                <FormItem className='space-y-0.5'>
-                  <FormLabel className='text-[10px] uppercase tracking-widest text-muted-foreground font-bold pl-1'>
-                    Email
-                  </FormLabel>
-                  <FormControl>
-                    <div className='relative group'>
-                      <Input
-                        placeholder='johndoe@lumiere.com'
-                        className='pl-9 pr-4 h-10 text-sm bg-muted/50 border-border rounded-lg focus-visible:ring-primary'
-                        {...field}
-                      />
-                      <Mail className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground' />
-                    </div>
-                  </FormControl>
-                  <FormMessage className='text-[10px]' />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name='password'
-              render={({ field }) => (
-                <FormItem className='space-y-0.5'>
-                  <FormLabel className='text-[10px] uppercase tracking-widest text-muted-foreground font-bold pl-1'>
-                    Password
-                  </FormLabel>
-                  <FormControl>
-                    <div className='relative group'>
-                      <Input
-                        type={showPassword ? 'text' : 'password'}
-                        placeholder='••••••••'
-                        className='pl-9 pr-10 h-10 text-sm bg-muted/50 border-border rounded-lg focus-visible:ring-primary'
-                        {...field}
-                      />
-                      <IoLockClosedOutline className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground' />
-                      <button
-                        type='button'
-                        onClick={() => setShowPassword(!showPassword)}
-                        className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground outline-none disabled:opacity-50'
-                      >
-                        {showPassword ? (
-                          <EyeOff className='w-4 h-4' />
-                        ) : (
-                          <Eye className='w-4 h-4' />
-                        )}
-                      </button>
-                    </div>
-                  </FormControl>
-                  <FormMessage className='text-[10px]' />
-                </FormItem>
-              )}
-            />
-
-            {isLogin && (
-              <div className='flex justify-end pt-1'>
-                <NavLink
-                  to='/forgot-password'
-                  className='text-[10px] font-bold text-muted-foreground hover:text-primary transition-colors tracking-widest'
-                >
-                  FORGOT PASSWORD?
-                </NavLink>
-              </div>
+      {/* Form */}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+          {/* Email Field */}
+          <FormField
+            control={form.control}
+            name='email'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className='text-sm font-medium text-foreground'>
+                  Email Address
+                </FormLabel>
+                <FormControl>
+                  <div className='relative group'>
+                    <Mail className='absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors' />
+                    <Input
+                      type='email'
+                      placeholder='you@example.com'
+                      className='pl-10 h-12 bg-muted/30 border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all hover:border-primary/30'
+                      disabled={isLoading}
+                      {...field}
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage className='text-xs' />
+              </FormItem>
             )}
+          />
 
-            <Button
-              type='submit'
-              className='w-full h-10 text-xs font-bold tracking-widest rounded-lg mt-2'
-            >
-              Sign in
-            </Button>
-          </form>
-        </Form>
+          {/* Password Field */}
+          <FormField
+            control={form.control}
+            name='password'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className='text-sm font-medium text-foreground'>
+                  Password
+                </FormLabel>
+                <FormControl>
+                  <div className='relative group'>
+                    <Lock className='absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors' />
+                    <Input
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder='Enter your password'
+                      className='pl-10 pr-12 h-12 bg-muted/30 border-border focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all hover:border-primary/30'
+                      disabled={isLoading}
+                      {...field}
+                    />
+                    <button
+                      type='button'
+                      onClick={() => setShowPassword(!showPassword)}
+                      className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors'
+                      disabled={isLoading}
+                    >
+                      {showPassword ? (
+                        <EyeOff className='w-5 h-5' />
+                      ) : (
+                        <Eye className='w-5 h-5' />
+                      )}
+                    </button>
+                  </div>
+                </FormControl>
+                <FormMessage className='text-xs' />
+              </FormItem>
+            )}
+          />
 
-        {/* Divider */}
-        <div className='relative my-4'>
-          <div className='absolute inset-0 flex items-center'>
-            <Separator className='w-full' />
-          </div>
-          <div className='relative flex justify-center text-[9px] uppercase tracking-widest font-bold'>
-            <span className='bg-card px-2 text-muted-foreground/50'>
-              Or continue with
-            </span>
-          </div>
-        </div>
-
-        {/* Social Buttons */}
-        <div className='grid grid-cols-2 gap-3'>
-          <Button
-            type='button'
-            variant='outline'
-            onClick={() => {
-              // TODO: Implement Google OAuth
-              console.log('Google login - Coming soon')
-            }}
-            className='h-9 text-xs rounded-lg border-border bg-transparent hover:bg-muted disabled:opacity-50'
-          >
-            <FaGoogle className='mr-2 w-3 h-3' /> Google
-          </Button>
-          <Button
-            type='button'
-            variant='outline'
-            onClick={() => {
-              // TODO: Implement GitHub OAuth
-              console.log('GitHub login - Coming soon')
-            }}
-            className='h-9 text-xs rounded-lg border-border bg-transparent hover:bg-muted disabled:opacity-50'
-          >
-            <FaGithub className='mr-2 w-3 h-3' /> Github
-          </Button>
-        </div>
-
-        {/* Additional Links */}
-        {isLogin && (
-          <p className='text-center text-xs text-muted-foreground mt-6'>
-            Don't have an account?{' '}
+          {/* Remember Me & Forgot Password */}
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center space-x-2'>
+              <Checkbox id='remember' className='border-border' />
+              <label
+                htmlFor='remember'
+                className='text-sm text-muted-foreground cursor-pointer hover:text-foreground transition-colors'
+              >
+                Remember me
+              </label>
+            </div>
             <button
               type='button'
-              onClick={() => setIsLogin(false)}
-              className='text-primary font-semibold hover:underline'
+              className='text-sm font-semibold text-primary hover:underline transition-colors'
             >
-              Sign up
+              Forgot password?
             </button>
-          </p>
-        )}
+          </div>
 
-        {!isLogin && (
-          <p className='text-center text-xs text-muted-foreground mt-6'>
-            Already have an account?{' '}
-            <button
-              type='button'
-              onClick={() => setIsLogin(true)}
-              className='text-primary font-semibold hover:underline'
-            >
-              Sign in
-            </button>
-          </p>
-        )}
+          {/* Submit Button */}
+          <Button
+            type='submit'
+            className='w-full h-12 bg-linear-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-bold rounded-xl shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 transition-all duration-300 group'
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className='w-5 h-5 mr-2 animate-spin' />
+                Signing in...
+              </>
+            ) : (
+              <>
+                Sign In
+                <ArrowRight className='w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform' />
+              </>
+            )}
+          </Button>
+        </form>
+      </Form>
+
+      {/* Divider */}
+      <div className='relative'>
+        <div className='absolute inset-0 flex items-center'>
+          <Separator className='w-full' />
+        </div>
+        <div className='relative flex justify-center text-xs uppercase'>
+          <span className='bg-card/40 backdrop-blur-sm px-3 text-muted-foreground font-semibold tracking-wider'>
+            Or continue with
+          </span>
+        </div>
+      </div>
+
+      {/* Social Login Buttons */}
+      <div className='grid grid-cols-2 gap-3'>
+        <Button
+          type='button'
+          variant='outline'
+          className='h-11 border-border/50 hover:border-primary/30 hover:bg-primary/5 transition-all group'
+          disabled={isLoading}
+          onClick={() => console.log('Google OAuth - Coming soon')}
+        >
+          <FaGoogle className='w-5 h-5 mr-2 text-primary group-hover:scale-110 transition-transform' />
+          <span className='font-semibold'>Google</span>
+        </Button>
+        <Button
+          type='button'
+          variant='outline'
+          className='h-11 border-border/50 hover:border-primary/30 hover:bg-primary/5 transition-all group'
+          disabled={isLoading}
+          onClick={() => console.log('GitHub OAuth - Coming soon')}
+        >
+          <FaGithub className='w-5 h-5 mr-2 group-hover:scale-110 transition-transform' />
+          <span className='font-semibold'>GitHub</span>
+        </Button>
       </div>
     </div>
   )
