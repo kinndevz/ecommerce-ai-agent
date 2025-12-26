@@ -116,23 +116,21 @@ export const Navbar = () => {
             Welcome to BeautyShop!
           </div>
 
-          {!user && !isAuthLoading && (
-            <div className='flex items-center gap-3'>
-              <Link
-                to='/login'
-                className='text-xs font-medium text-muted-foreground hover:text-foreground transition-colors'
-              >
-                LOG IN
-              </Link>
-              <Separator orientation='vertical' className='h-3' />
-              <Link
-                to='/cart'
-                className='text-xs font-medium text-muted-foreground hover:text-foreground transition-colors'
-              >
-                CART
-              </Link>
-            </div>
-          )}
+          <div className='flex items-center gap-3'>
+            <Link
+              to='/login'
+              className='text-xs font-medium text-muted-foreground hover:text-foreground transition-colors'
+            >
+              LOG IN
+            </Link>
+            <Separator orientation='vertical' className='h-3' />
+            <Link
+              to='/cart'
+              className='text-xs font-medium text-muted-foreground hover:text-foreground transition-colors'
+            >
+              CART
+            </Link>
+          </div>
         </div>
       </div>
 
