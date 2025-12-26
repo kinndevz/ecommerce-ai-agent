@@ -41,6 +41,7 @@ interface UserProfile {
   email: string
   full_name: string
   phone_number: string | null
+  avatar: string | null
   status: string
   is_2fa_enabled: boolean
   role: {

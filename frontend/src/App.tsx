@@ -21,14 +21,7 @@ function App() {
               </PublicRoute>
             }
           />
-          <Route
-            path='/home'
-            element={
-              <ProtectedRoute>
-                <HomePage />
-              </ProtectedRoute>
-            }
-          />
+          <Route path='/home' element={<HomePage />} />
 
           {/* 404 Not Found */}
           <Route path='*' element={<div>404 Page Not Found</div>} />

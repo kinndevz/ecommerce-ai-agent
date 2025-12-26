@@ -1,36 +1,50 @@
+import { NewsletterSection } from '@/customer/components/home/NewsletterSection'
+import { Navbar } from '../components/layout/Navbar'
 import { HeroSection } from '../components/home/HeroSection'
-import { CategoryGrid } from '../components/home/CategoryGrid'
+import { ShopByCategory } from '../components/home/ShopByCategory'
 import { FeaturedProducts } from '../components/home/FeaturedProducts'
-import { ProductCarousel } from '../components/home/ProductCarousel'
-import { BrandsSection } from '../components/home/BrandsSection'
-import { TestimonialsSection } from '../components/home/TestimonialsSection'
-import { NewsletterSection } from '../components/home/NewsletterSection'
+import { Sidebar } from '../components/layout/Sidebar'
+import { Footer } from '../components/layout/Footer'
 
 export default function HomePage() {
   return (
-    <div className='min-h-screen bg-background'>
-      {/* Hero Banner */}
-      <div className='max-w-7xl mx-auto px-6 pt-6'>
-        <HeroSection />
+    <div className='min-h-screen bg-background relative overflow-hidden'>
+      {/* Navbar */}
+      <Navbar />
+
+      {/* Hero Section */}
+      <HeroSection />
+
+      {/* Main Content with Sidebar */}
+      <div className='max-w-7xl mx-auto px-6 py-8'>
+        <div className='grid lg:grid-cols-[1fr_320px] gap-8'>
+          {/* Main Content */}
+          <main className='space-y-16'>
+            {/* Shop by Category - FULL IMAGE */}
+            <div className='animate-in fade-in slide-in-from-bottom duration-1000'>
+              <ShopByCategory />
+            </div>
+
+            {/* Featured Products */}
+            <FeaturedProducts />
+          </main>
+
+          {/* Sidebar - FULL HEIGHT */}
+          <aside className='hidden lg:block'>
+            <div className='sticky top-24 h-[calc(100vh-7rem)]'>
+              <Sidebar />
+            </div>
+          </aside>
+        </div>
       </div>
 
-      {/* Categories */}
-      <CategoryGrid />
-
-      {/* Featured Products */}
-      <FeaturedProducts />
-
-      {/* New Arrivals Carousel */}
-      <ProductCarousel />
-
-      {/* Brands */}
-      <BrandsSection />
-
-      {/* Testimonials */}
-      <TestimonialsSection />
-
       {/* Newsletter */}
-      <NewsletterSection />
+      <div className='animate-in fade-in slide-in-from-bottom duration-1000'>
+        <NewsletterSection />
+      </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   )
 }
