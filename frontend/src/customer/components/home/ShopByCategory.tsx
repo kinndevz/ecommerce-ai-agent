@@ -86,89 +86,112 @@ const categories = [
 
 export const ShopByCategory = () => {
   return (
-    <section className='py-12'>
-      <div className='text-center mb-10 space-y-2'>
-        <Badge
-          variant='secondary'
-          className='bg-primary/10 text-primary border-primary/20'
-        >
-          <Sparkles className='w-3 h-3 mr-1' />
-          Explore Collections
-        </Badge>
-        <h2 className='text-3xl md:text-4xl font-serif font-bold'>
-          Shop by Category
-        </h2>
-        <p className='text-muted-foreground'>
-          Discover our curated collections
-        </p>
-      </div>
+    <section className='py-16 bg-gradient-to-b from-background via-muted/20 to-background'>
+      <div className='max-w-7xl mx-auto px-6'>
+        {/* Section Header - Enhanced */}
+        <div className='text-center mb-12 space-y-4'>
+          <div className='inline-flex items-center gap-2.5 px-5 py-2.5 bg-gradient-to-r from-primary/15 to-primary/10 text-primary rounded-full border-2 border-primary/30 shadow-md'>
+            <Sparkles className='w-4 h-4 animate-pulse' />
+            <span className='text-sm font-extrabold uppercase tracking-wider'>
+              Explore Collections
+            </span>
+          </div>
+          <h2 className='text-4xl md:text-5xl font-serif font-bold bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent leading-tight'>
+            Shop by Category
+          </h2>
+          <p className='text-lg text-muted-foreground max-w-2xl mx-auto'>
+            Discover our curated collections of premium beauty products
+          </p>
+        </div>
 
-      <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4'>
-        {categories.map((category, index) => (
-          <Link
-            key={category.id}
-            to={`/categories/${category.slug}`}
-            className='group'
-          >
-            {/* Card với ảnh FULL, không padding */}
-            <div
-              className={cn(
-                'relative overflow-hidden rounded-2xl',
-                'border-2 border-border/50',
-                'hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10',
-                'transition-all duration-500 cursor-pointer',
-                'aspect-3/4', // Tỷ lệ 3:4 cho card đẹp
-                'animate-in fade-in slide-in-from-bottom duration-1000'
-              )}
-              style={{ animationDelay: `${index * 0.05}s` }}
+        {/* Categories Grid - Refined Layout */}
+        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
+          {categories.slice(0, 4).map((category, index) => (
+            <Link
+              key={category.id}
+              to={`/categories/${category.slug}`}
+              className='group'
             >
-              {/* Background Image - FULL CARD */}
-              <img
-                src={category.image}
-                alt={category.name}
-                className='absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110'
-              />
-
-              {/* Gradient Overlay */}
               <div
                 className={cn(
-                  'absolute inset-0 bg-linear-to-br transition-all duration-500',
-                  category.gradient,
-                  category.hoverGradient
+                  'relative overflow-hidden rounded-2xl',
+                  'border border-border/40 bg-card',
+                  'hover:border-primary/30 hover:shadow-2xl',
+                  'transition-all duration-300 cursor-pointer',
+                  'aspect-square',
+                  'animate-in fade-in slide-in-from-bottom duration-700'
                 )}
-              />
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                {/* Background Image */}
+                <img
+                  src={category.image}
+                  alt={category.name}
+                  className='absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105'
+                />
 
-              {/* Content - Centered */}
-              <div className='absolute inset-0 flex flex-col items-center justify-center p-4 text-center'>
-                {/* Category Name */}
-                <h3 className='text-sm md:text-base font-bold uppercase tracking-wider mb-2 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] transition-transform group-hover:scale-110'>
-                  {category.name}
-                </h3>
+                {/* Gradient Overlay - Softer */}
+                <div className='absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20 group-hover:from-black/70 transition-all duration-300' />
 
-                {/* Product Count Badge */}
-                <Badge
-                  className={cn(
-                    'text-white shadow-lg text-xs md:text-sm font-semibold',
-                    'transform transition-all duration-300',
-                    'group-hover:scale-110 group-hover:shadow-xl',
-                    category.badgeColor
-                  )}
-                >
-                  {category.productCount}
-                </Badge>
+                {/* Content */}
+                <div className='absolute inset-0 flex flex-col items-center justify-end p-6 text-center'>
+                  <h3 className='text-lg md:text-xl font-bold uppercase tracking-wide mb-2 text-white transform transition-transform group-hover:scale-105'>
+                    {category.name}
+                  </h3>
+                  <p className='text-sm text-white/80 font-medium'>
+                    {category.productCount} Products
+                  </p>
+                </div>
+
+                {/* Hover Accent Border */}
+                <div className='absolute inset-0 border-2 border-transparent group-hover:border-white/20 rounded-2xl transition-all duration-300 pointer-events-none' />
               </div>
+            </Link>
+          ))}
+        </div>
 
-              {/* Shine Effect */}
+        {/* Secondary Categories - Smaller Grid */}
+        <div className='grid grid-cols-3 md:grid-cols-3 gap-4 mt-6'>
+          {categories.slice(4).map((category, index) => (
+            <Link
+              key={category.id}
+              to={`/categories/${category.slug}`}
+              className='group'
+            >
               <div
                 className={cn(
-                  'absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent',
-                  'translate-x-[-200%] group-hover:translate-x-[200%]',
-                  'transition-transform duration-1000 pointer-events-none'
+                  'relative overflow-hidden rounded-xl',
+                  'border border-border/40 bg-card',
+                  'hover:border-primary/30 hover:shadow-lg',
+                  'transition-all duration-300 cursor-pointer',
+                  'aspect-video',
+                  'animate-in fade-in slide-in-from-bottom duration-700'
                 )}
-              />
-            </div>
-          </Link>
-        ))}
+                style={{ animationDelay: `${(index + 4) * 0.1}s` }}
+              >
+                {/* Background Image */}
+                <img
+                  src={category.image}
+                  alt={category.name}
+                  className='absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105'
+                />
+
+                {/* Gradient Overlay */}
+                <div className='absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent group-hover:from-black/60 transition-all duration-300' />
+
+                {/* Content */}
+                <div className='absolute inset-0 flex flex-col items-center justify-center text-center p-4'>
+                  <h3 className='text-sm md:text-base font-bold uppercase tracking-wide text-white transform transition-transform group-hover:scale-105'>
+                    {category.name}
+                  </h3>
+                  <p className='text-xs text-white/70 font-medium mt-1'>
+                    {category.productCount}
+                  </p>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
     </section>
   )

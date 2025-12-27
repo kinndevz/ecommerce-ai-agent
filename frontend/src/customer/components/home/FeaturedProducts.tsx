@@ -96,20 +96,17 @@ export const FeaturedProducts = () => {
       <div className='absolute inset-0 bg-linear-to-b from-transparent via-primary/5 to-transparent' />
 
       <div className='relative max-w-7xl mx-auto px-6'>
-        {/* Section Header */}
+        {/* Section Header - Enhanced */}
         <div className='text-center mb-16 space-y-4 animate-in fade-in slide-in-from-bottom duration-1000'>
-          <Badge
-            variant='secondary'
-            className='bg-primary/10 text-primary border-primary/20'
-          >
-            <Sparkles className='w-3 h-3 mr-1' />
-            Hand-picked Favorites
-          </Badge>
-
-          <h2 className='text-4xl md:text-5xl font-serif font-bold'>
-            <span className='bg-linear-to-r from-foreground to-primary bg-clip-text text-transparent'>
-              Featured Products
+          <div className='inline-flex items-center gap-2.5 px-5 py-2.5 bg-gradient-to-r from-primary/15 to-primary/10 text-primary rounded-full border-2 border-primary/30 shadow-md'>
+            <Sparkles className='w-4 h-4 animate-pulse' />
+            <span className='text-sm font-extrabold uppercase tracking-wider'>
+              Hand-picked Favorites
             </span>
+          </div>
+
+          <h2 className='text-4xl md:text-5xl font-serif font-bold bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent leading-tight'>
+            Featured Products
           </h2>
 
           <p className='text-lg text-muted-foreground max-w-2xl mx-auto'>
@@ -130,15 +127,15 @@ export const FeaturedProducts = () => {
           ))}
         </div>
 
-        {/* View All Button */}
+        {/* View All Button - Enhanced */}
         <div
           className='text-center mt-16 animate-in fade-in slide-in-from-bottom duration-1000'
           style={{ animationDelay: '0.2s' }}
         >
           <Button
             size='lg'
-            variant='outline'
-            className='group border-2 hover:border-primary/50 hover:bg-primary/5'
+            variant='soft'
+            className='group h-12 px-8 rounded-full border-2 border-border/50 hover:border-primary/30 hover:bg-primary/5 transition-all duration-200'
           >
             View All Products
             <Eye className='w-4 h-4 ml-2 group-hover:scale-110 transition-transform' />
@@ -173,116 +170,119 @@ const ProductCard = ({
   return (
     <Card
       className={cn(
-        'group relative overflow-hidden border-2 border-border/50',
-        'hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/10',
-        'transition-all duration-500 cursor-pointer',
-        'animate-in fade-in slide-in-from-bottom duration-1000'
+        'group relative overflow-hidden border border-border/40 p-0',
+        'hover:border-primary/20 hover:shadow-lg',
+        'transition-all duration-300 cursor-pointer bg-card',
+        'animate-in fade-in slide-in-from-bottom duration-700'
       )}
       style={{ animationDelay: `${index * 0.1}s` }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Image Container */}
-      <CardContent className='p-0 relative overflow-hidden aspect-square bg-muted/30'>
+      {/* Image Container - Full Image */}
+      <div className='relative overflow-hidden aspect-[4/5] bg-muted/20'>
         <img
           src={product.image}
           alt={product.name}
           className={cn(
-            'w-full h-full object-cover transition-transform duration-700',
-            isHovered && 'scale-110'
+            'absolute inset-0 w-full h-full object-cover transition-transform duration-500',
+            isHovered && 'scale-105'
           )}
         />
 
-        {/* Gradient Overlay */}
-        <div
-          className={cn(
-            'absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent',
-            'opacity-0 group-hover:opacity-100 transition-opacity duration-500'
-          )}
-        />
+        {/* Subtle Gradient Overlay */}
+        <div className='absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
 
-        {/* Badges */}
-        <div className='absolute top-4 left-4 flex flex-col gap-2'>
+        {/* Badges - Refined */}
+        <div className='absolute top-3 left-3 flex flex-col gap-2'>
           {product.badge && (
-            <Badge className={cn('text-white shadow-lg', product.badgeColor)}>
+            <Badge
+              className={cn(
+                'text-white text-xs font-semibold shadow-md',
+                product.badgeColor
+              )}
+            >
               {product.badge}
             </Badge>
           )}
           {discount > 0 && (
-            <Badge className='bg-red-500 text-white shadow-lg'>
+            <Badge className='bg-red-500 text-white text-xs font-semibold shadow-md'>
               -{discount}%
             </Badge>
           )}
         </div>
 
-        {/* Favorite Button */}
+        {/* Favorite Button - More Visible */}
         <button
           onClick={(e) => {
             e.stopPropagation()
             onToggleFavorite()
           }}
           className={cn(
-            'absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center',
-            'backdrop-blur-md transition-all duration-300',
+            'absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center',
+            'backdrop-blur-md transition-all duration-200 shadow-lg',
             'hover:scale-110',
             isFavorite
-              ? 'bg-red-500 text-white shadow-lg shadow-red-500/50'
-              : 'bg-white/90 text-muted-foreground hover:bg-white'
+              ? 'bg-red-500 text-white'
+              : 'bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:bg-white/95 dark:hover:bg-gray-800'
           )}
         >
           <Heart className={cn('w-5 h-5', isFavorite && 'fill-white')} />
         </button>
 
-        {/* Quick Actions - Show on Hover */}
+        {/* Quick Actions - Simplified */}
         <div
           className={cn(
-            'absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0',
-            'transition-transform duration-500 flex gap-2'
+            'absolute inset-x-0 bottom-0 p-3 translate-y-full group-hover:translate-y-0',
+            'transition-transform duration-300 flex gap-2'
           )}
         >
           <Button
             size='sm'
-            className='flex-1 bg-primary hover:bg-primary/90 shadow-lg'
+            className='flex-1 h-9 bg-primary hover:bg-primary/90 shadow-md rounded-full'
           >
-            <ShoppingCart className='w-4 h-4 mr-2' />
+            <ShoppingCart className='w-4 h-4 mr-1.5' />
             Add to Cart
           </Button>
           <Button
             size='sm'
-            variant='secondary'
-            className='backdrop-blur-md bg-white/90 hover:bg-white'
+            variant='soft'
+            className='w-9 h-9 p-0 backdrop-blur-sm bg-white/90 dark:bg-black/60 hover:bg-white dark:hover:bg-black/80 rounded-full'
           >
             <Eye className='w-4 h-4' />
           </Button>
         </div>
-      </CardContent>
+      </div>
 
-      {/* Product Info */}
-      <CardFooter className='flex flex-col items-start gap-3 p-4'>
+      {/* Product Info - Enhanced Spacing */}
+      <CardFooter className='flex flex-col items-start gap-2.5 p-4'>
         {/* Brand */}
-        <Badge variant='secondary' className='text-xs'>
+        <Badge
+          variant='secondary'
+          className='text-xs font-medium px-2.5 py-0.5'
+        >
           {product.brand}
         </Badge>
 
         {/* Name */}
-        <h3 className='font-semibold text-base line-clamp-2 min-h-12 group-hover:text-primary transition-colors'>
+        <h3 className='font-semibold text-base leading-snug line-clamp-2 min-h-[2.5rem] group-hover:text-primary transition-colors'>
           {product.name}
         </h3>
 
         {/* Rating */}
         <div className='flex items-center gap-2 w-full'>
           <div className='flex items-center gap-1'>
-            <Star className='w-4 h-4 fill-amber-400 text-amber-400' />
+            <Star className='w-3.5 h-3.5 fill-amber-400 text-amber-400' />
             <span className='text-sm font-semibold'>{product.rating}</span>
           </div>
           <span className='text-xs text-muted-foreground'>
-            ({product.reviews.toLocaleString()})
+            ({product.reviews.toLocaleString()} reviews)
           </span>
         </div>
 
         {/* Price */}
-        <div className='flex items-center gap-2 w-full'>
-          <span className='text-xl font-bold text-primary'>
+        <div className='flex items-baseline gap-2 w-full'>
+          <span className='text-lg font-bold text-primary'>
             {formatPrice(product.price)}
           </span>
           {product.originalPrice && (

@@ -167,12 +167,12 @@ export const LoginForm = () => {
       </Form>
 
       {/* Divider */}
-      <div className='relative'>
+      <div className='relative my-8'>
         <div className='absolute inset-0 flex items-center'>
-          <Separator className='w-full' />
+          <Separator />
         </div>
-        <div className='relative flex justify-center text-xs uppercase'>
-          <span className='bg-card/40 backdrop-blur-sm px-3 text-muted-foreground font-semibold tracking-wider'>
+        <div className='relative flex justify-center'>
+          <span className='px-4 py-2 text-sm font-semibold text-foreground bg-card border border-border/50 rounded-full shadow-sm'>
             Or continue with
           </span>
         </div>
@@ -180,26 +180,38 @@ export const LoginForm = () => {
 
       {/* Social Login Buttons */}
       <div className='grid grid-cols-2 gap-3'>
-        <Button
-          type='button'
-          variant='outline'
-          className='h-11 border-border/50 hover:border-primary/30 hover:bg-primary/5 transition-all group'
-          disabled={isFetching}
-          onClick={() => console.log('Google OAuth - Coming soon')}
-        >
-          <FcGoogle className='w-5 h-5 mr-2 group-hover:scale-110 transition-transform' />
-          <span className='font-semibold text-foreground'>Google</span>
-        </Button>
-        <Button
-          type='button'
-          variant='outline'
-          className='h-11 border-border/50 hover:border-primary/30 hover:bg-primary/5 transition-all group'
-          disabled={isFetching}
-          onClick={() => console.log('GitHub OAuth - Coming soon')}
-        >
-          <FaFacebook className='w-5 text-blue-500 h-5 mr-2 group-hover:scale-110 transition-transform' />
-          <span className='font-semibold text-foreground'>Facebook</span>
-        </Button>
+        {[
+          {
+            id: 'google',
+            label: 'Google',
+            icon: FcGoogle,
+            onClick: () => console.log('Google OAuth - Coming soon'),
+          },
+          {
+            id: 'facebook',
+            label: 'Facebook',
+            icon: FaFacebook,
+            iconClass: 'text-blue-500',
+            onClick: () => console.log('Facebook OAuth - Coming soon'),
+          },
+        ].map((provider) => {
+          const Icon = provider.icon
+          return (
+            <Button
+              key={provider.id}
+              type='button'
+              variant='soft'
+              size='default'
+              className='h-11'
+              disabled={isFetching}
+              onClick={provider.onClick}
+              aria-label={`Sign in with ${provider.label}`}
+            >
+              <Icon className={`w-5 h-5 ${provider.iconClass || ''}`} />
+              <span className='font-medium'>{provider.label}</span>
+            </Button>
+          )
+        })}
       </div>
     </div>
   )
