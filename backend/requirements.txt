@@ -43,3 +43,5 @@ langchain-openai
 langchain-core
 langchain-mcp-adapters
 httpx
+boto3
+python-multipart

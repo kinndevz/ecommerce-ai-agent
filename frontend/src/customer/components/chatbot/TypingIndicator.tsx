@@ -1,5 +1,6 @@
 import { Bot } from 'lucide-react'
 import { Avatar, AvatarFallback } from '@/shared/components/ui/avatar'
+import { AiFillTwitch } from 'react-icons/ai'
 
 export const TypingIndicator = () => {
   return (
@@ -7,7 +8,7 @@ export const TypingIndicator = () => {
       {/* AI Avatar */}
       <Avatar className='w-8 h-8 shrink-0'>
         <AvatarFallback className='bg-accent text-accent-foreground'>
-          <Bot className='w-4 h-4' />
+          <AiFillTwitch className='w-4 h-4' />
         </AvatarFallback>
       </Avatar>
 

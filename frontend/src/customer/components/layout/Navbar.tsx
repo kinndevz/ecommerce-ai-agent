@@ -116,7 +116,7 @@ export const Navbar = () => {
             Welcome to BeautyShop!
           </div>
 
-          <div className='flex items-center gap-3'>
+          {/* <div className='flex items-center gap-3'>
             <Link
               to='/login'
               className='text-xs font-medium text-muted-foreground hover:text-foreground transition-colors'
@@ -130,7 +130,7 @@ export const Navbar = () => {
             >
               CART
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
 
