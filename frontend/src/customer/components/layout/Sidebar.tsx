@@ -57,12 +57,12 @@ const formatPrice = (price: number) => {
 export const Sidebar = () => {
   return (
     <aside className='space-y-6'>
-      {/* Editor's Pick - COMPACT */}
-      <Card className='overflow-hidden border-2'>
-        <CardHeader className='pb-3 bg-linear-to-br from-primary/5 to-secondary/5'>
+      {/* Editor's Pick - Enhanced */}
+      <Card className='overflow-hidden border border-border/40 shadow-sm p-0'>
+        <CardHeader className='p-4 pb-3 bg-gradient-to-br from-primary/8 to-primary/5 border-b border-primary/20'>
           <div className='flex items-center gap-2'>
-            <Star className='w-4 h-4 text-amber-500 fill-amber-500' />
-            <CardTitle className='text-lg uppercase tracking-wide'>
+            <Star className='w-4 h-4 text-primary fill-primary' />
+            <CardTitle className='text-base font-bold uppercase tracking-wider'>
               Editor's Pick
             </CardTitle>
           </div>
@@ -70,51 +70,53 @@ export const Sidebar = () => {
             Hand-selected favorites
           </p>
         </CardHeader>
-        <CardContent className='p-3 space-y-3'>
-          {editorsPick.map((product) => (
-            <Link
-              key={product.id}
-              to={`/products/${product.id}`}
-              className='flex gap-3 group'
-            >
-              <div className='w-16 h-16 rounded-lg overflow-hidden bg-muted shrink-0 border'>
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className='w-full h-full object-cover transition-transform group-hover:scale-110'
-                />
-              </div>
-              <div className='flex-1 min-w-0'>
-                <Badge
-                  variant='secondary'
-                  className='text-[10px] mb-1 bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100'
-                >
-                  {product.brand}
-                </Badge>
-                <h4 className='text-xs font-medium line-clamp-2 mb-1 group-hover:text-primary transition-colors'>
-                  {product.name}
-                </h4>
-                <p className='text-sm font-bold text-primary'>
-                  {formatPrice(product.price)}
-                </p>
-              </div>
-            </Link>
-          ))}
+        <CardContent className='p-0'>
+          <div className='divide-y divide-border/30'>
+            {editorsPick.map((product) => (
+              <Link
+                key={product.id}
+                to={`/products/${product.id}`}
+                className='flex gap-3 p-3 group hover:bg-muted/30 transition-colors'
+              >
+                <div className='w-16 h-16 rounded-lg overflow-hidden bg-muted/50 shrink-0 border border-border/40'>
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-110'
+                  />
+                </div>
+                <div className='flex-1 min-w-0 flex flex-col justify-center'>
+                  <Badge
+                    variant='secondary'
+                    className='text-[10px] mb-1 w-fit px-2 py-0.5 bg-primary/10 text-primary border-0'
+                  >
+                    {product.brand}
+                  </Badge>
+                  <h4 className='text-xs font-semibold line-clamp-2 mb-1 group-hover:text-primary transition-colors leading-snug'>
+                    {product.name}
+                  </h4>
+                  <p className='text-sm font-bold text-primary'>
+                    {formatPrice(product.price)}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
         </CardContent>
       </Card>
 
-      {/* Just Arrived - COMPACT */}
-      <Card className='overflow-hidden border-2'>
-        <CardHeader className='pb-3 bg-linear-to-br from-green-500/5 to-emerald-500/5'>
+      {/* Just Arrived - Enhanced */}
+      <Card className='overflow-hidden border border-border/40 shadow-sm p-0'>
+        <CardHeader className='p-4 pb-3 bg-gradient-to-br from-emerald-50/50 to-green-100/30 dark:from-emerald-950/20 dark:to-green-900/10 border-b border-emerald-200/30 dark:border-emerald-800/30'>
           <div className='flex items-center gap-2'>
-            <TrendingUp className='w-4 h-4 text-green-600' />
-            <CardTitle className='text-lg uppercase tracking-wide'>
+            <TrendingUp className='w-4 h-4 text-emerald-600 dark:text-emerald-500' />
+            <CardTitle className='text-base font-bold uppercase tracking-wider'>
               Just Arrived
             </CardTitle>
           </div>
           <p className='text-xs text-muted-foreground mt-1'>Latest additions</p>
         </CardHeader>
-        <CardContent className='p-3'>
+        <CardContent className='p-4'>
           <div className='grid grid-cols-2 gap-3'>
             {newArrivals.map((product) => (
               <Link
@@ -122,19 +124,19 @@ export const Sidebar = () => {
                 to={`/products/${product.id}`}
                 className='group'
               >
-                <div className='relative rounded-lg overflow-hidden bg-muted mb-2 border'>
+                <div className='relative rounded-lg overflow-hidden bg-muted/50 mb-2 border border-border/40'>
                   <AspectRatio ratio={1}>
                     <img
                       src={product.image}
                       alt={product.name}
-                      className='w-full h-full object-cover transition-transform group-hover:scale-110'
+                      className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-110'
                     />
                   </AspectRatio>
-                  <Badge className='absolute top-1.5 right-1.5 text-[10px] bg-green-600 hover:bg-green-700'>
+                  <Badge className='absolute top-2 right-2 text-[10px] px-2 py-0.5 bg-emerald-600 hover:bg-emerald-700 border-0 shadow-md'>
                     NEW
                   </Badge>
                 </div>
-                <p className='text-xs font-medium line-clamp-2 group-hover:text-primary transition-colors'>
+                <p className='text-xs font-semibold line-clamp-2 group-hover:text-primary transition-colors leading-snug'>
                   {product.name}
                 </p>
               </Link>
@@ -143,30 +145,30 @@ export const Sidebar = () => {
         </CardContent>
       </Card>
 
-      {/* Quick Stats */}
-      <Card className='overflow-hidden border-2 bg-linear-to-br from-primary/5 via-secondary/5 to-accent/5'>
-        <CardContent className='p-4'>
-          <div className='grid grid-cols-2 gap-3 text-center'>
-            <div className='space-y-1'>
+      {/* Quick Stats - Enhanced */}
+      <Card className='overflow-hidden border border-border/40 shadow-sm bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5'>
+        <CardContent className='p-5'>
+          <div className='grid grid-cols-2 gap-4 text-center'>
+            <div className='space-y-1.5'>
               <div className='flex items-center justify-center gap-1'>
-                <Star className='w-3 h-3 text-amber-500 fill-amber-500' />
-                <p className='text-xl font-bold'>4.9</p>
+                <Star className='w-3.5 h-3.5 text-amber-500 fill-amber-500' />
+                <p className='text-2xl font-bold'>4.9</p>
               </div>
-              <p className='text-[10px] text-muted-foreground uppercase'>
+              <p className='text-[10px] text-muted-foreground uppercase tracking-wider'>
                 Rating
               </p>
             </div>
-            <div className='space-y-1'>
-              <p className='text-xl font-bold'>10K+</p>
-              <p className='text-[10px] text-muted-foreground uppercase'>
+            <div className='space-y-1.5'>
+              <p className='text-2xl font-bold'>10K+</p>
+              <p className='text-[10px] text-muted-foreground uppercase tracking-wider'>
                 Products
               </p>
             </div>
           </div>
-          <Separator className='my-3' />
+          <Separator className='my-4' />
           <div className='text-center'>
-            <p className='text-xl font-bold'>500+</p>
-            <p className='text-[10px] text-muted-foreground uppercase'>
+            <p className='text-2xl font-bold'>500+</p>
+            <p className='text-[10px] text-muted-foreground uppercase tracking-wider'>
               Brands
             </p>
           </div>

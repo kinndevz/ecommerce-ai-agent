@@ -108,230 +108,237 @@ export const Navbar = () => {
   }
 
   return (
-    <header className='sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60'>
-      {/* Top Bar */}
-      <div className='border-b bg-muted/30'>
-        <div className='max-w-7xl mx-auto px-6 h-9 flex items-center justify-between'>
-          <div className='text-xs text-muted-foreground'>
-            Welcome to BeautyShop!
+    <header className='sticky top-0 z-50 w-full shadow-sm'>
+      {/* Top Bar - Elegant announcement bar */}
+      <div className='bg-linear-to-r from-primary/5 via-primary/10 to-secondary/5 border-b border-border/40'>
+        <div className='max-w-7xl mx-auto px-6 h-10 flex items-center justify-between'>
+          <div className='text-xs font-medium text-foreground/80 tracking-wide'>
+            ✨ Free Shipping on Orders Over $50 | 🎁 New Arrivals Daily
           </div>
 
-          <div className='flex items-center gap-3'>
+          <div className='flex items-center gap-4 text-xs font-medium'>
             <Link
-              to='/login'
-              className='text-xs font-medium text-muted-foreground hover:text-foreground transition-colors'
+              to='/help'
+              className='text-foreground/70 hover:text-primary transition-colors hidden sm:inline'
             >
-              LOG IN
+              Help & Support
             </Link>
-            <Separator orientation='vertical' className='h-3' />
+            <Separator
+              orientation='vertical'
+              className='h-3.5 bg-border/60 hidden sm:block'
+            />
             <Link
-              to='/cart'
-              className='text-xs font-medium text-muted-foreground hover:text-foreground transition-colors'
+              to='/about'
+              className='text-foreground/70 hover:text-primary transition-colors hidden sm:inline'
             >
-              CART
+              About Us
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Main Navbar */}
-      <div className='max-w-7xl mx-auto px-6'>
-        <div className='flex items-center justify-between h-16'>
-          {/* Logo */}
-          <Link to='/' className='flex items-center gap-2'>
-            <div className='w-10 h-10 bg-primary rounded-full flex items-center justify-center'>
-              <span className='text-white font-bold text-xl'>B</span>
-            </div>
-            <span className='font-serif font-bold text-xl hidden sm:inline'>
-              BeautyShop
-            </span>
-          </Link>
-
-          {/* Search Bar - Desktop */}
-          <div className='hidden md:flex flex-1 max-w-2xl mx-8'>
-            <form onSubmit={handleSearch} className='relative w-full'>
-              <Search className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground' />
-              <Input
-                type='search'
-                placeholder='Search products...'
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className='pl-9 pr-4 h-10 w-full'
+      {/* Main Navbar - Clean and professional */}
+      <div className='bg-background/95 backdrop-blur-md border-b border-border/50'>
+        <div className='max-w-7xl mx-auto px-6'>
+          <div className='flex items-center justify-between h-16'>
+            {/* Logo */}
+            <Link to='/' className='flex items-center gap-3'>
+              <img
+                src='/src/assets/company-logo.svg'
+                alt='BeautyShop Logo'
+                className='h-10 w-auto'
               />
-            </form>
-          </div>
+              <span className='font-serif font-bold text-xl hidden sm:inline'>
+                BeautyShop
+              </span>
+            </Link>
 
-          {/* Right Icons */}
-          <div className='flex items-center gap-2'>
-            {/* Theme Toggle */}
-            <Button
-              variant='ghost'
-              size='icon'
-              onClick={toggleTheme}
-              className='hidden sm:flex hover:bg-primary/10'
-            >
-              {theme === 'dark' ? (
-                <Sun className='w-5 h-5' />
+            {/* Search Bar - Desktop */}
+            <div className='hidden md:flex flex-1 max-w-2xl mx-8'>
+              <form onSubmit={handleSearch} className='relative w-full'>
+                <Search className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground' />
+                <Input
+                  type='search'
+                  placeholder='Search products...'
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className='pl-9 pr-4 h-10 w-full'
+                />
+              </form>
+            </div>
+
+            {/* Right Icons */}
+            <div className='flex items-center gap-4'>
+              {/* Theme Toggle */}
+              <Button
+                variant='ghost'
+                size='icon'
+                onClick={toggleTheme}
+                className='hidden sm:flex hover:bg-primary/10 rounded-full'
+              >
+                {theme === 'dark' ? (
+                  <Sun className='w-5 h-5' />
+                ) : (
+                  <Moon className='w-5 h-5' />
+                )}
+              </Button>
+
+              {/* Cart Button - Refined */}
+              <Button
+                variant='soft'
+                size='default'
+                className='relative hover:bg-primary/10 rounded-full px-4 gap-2'
+                onClick={() => navigate('/cart')}
+              >
+                <ShoppingCart className='w-5 h-5' />
+                <span className='hidden sm:inline font-medium'>Cart</span>
+                {cartItemsCount > 0 && (
+                  <Badge className='ml-1 px-2 h-5 flex items-center justify-center text-xs bg-primary text-primary-foreground hover:bg-primary'>
+                    {cartItemsCount}
+                  </Badge>
+                )}
+              </Button>
+
+              {/* User Menu or Sign In - WITH LOADING SKELETON */}
+              {isAuthLoading || isLoading ? (
+                <div className='flex items-center gap-2'>
+                  <Skeleton className='w-24 h-10 rounded-full' />
+                </div>
+              ) : user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant='soft'
+                      className='gap-2.5 h-10 px-4 hover:bg-primary/10 rounded-full'
+                    >
+                      <Avatar className='w-7 h-7'>
+                        <AvatarImage
+                          src={user.avatar || ''}
+                          alt={user.full_name}
+                        />
+                        <AvatarFallback className='bg-primary text-white text-xs'>
+                          {getUserInitials()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className='hidden sm:inline text-sm font-medium'>
+                        {user.full_name}
+                      </span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align='end' className='w-56'>
+                    <DropdownMenuLabel>
+                      <div className='flex flex-col space-y-1'>
+                        <p className='text-sm font-medium leading-none'>
+                          {user.full_name}
+                        </p>
+                        <p className='text-xs leading-none text-muted-foreground'>
+                          {user.email}
+                        </p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => navigate('/profile')}>
+                      <User className='w-4 h-4 mr-2' />
+                      Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/orders')}>
+                      <Package className='w-4 h-4 mr-2' />
+                      Orders
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/wishlist')}>
+                      <Heart className='w-4 h-4 mr-2' />
+                      Wishlist
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/settings')}>
+                      <Settings className='w-4 h-4 mr-2' />
+                      Settings
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={handleLogout}
+                      className='text-destructive focus:text-destructive'
+                    >
+                      <LogOut className='w-4 h-4 mr-2' />
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               ) : (
-                <Moon className='w-5 h-5' />
+                <Button
+                  onClick={() => navigate('/login')}
+                  size='default'
+                  className='animate-in fade-in duration-300 rounded-full px-6 font-medium shadow-sm'
+                >
+                  Sign In
+                </Button>
               )}
-            </Button>
 
-            {/* Cart */}
-            <Button
-              variant='ghost'
-              size='icon'
-              className='relative hover:bg-primary/10'
-              onClick={() => navigate('/cart')}
-            >
-              <ShoppingCart className='w-5 h-5' />
-              {cartItemsCount > 0 && (
-                <Badge className='absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center p-0 text-xs bg-primary hover:bg-primary'>
-                  {cartItemsCount}
-                </Badge>
-              )}
-            </Button>
-
-            {/* User Menu or Sign In - WITH LOADING SKELETON */}
-            {isAuthLoading || isLoading ? (
-              <div className='flex items-center gap-2'>
-                <Skeleton className='w-8 h-8 rounded-full' />
-                <Skeleton className='w-24 h-4 hidden sm:block' />
-              </div>
-            ) : user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+              {/* Mobile Menu */}
+              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                <SheetTrigger asChild>
                   <Button
                     variant='ghost'
-                    className='gap-2 h-10 hover:bg-primary/10'
+                    size='icon'
+                    className='md:hidden hover:bg-primary/10'
                   >
-                    <Avatar className='w-8 h-8'>
-                      <AvatarImage
-                        src={user.avatar || ''}
-                        alt={user.full_name}
-                      />
-                      <AvatarFallback className='bg-primary text-white text-sm'>
-                        {getUserInitials()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className='hidden sm:inline text-sm font-medium'>
-                      {user.full_name}
-                    </span>
+                    <Menu className='w-5 h-5' />
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align='end' className='w-56'>
-                  <DropdownMenuLabel>
-                    <div className='flex flex-col space-y-1'>
-                      <p className='text-sm font-medium leading-none'>
-                        {user.full_name}
-                      </p>
-                      <p className='text-xs leading-none text-muted-foreground'>
-                        {user.email}
-                      </p>
+                </SheetTrigger>
+                <SheetContent side='left' className='w-75 sm:w-100'>
+                  <SheetHeader>
+                    <SheetTitle>Menu</SheetTitle>
+                  </SheetHeader>
+                  <ScrollArea className='h-[calc(100vh-8rem)] mt-6'>
+                    <div className='mb-6'>
+                      <form onSubmit={handleSearch} className='relative'>
+                        <Search className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground' />
+                        <Input
+                          type='search'
+                          placeholder='Search products...'
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className='pl-9'
+                        />
+                      </form>
                     </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate('/profile')}>
-                    <User className='w-4 h-4 mr-2' />
-                    Profile
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/orders')}>
-                    <Package className='w-4 h-4 mr-2' />
-                    Orders
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/wishlist')}>
-                    <Heart className='w-4 h-4 mr-2' />
-                    Wishlist
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/settings')}>
-                    <Settings className='w-4 h-4 mr-2' />
-                    Settings
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={handleLogout}
-                    className='text-destructive focus:text-destructive'
-                  >
-                    <LogOut className='w-4 h-4 mr-2' />
-                    Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Button
-                onClick={() => navigate('/login')}
-                size='sm'
-                className='animate-in fade-in duration-300'
-              >
-                Sign In
-              </Button>
-            )}
-
-            {/* Mobile Menu */}
-            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-              <SheetTrigger asChild>
-                <Button
-                  variant='ghost'
-                  size='icon'
-                  className='md:hidden hover:bg-primary/10'
-                >
-                  <Menu className='w-5 h-5' />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side='left' className='w-75 sm:w-100'>
-                <SheetHeader>
-                  <SheetTitle>Menu</SheetTitle>
-                </SheetHeader>
-                <ScrollArea className='h-[calc(100vh-8rem)] mt-6'>
-                  <div className='mb-6'>
-                    <form onSubmit={handleSearch} className='relative'>
-                      <Search className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground' />
-                      <Input
-                        type='search'
-                        placeholder='Search products...'
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className='pl-9'
-                      />
-                    </form>
-                  </div>
-                  <Separator className='mb-4' />
-                  <nav className='space-y-2'>
-                    {categories.map((category) => (
-                      <Link
-                        key={category.slug}
-                        to={`/categories/${category.slug}`}
-                        className='block py-2 text-sm font-medium hover:text-primary transition-colors'
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        {category.name}
-                      </Link>
-                    ))}
-                  </nav>
-                </ScrollArea>
-              </SheetContent>
-            </Sheet>
+                    <Separator className='mb-4' />
+                    <nav className='space-y-2'>
+                      {categories.map((category) => (
+                        <Link
+                          key={category.slug}
+                          to={`/categories/${category.slug}`}
+                          className='block py-2 text-sm font-medium hover:text-primary transition-colors'
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          {category.name}
+                        </Link>
+                      ))}
+                    </nav>
+                  </ScrollArea>
+                </SheetContent>
+              </Sheet>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Categories Navigation */}
-      <div className='hidden md:block border-t bg-primary text-primary-foreground'>
+      {/* Categories Navigation - Elegant & Professional */}
+      <div className='hidden md:block bg-linear-to-r from-muted/40 via-muted/60 to-muted/40 border-y border-border/30'>
         <div className='max-w-7xl mx-auto px-6'>
           <NavigationMenu className='max-w-full'>
-            <NavigationMenuList className='flex-wrap justify-start gap-0'>
+            <NavigationMenuList className='flex-wrap justify-center gap-2 py-2'>
               {categories.map((category, index) => (
                 <NavigationMenuItem key={category.slug}>
                   <NavigationMenuLink asChild>
                     <Link
                       to={`/categories/${category.slug}`}
                       className={cn(
-                        'inline-flex items-center justify-center px-4 h-11 text-xs font-medium uppercase tracking-wide transition-colors',
-                        'hover:bg-primary-foreground/10',
-                        index === 0 && 'bg-primary-foreground/20 font-semibold'
+                        'inline-flex items-center justify-center px-4 py-2 rounded-full text-[11px] font-semibold uppercase tracking-widest transition-all duration-200',
+                        'text-foreground/70 hover:text-foreground',
+                        'hover:bg-background/80 hover:shadow-sm bg-transparent'
                       )}
                     >
-                      {category.name}
+                      <span className='relative z-10'>{category.name}</span>
                     </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
