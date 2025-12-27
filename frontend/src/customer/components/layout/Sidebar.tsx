@@ -59,7 +59,7 @@ export const Sidebar = () => {
     <aside className='space-y-6'>
       {/* Editor's Pick - Enhanced */}
       <Card className='overflow-hidden border border-border/40 shadow-sm p-0'>
-        <CardHeader className='p-4 pb-3 bg-gradient-to-br from-primary/8 to-primary/5 border-b border-primary/20'>
+        <CardHeader className='p-4 pb-3 bg-linear-to-br from-primary/8 to-primary/5 border-b border-primary/20'>
           <div className='flex items-center gap-2'>
             <Star className='w-4 h-4 text-primary fill-primary' />
             <CardTitle className='text-base font-bold uppercase tracking-wider'>
@@ -107,7 +107,7 @@ export const Sidebar = () => {
 
       {/* Just Arrived - Enhanced */}
       <Card className='overflow-hidden border border-border/40 shadow-sm p-0'>
-        <CardHeader className='p-4 pb-3 bg-gradient-to-br from-emerald-50/50 to-green-100/30 dark:from-emerald-950/20 dark:to-green-900/10 border-b border-emerald-200/30 dark:border-emerald-800/30'>
+        <CardHeader className='p-4 pb-3 bg-linear-to-br from-emerald-50/50 to-green-100/30 dark:from-emerald-950/20 dark:to-green-900/10 border-b border-emerald-200/30 dark:border-emerald-800/30'>
           <div className='flex items-center gap-2'>
             <TrendingUp className='w-4 h-4 text-emerald-600 dark:text-emerald-500' />
             <CardTitle className='text-base font-bold uppercase tracking-wider'>
@@ -146,7 +146,7 @@ export const Sidebar = () => {
       </Card>
 
       {/* Quick Stats - Enhanced */}
-      <Card className='overflow-hidden border border-border/40 shadow-sm bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5'>
+      <Card className='overflow-hidden border border-border/40 shadow-sm bg-linear-to-br from-primary/5 via-secondary/5 to-accent/5'>
         <CardContent className='p-5'>
           <div className='grid grid-cols-2 gap-4 text-center'>
             <div className='space-y-1.5'>
