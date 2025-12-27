@@ -116,7 +116,8 @@ export const Navbar = () => {
             ✨ Free Shipping on Orders Over $50 | 🎁 New Arrivals Daily
           </div>
 
-          <div className='flex items-center gap-4 text-xs font-medium'>
+          {/* <div className='flex items-center gap-3'>
+>>>>>>> lhoang-dev
             <Link
               to='/help'
               className='text-foreground/70 hover:text-primary transition-colors hidden sm:inline'
@@ -133,7 +134,7 @@ export const Navbar = () => {
             >
               About Us
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
 
