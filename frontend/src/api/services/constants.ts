@@ -27,12 +27,21 @@ export const API_ENDPOINT = {
   DELETE_BRAND: (id: string) => `/brands/${id}`,
   TOGGLE_BRAND_STATUS: (id: string) => `/brands/${id}/toggle-status`,
 
+  // User Routes
+  GET_ALL_USERS: '/users',
+  GENERATE_USER: '/users',
+  GET_USERS_STATISTICS: '/users/stats',
+  GET_USER_DETAIL: (id: string) => `/users/${id}`,
+  UPDATE_USER: (id: string) => `/users/${id}`,
+  DELETE_USER: (id: string) => `/users/${id}`,
+  TOGGLE_USER_STATUS: (id: string) => `/users/${id}/toggle-status`,
+
   // 2FA Routes
   SETUP_2FA: '/auth/2fa/setup',
   ENABLE_2FA: '/auth/2fa/enable',
   DISABLE_2FA: '/auth/2fa/disable',
 
-  // User Routes
+  // Account Routes
   PROFILE: '/me',
   UPDATE_PROFILE: '/me',
 
@@ -42,3 +51,16 @@ export const API_ENDPOINT = {
   CHAT_CONVERSATION_DETAIL: (id: string) => `/chat/conversations/${id}`,
   DELETE_CONVERSATION: (id: string) => `/chat/conversations/${id}`,
 } as const
+
+export type HTTPMethod =
+  | 'GET'
+  | 'POST'
+  | 'PUT'
+  | 'DELETE'
+  | 'PATCH'
+  | 'OPTIONS'
+  | 'HEAD'
+
+export type UserStatus = 'ACTIVE' | 'INACTIVE'
+
+export type UserRole = 'ADMIN' | 'CUSTOMER' | 'SELLER'
