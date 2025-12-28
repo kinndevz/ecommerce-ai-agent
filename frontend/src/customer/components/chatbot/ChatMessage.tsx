@@ -48,12 +48,12 @@ export const ChatMessage = ({
   return (
     <div
       className={cn(
-        'flex gap-3 mb-4 animate-in fade-in slide-in-from-bottom duration-300',
+        'flex gap-3 mb-5 animate-in fade-in slide-in-from-bottom-2 duration-400',
         isUser && 'flex-row-reverse'
       )}
     >
       {showAvatar && (
-        <Avatar className='w-8 h-8 shrink-0'>
+        <Avatar className='w-9 h-9 shrink-0 ring-2 ring-background shadow-sm'>
           {isUser ? (
             <>
               <AvatarImage
@@ -82,25 +82,25 @@ export const ChatMessage = ({
       >
         <div
           className={cn(
-            'relative px-4 py-2.5 rounded-2xl shadow-sm',
-            'transition-all duration-200',
+            'relative px-4 py-3 rounded-2xl',
+            'transition-shadow duration-200',
             isUser &&
               cn(
                 'bg-primary text-primary-foreground',
-                'rounded-tr-sm',
+                'rounded-tr-md shadow-sm',
                 'hover:shadow-md'
               ),
             isAI &&
               cn(
                 'bg-muted border border-border',
-                'rounded-tl-sm',
-                'hover:bg-muted/80'
+                'rounded-tl-md shadow-sm',
+                'hover:shadow-md'
               )
           )}
         >
           <p
             className={cn(
-              'text-sm leading-relaxed whitespace-pre-wrap wrap-break-word',
+              'text-sm leading-relaxed whitespace-pre-wrap wrap-break-word font-medium',
               isUser ? 'text-primary-foreground' : 'text-foreground'
             )}
           >
@@ -110,11 +110,11 @@ export const ChatMessage = ({
 
         <div
           className={cn(
-            'flex items-center gap-1 px-2',
+            'flex items-center gap-1.5 px-2',
             isUser && 'flex-row-reverse'
           )}
         >
-          <span className='text-[10px] text-muted-foreground'>
+          <span className='text-[10px] text-muted-foreground/70 font-medium'>
             {formatTime(message.timestamp)}
           </span>
 
@@ -161,9 +161,9 @@ export const TimestampSeparator = ({ timestamp }: TimestampSeparatorProps) => {
   }
 
   return (
-    <div className='flex items-center justify-center my-6 animate-in fade-in duration-500'>
-      <div className='bg-muted/50 border border-border rounded-full px-4 py-1.5 shadow-sm'>
-        <span className='text-xs font-medium text-muted-foreground'>
+    <div className='flex items-center justify-center my-8 animate-in fade-in duration-500'>
+      <div className='bg-muted/60 border border-border/50 rounded-full px-5 py-2 shadow-sm'>
+        <span className='text-xs font-semibold text-muted-foreground/80'>
           {formatDate(timestamp)}
         </span>
       </div>

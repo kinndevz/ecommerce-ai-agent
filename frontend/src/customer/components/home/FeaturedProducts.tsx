@@ -170,9 +170,11 @@ const ProductCard = ({
   return (
     <Card
       className={cn(
-        'group relative overflow-hidden border border-border/40 p-0',
-        'hover:border-primary/20 hover:shadow-lg',
-        'transition-all duration-300 cursor-pointer bg-card',
+        'group relative overflow-hidden border-2 border-border/60 p-0',
+        'hover:border-primary/40 hover:shadow-xl',
+        'transition-all duration-300 cursor-pointer',
+        'bg-card/80 dark:bg-card/50 backdrop-blur-sm',
+        'dark:shadow-[0_0_15px_rgba(0,0,0,0.3)]',
         'animate-in fade-in slide-in-from-bottom duration-700'
       )}
       style={{ animationDelay: `${index * 0.1}s` }}
@@ -180,7 +182,7 @@ const ProductCard = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Image Container - Full Image */}
-      <div className='relative overflow-hidden aspect-[4/5] bg-muted/20'>
+      <div className='relative overflow-hidden aspect-[4/5] bg-muted/30 dark:bg-muted/10'>
         <img
           src={product.image}
           alt={product.name}
@@ -191,7 +193,7 @@ const ProductCard = ({
         />
 
         {/* Subtle Gradient Overlay */}
-        <div className='absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
+        <div className='absolute inset-0 bg-gradient-to-t from-black/30 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
 
         {/* Badges - Refined */}
         <div className='absolute top-3 left-3 flex flex-col gap-2'>
@@ -221,10 +223,10 @@ const ProductCard = ({
           className={cn(
             'absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center',
             'backdrop-blur-md transition-all duration-200 shadow-lg',
-            'hover:scale-110',
+            'hover:scale-110 border',
             isFavorite
-              ? 'bg-red-500 text-white'
-              : 'bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:bg-white/95 dark:hover:bg-gray-800'
+              ? 'bg-red-500 text-white border-red-600'
+              : 'bg-white/95 dark:bg-gray-800/95 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800'
           )}
         >
           <Heart className={cn('w-5 h-5', isFavorite && 'fill-white')} />
@@ -247,7 +249,7 @@ const ProductCard = ({
           <Button
             size='sm'
             variant='soft'
-            className='w-9 h-9 p-0 backdrop-blur-sm bg-white/90 dark:bg-black/60 hover:bg-white dark:hover:bg-black/80 rounded-full'
+            className='w-9 h-9 p-0 backdrop-blur-sm bg-white/95 dark:bg-gray-800/95 hover:bg-white dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full'
           >
             <Eye className='w-4 h-4' />
           </Button>
@@ -255,17 +257,17 @@ const ProductCard = ({
       </div>
 
       {/* Product Info - Enhanced Spacing */}
-      <CardFooter className='flex flex-col items-start gap-2.5 p-4'>
+      <CardFooter className='flex flex-col items-start gap-2.5 p-4 bg-card dark:bg-card/70'>
         {/* Brand */}
         <Badge
           variant='secondary'
-          className='text-xs font-medium px-2.5 py-0.5'
+          className='text-xs font-medium px-2.5 py-0.5 dark:bg-secondary/70 dark:text-secondary-foreground'
         >
           {product.brand}
         </Badge>
 
         {/* Name */}
-        <h3 className='font-semibold text-base leading-snug line-clamp-2 min-h-[2.5rem] group-hover:text-primary transition-colors'>
+        <h3 className='font-semibold text-base leading-snug line-clamp-2 min-h-[2.5rem] group-hover:text-primary transition-colors dark:text-foreground'>
           {product.name}
         </h3>
 

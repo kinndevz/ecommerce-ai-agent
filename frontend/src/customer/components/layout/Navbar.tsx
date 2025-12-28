@@ -48,10 +48,46 @@ export const Navbar = () => {
 
   return (
     <header className='sticky top-0 z-50 w-full shadow-sm'>
-      <div className='bg-linear-to-r from-primary/5 via-primary/10 to-secondary/5 border-b border-border/40'>
-        <div className='max-w-7xl mx-auto px-6 h-10 flex items-center justify-between'>
-          <div className='text-xs font-medium text-foreground/80 tracking-wide'>
-            ✨ Free Shipping on Orders Over $50 | 🎁 New Arrivals Daily
+      <div className='bg-linear-to-r from-primary/5 via-primary/10 to-secondary/5 border-b border-border/40 overflow-hidden relative'>
+        <div className='h-10 flex items-center'>
+          <div className='flex animate-marquee-seamless whitespace-nowrap'>
+            <span className='text-xs font-medium text-foreground/80 tracking-wide px-8'>
+              ✨ Free Shipping on Orders Over $50
+            </span>
+            <span className='text-xs font-medium text-foreground/80 tracking-wide px-8'>
+              🎁 New Arrivals Daily - Shop Fresh Styles
+            </span>
+            <span className='text-xs font-medium text-foreground/80 tracking-wide px-8'>
+              💄 Premium Beauty Products From Top Brands
+            </span>
+            <span className='text-xs font-medium text-foreground/80 tracking-wide px-8'>
+              🌟 Up to 50% Off Selected Items
+            </span>
+            <span className='text-xs font-medium text-foreground/80 tracking-wide px-8'>
+              🎉 Sign Up for Exclusive Member Deals
+            </span>
+            <span className='text-xs font-medium text-foreground/80 tracking-wide px-8'>
+              💝 Beautiful Gift Sets Available Now
+            </span>
+            {/* Duplicate for seamless loop */}
+            <span className='text-xs font-medium text-foreground/80 tracking-wide px-8'>
+              ✨ Free Shipping on Orders Over $50
+            </span>
+            <span className='text-xs font-medium text-foreground/80 tracking-wide px-8'>
+              🎁 New Arrivals Daily - Shop Fresh Styles
+            </span>
+            <span className='text-xs font-medium text-foreground/80 tracking-wide px-8'>
+              💄 Premium Beauty Products From Top Brands
+            </span>
+            <span className='text-xs font-medium text-foreground/80 tracking-wide px-8'>
+              🌟 Up to 50% Off Selected Items
+            </span>
+            <span className='text-xs font-medium text-foreground/80 tracking-wide px-8'>
+              🎉 Sign Up for Exclusive Member Deals
+            </span>
+            <span className='text-xs font-medium text-foreground/80 tracking-wide px-8'>
+              💝 Beautiful Gift Sets Available Now
+            </span>
           </div>
         </div>
       </div>

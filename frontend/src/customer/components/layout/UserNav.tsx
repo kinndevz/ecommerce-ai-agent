@@ -69,43 +69,80 @@ export const UserNav = ({ user, isLoading, onLogout }: UserNavProps) => {
           </span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align='end' className='w-56'>
-        <DropdownMenuLabel>
-          <div className='flex flex-col space-y-1'>
-            <p className='text-sm font-medium leading-none'>{user.full_name}</p>
-            <p className='text-xs leading-none text-muted-foreground'>
-              {user.email}
-            </p>
+      <DropdownMenuContent align='end' className='w-64 p-2'>
+        <DropdownMenuLabel className='p-3'>
+          <div className='flex items-center gap-3'>
+            <Avatar className='w-10 h-10 ring-2 ring-primary/10'>
+              <AvatarImage src={user.avatar || ''} alt={user.full_name} />
+              <AvatarFallback className='bg-gradient-to-br from-primary to-primary/80 text-white text-sm font-semibold'>
+                {getUserInitials()}
+              </AvatarFallback>
+            </Avatar>
+            <div className='flex flex-col space-y-1 flex-1 min-w-0'>
+              <p className='text-sm font-semibold leading-none truncate'>
+                {user.full_name}
+              </p>
+              <p className='text-xs leading-none text-muted-foreground truncate'>
+                {user.email}
+              </p>
+            </div>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => navigate('/profile')}>
-          <User className='w-4 h-4 mr-2' />
-          Profile
+        <DropdownMenuSeparator className='my-2' />
+        <DropdownMenuItem
+          onClick={() => navigate('/profile')}
+          className='gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all focus:bg-blue-500/15 dark:focus:bg-blue-900/40 hover:scale-[1.02] dark:focus:text-white'
+        >
+          <div className='w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center'>
+            <User className='w-4 h-4 text-blue-600 dark:text-blue-400' />
+          </div>
+          <span className='font-medium'>Profile</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => navigate('/orders')}>
-          <Package className='w-4 h-4 mr-2' />
-          Orders
+        <DropdownMenuItem
+          onClick={() => navigate('/orders')}
+          className='gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all focus:bg-purple-500/15 dark:focus:bg-purple-900/40 hover:scale-[1.02] dark:focus:text-white'
+        >
+          <div className='w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center'>
+            <Package className='w-4 h-4 text-purple-600 dark:text-purple-400' />
+          </div>
+          <span className='font-medium'>Orders</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => navigate('/wishlist')}>
-          <Heart className='w-4 h-4 mr-2' />
-          Wishlist
+        <DropdownMenuItem
+          onClick={() => navigate('/wishlist')}
+          className='gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all focus:bg-pink-500/15 dark:focus:bg-pink-900/40 hover:scale-[1.02] dark:focus:text-white'
+        >
+          <div className='w-8 h-8 rounded-lg bg-pink-500/10 flex items-center justify-center'>
+            <Heart className='w-4 h-4 text-pink-600 dark:text-pink-400' />
+          </div>
+          <span className='font-medium'>Wishlist</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => navigate('/conversations')}>
-          <Bot className='w-4 h-4 mr-2' />
-          AI Agent
+        <DropdownMenuItem
+          onClick={() => navigate('/conversations')}
+          className='gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all focus:bg-green-500/15 dark:focus:bg-green-900/40 hover:scale-[1.02] dark:focus:text-white'
+        >
+          <div className='w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center'>
+            <Bot className='w-4 h-4 text-green-600 dark:text-green-400' />
+          </div>
+          <span className='font-medium'>AI Agent</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => navigate('/settings')}>
-          <Settings className='w-4 h-4 mr-2' />
-          Settings
+        <DropdownMenuItem
+          onClick={() => navigate('/settings')}
+          className='gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all focus:bg-orange-500/15 dark:focus:bg-orange-900/40 hover:scale-[1.02] dark:focus:text-white'
+        >
+          <div className='w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center'>
+            <Settings className='w-4 h-4 text-orange-600 dark:text-orange-400' />
+          </div>
+          <span className='font-medium'>Settings</span>
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className='my-2' />
         <DropdownMenuItem
           onClick={onLogout}
-          className='text-destructive focus:text-destructive'
+          className='gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all text-red-600 dark:text-red-400 focus:bg-red-500/15 hover:scale-[1.02] dark:focus:bg-red-900/40 dark:focus:text-white'
         >
-          <LogOut className='w-4 h-4 mr-2' />
-          Logout
+          <div className='w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center'>
+            <LogOut className='w-4 h-4 text-red-600 dark:text-red-400' />
+          </div>
+          <span className='font-medium'>Logout</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
