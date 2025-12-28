@@ -1,5 +1,9 @@
 import { Check, CheckCheck } from 'lucide-react'
-import { Avatar, AvatarFallback } from '@/shared/components/ui/avatar'
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@/shared/components/ui/avatar'
 import { cn } from '@/lib/utils'
 import { AiFillTwitch } from 'react-icons/ai'
 import { FaUserGraduate } from 'react-icons/fa'
@@ -8,7 +12,7 @@ export interface Message {
   id: string
   content: string
   sender: 'user' | 'ai'
-  timestamp: Date
+  timestamp: Date | string
   status?: 'sending' | 'sent' | 'read'
 }
 
@@ -16,21 +20,29 @@ interface ChatMessageProps {
   message: Message
   showAvatar?: boolean
   showTimestamp?: boolean
+  userAvatar?: string | null
 }
 
 export const ChatMessage = ({
   message,
   showAvatar = true,
   showTimestamp = false,
+  userAvatar,
 }: ChatMessageProps) => {
   const isUser = message.sender === 'user'
   const isAI = message.sender === 'ai'
 
-  const formatTime = (date: Date) => {
-    return new Intl.DateTimeFormat('vi-VN', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }).format(date)
+  const formatTime = (dateInput: Date | string) => {
+    try {
+      const date = new Date(dateInput)
+      return new Intl.DateTimeFormat('vi-VN', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      }).format(date)
+    } catch (e) {
+      return ''
+    }
   }
 
   return (
@@ -40,13 +52,19 @@ export const ChatMessage = ({
         isUser && 'flex-row-reverse'
       )}
     >
-      {/* Avatar */}
       {showAvatar && (
         <Avatar className='w-8 h-8 shrink-0'>
           {isUser ? (
-            <AvatarFallback className='bg-primary text-primary-foreground'>
-              <FaUserGraduate className='w-4 h-4' />
-            </AvatarFallback>
+            <>
+              <AvatarImage
+                src={userAvatar || undefined}
+                alt='User Avatar'
+                className='object-cover'
+              />
+              <AvatarFallback className='bg-primary text-primary-foreground'>
+                <FaUserGraduate className='w-4 h-4' />
+              </AvatarFallback>
+            </>
           ) : (
             <AvatarFallback className='bg-accent text-accent-foreground'>
               <AiFillTwitch className='w-4 h-4' />
@@ -55,7 +73,6 @@ export const ChatMessage = ({
         </Avatar>
       )}
 
-      {/* Message Bubble */}
       <div
         className={cn(
           'flex flex-col gap-1 max-w-[75%]',
@@ -63,7 +80,6 @@ export const ChatMessage = ({
           !showAvatar && (isUser ? 'mr-11' : 'ml-11')
         )}
       >
-        {/* Bubble */}
         <div
           className={cn(
             'relative px-4 py-2.5 rounded-2xl shadow-sm',
@@ -82,7 +98,6 @@ export const ChatMessage = ({
               )
           )}
         >
-          {/* Content */}
           <p
             className={cn(
               'text-sm leading-relaxed whitespace-pre-wrap wrap-break-word',
@@ -93,7 +108,6 @@ export const ChatMessage = ({
           </p>
         </div>
 
-        {/* Timestamp & Status */}
         <div
           className={cn(
             'flex items-center gap-1 px-2',
@@ -104,7 +118,6 @@ export const ChatMessage = ({
             {formatTime(message.timestamp)}
           </span>
 
-          {/* Message Status (for user messages) */}
           {isUser && message.status && (
             <div className='text-muted-foreground'>
               {message.status === 'sending' && <Check className='w-3 h-3' />}
@@ -120,13 +133,13 @@ export const ChatMessage = ({
   )
 }
 
-// Timestamp Separator Component
 interface TimestampSeparatorProps {
-  timestamp: Date
+  timestamp: Date | string
 }
 
 export const TimestampSeparator = ({ timestamp }: TimestampSeparatorProps) => {
-  const formatDate = (date: Date) => {
+  const formatDate = (dateInput: Date | string) => {
+    const date = new Date(dateInput)
     const today = new Date()
     const yesterday = new Date(today)
     yesterday.setDate(yesterday.getDate() - 1)

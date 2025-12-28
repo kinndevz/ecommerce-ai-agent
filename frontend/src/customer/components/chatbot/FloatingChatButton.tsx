@@ -1,9 +1,9 @@
-import { useState } from 'react'
 import { MessageCircle } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import { Badge } from '@/shared/components/ui/badge'
 import { ChatInterface } from './ChatInterface'
 import { cn } from '@/lib/utils'
+import { useChatStore } from '@/stores/useChatStore'
 
 interface FloatingChatButtonProps {
   unreadCount?: number
@@ -12,14 +12,12 @@ interface FloatingChatButtonProps {
 export const FloatingChatButton = ({
   unreadCount = 0,
 }: FloatingChatButtonProps) => {
-  const [isOpen, setIsOpen] = useState(false)
+  const { isOpen, setIsOpen } = useChatStore()
 
   return (
     <>
-      {/* Chat Interface */}
-      {isOpen && <ChatInterface onClose={() => setIsOpen(false)} />}
+      {isOpen && <ChatInterface />}
 
-      {/* Floating Button */}
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
@@ -32,17 +30,14 @@ export const FloatingChatButton = ({
             'group'
           )}
         >
-          {/* Icon */}
           <MessageCircle className='w-6 h-6 text-primary-foreground transition-transform group-hover:scale-110' />
 
-          {/* Unread Badge */}
           {unreadCount > 0 && (
-            <Badge className='absolute -top-1 -right-1 h-6 min-w-6 flex items-center justify-center bg-destructive hover:bg-destructive text-destructive-foreground border-2 border-background shadow-lg animate-pulse'>
+            <Badge className='absolute -top-1 -right-1 h-6 min-w-6 flex items-center justify-center bg-destructive text-destructive-foreground border-2 border-background shadow-lg animate-pulse'>
               {unreadCount > 99 ? '99+' : unreadCount}
             </Badge>
           )}
 
-          {/* Pulse Ring */}
           <span className='absolute inset-0 rounded-full bg-primary opacity-75 animate-ping' />
         </Button>
       )}

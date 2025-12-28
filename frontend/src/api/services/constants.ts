@@ -15,4 +15,10 @@ export const API_ENDPOINT = {
   // User Routes
   PROFILE: '/me',
   UPDATE_PROFILE: '/me',
+
+  // CHAT ENDPOINTS
+  CHAT: '/chat',
+  CHAT_CONVERSATIONS: '/chat/conversations',
+  CHAT_CONVERSATION_DETAIL: (id: string) => `/chat/conversations/${id}`,
+  DELETE_CONVERSATION: (id: string) => `/chat/conversations/${id}`,
 } as const

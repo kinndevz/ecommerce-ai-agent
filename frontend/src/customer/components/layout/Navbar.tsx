@@ -47,6 +47,7 @@ import {
 import { ScrollArea } from '@/shared/components/ui/scroll-area'
 import { Skeleton } from '@/shared/components/ui/skeleton'
 import { cn } from '@/lib/utils'
+import { useChatStore } from '@/stores/useChatStore'
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('')
@@ -55,6 +56,7 @@ export const Navbar = () => {
   const { user, logout, isLoading } = useAuth()
   const { theme, setTheme } = useTheme()
   const navigate = useNavigate()
+  const resetChat = useChatStore((state) => state.reset)
 
   // Prevent flash of "Sign In" button
   useEffect(() => {
@@ -88,6 +90,7 @@ export const Navbar = () => {
 
   const handleLogout = async () => {
     await logout()
+    resetChat()
     navigate('/login')
   }
 

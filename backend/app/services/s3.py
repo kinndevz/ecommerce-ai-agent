@@ -18,7 +18,7 @@ class S3Service:
             region_name=settings.S3_REGION,
             aws_access_key_id=settings.S3_ACCESS_KEY,
             aws_secret_access_key=settings.S3_SECRET_KEY,
-            config=Config(signature_version='s3v4')
+            config=Config(signature_version='s3v4'),
         )
         self.bucket_name = settings.S3_BUCKET_NAME
 
@@ -65,7 +65,6 @@ class S3Service:
     ) -> str:
         """
         Create presigned URL for client-side upload
-        Equivalent to createPresignedUrlWithClient in NestJS
 
         Args:
             filename: S3 key
