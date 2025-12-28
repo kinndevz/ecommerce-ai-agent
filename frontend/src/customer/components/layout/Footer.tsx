@@ -10,9 +10,7 @@ export const Footer = () => {
   return (
     <footer className='bg-muted/30 border-t'>
       <div className='max-w-7xl mx-auto px-6'>
-        {/* Main Footer */}
         <div className='py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8'>
-          {/* Company Info */}
           <div>
             <h3 className='font-serif font-bold text-lg mb-4'>BeautyShop</h3>
             <p className='text-sm text-muted-foreground mb-4'>
@@ -78,7 +76,6 @@ export const Footer = () => {
             </div>
           </div>
 
-          {/* Shop */}
           <div>
             <h4 className='font-semibold mb-4 uppercase tracking-wide text-sm'>
               Shop
@@ -127,7 +124,6 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Customer Service */}
           <div>
             <h4 className='font-semibold mb-4 uppercase tracking-wide text-sm'>
               Customer Service
@@ -176,7 +172,6 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Newsletter */}
           <div>
             <h4 className='font-semibold mb-4 uppercase tracking-wide text-sm'>
               Newsletter
@@ -195,7 +190,6 @@ export const Footer = () => {
 
         <Separator />
 
-        {/* Bottom Footer */}
         <div className='py-6'>
           <div className='flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground'>
             <p>© {currentYear} BeautyShop. All rights reserved.</p>

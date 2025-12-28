@@ -7,6 +7,26 @@ export const API_ENDPOINT = {
   FORGOT_PASSWORD: '/auth/forgot-password',
   SEND_OTP: '/auth/otp',
 
+  // Category Routes
+  GET_ALL_CATEGORIES: '/categories',
+  GET_CATEGORY_DETAIL: (id: string) => `/categories/${id}`,
+  GET_CATEGORY_TREE: '/categories/tree',
+  GET_CATEGORY_STATISTICS: '/categories/stats',
+  GENERATE_CATEGORY: '/categories',
+  UPDATE_CATEGORY: (id: string) => `/categories/${id}`,
+  DELETE_CATEGORY: (id: string) => `/categories/${id}`,
+  TOGGLE_CATEGORY_STATUS: (id: string) => `/categories/${id}/toggle-status`,
+  MOVE_CATEGORY: (id: string) => `/categories/${id}/move`,
+
+  // Brand Routes
+  GET_ALL_BRANDS: '/brands',
+  GET_BRAND_DETAIL: (id: string) => `/brands/${id}`,
+  GET_BRAND_STATISTICS: '/brands/stats',
+  GENERATE_BRAND: '/brands',
+  UPDATE_BRAND: (id: string) => `/brands/${id}`,
+  DELETE_BRAND: (id: string) => `/brands/${id}`,
+  TOGGLE_BRAND_STATUS: (id: string) => `/brands/${id}/toggle-status`,
+
   // 2FA Routes
   SETUP_2FA: '/auth/2fa/setup',
   ENABLE_2FA: '/auth/2fa/enable',
