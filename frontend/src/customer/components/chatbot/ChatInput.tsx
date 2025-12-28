@@ -50,14 +50,14 @@ export const ChatInput = ({
   return (
     <form
       onSubmit={handleSubmit}
-      className='border-t border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60'
+      className='border-t border-border bg-background'
     >
       <div className='max-w-4xl mx-auto p-4'>
         <div
           className={cn(
-            'flex items-end gap-2 p-2 rounded-2xl border-2 border-border transition-all duration-200',
-            'bg-muted/30',
-            'focus-within:border-primary focus-within:bg-background focus-within:shadow-lg focus-within:shadow-primary/10'
+            'flex items-end gap-2.5 p-3 rounded-2xl border border-border transition-colors duration-200',
+            'bg-muted/40',
+            'focus-within:border-primary focus-within:bg-background'
           )}
         >
           {/* Attachment Button */}
@@ -65,10 +65,10 @@ export const ChatInput = ({
             type='button'
             variant='ghost'
             size='icon'
-            className='h-9 w-9 shrink-0 hover:bg-accent hover:text-accent-foreground'
+            className='h-10 w-10 shrink-0 hover:bg-accent/50 hover:text-accent-foreground transition-all hover:scale-110'
             disabled={disabled}
           >
-            <Paperclip className='w-4 h-4' />
+            <Paperclip className='w-5 h-5' />
           </Button>
 
           {/* Textarea */}
@@ -82,8 +82,8 @@ export const ChatInput = ({
             className={cn(
               'min-h-10 bg-transparent! border-0 shadow-none max-h-50 resize-none',
               'border-0 focus-visible:ring-0 focus-visible:ring-offset-0',
-              'px-0 py-2',
-              'placeholder:text-muted-foreground/50'
+              'px-0 py-2.5 text-[15px]',
+              'placeholder:text-muted-foreground/60 placeholder:font-normal'
             )}
             rows={1}
           />
@@ -93,10 +93,10 @@ export const ChatInput = ({
             type='button'
             variant='ghost'
             size='icon'
-            className='h-9 w-9 shrink-0 hover:bg-accent hover:text-accent-foreground'
+            className='h-10 w-10 shrink-0 hover:bg-accent/50 hover:text-accent-foreground transition-all hover:scale-110'
             disabled={disabled}
           >
-            <Smile className='w-4 h-4' />
+            <Smile className='w-5 h-5' />
           </Button>
 
           {/* Send Button */}
@@ -105,19 +105,19 @@ export const ChatInput = ({
             size='icon'
             disabled={disabled || !message.trim()}
             className={cn(
-              'h-9 w-9 shrink-0 rounded-xl transition-all duration-200',
-              'hover:scale-110',
+              'h-10 w-10 shrink-0 rounded-xl transition-all duration-200',
+              'hover:scale-105 active:scale-95',
               message.trim()
-                ? 'bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20'
-                : 'bg-muted text-muted-foreground'
+                ? 'bg-primary hover:bg-primary/90 shadow-md'
+                : 'bg-muted text-muted-foreground cursor-not-allowed'
             )}
           >
-            <Send className='w-4 h-4' />
+            <Send className='w-5 h-5' />
           </Button>
         </div>
 
         {/* Helper Text */}
-        <p className='text-[10px] text-muted-foreground text-center mt-2'>
+        <p className='text-[11px] text-muted-foreground/60 text-center mt-2.5 font-medium'>
           Press Enter to send, Shift+Enter for new line
         </p>
       </div>

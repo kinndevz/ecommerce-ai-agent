@@ -22,23 +22,24 @@ export const FloatingChatButton = ({
         <Button
           onClick={() => setIsOpen(true)}
           className={cn(
-            'fixed bottom-4 right-4 z-50',
-            'h-14 w-14 rounded-full shadow-2xl',
+            'fixed bottom-6 right-6 z-50',
+            'h-16 w-16 rounded-full shadow-2xl',
             'bg-primary hover:bg-primary/90',
             'transition-all duration-300',
-            'hover:scale-110',
-            'group'
+            'hover:scale-110 active:scale-95',
+            'group',
+            'ring-4 ring-primary/10'
           )}
         >
-          <MessageCircle className='w-6 h-6 text-primary-foreground transition-transform group-hover:scale-110' />
+          <MessageCircle className='w-7 h-7 text-primary-foreground transition-transform group-hover:scale-110' />
 
           {unreadCount > 0 && (
-            <Badge className='absolute -top-1 -right-1 h-6 min-w-6 flex items-center justify-center bg-destructive text-destructive-foreground border-2 border-background shadow-lg animate-pulse'>
+            <Badge className='absolute -top-2 -right-2 h-7 min-w-7 flex items-center justify-center bg-destructive text-destructive-foreground border-2 border-background shadow-xl animate-pulse font-bold text-xs'>
               {unreadCount > 99 ? '99+' : unreadCount}
             </Badge>
           )}
 
-          <span className='absolute inset-0 rounded-full bg-primary opacity-75 animate-ping' />
+          <span className='absolute inset-0 rounded-full bg-primary opacity-60 animate-ping [animation-duration:2s]' />
         </Button>
       )}
     </>
