@@ -80,6 +80,7 @@ Help customers find products, verify prices, and answer questions using the avai
 
                     if isinstance(content, list) and len(content) > 0:
                         text_content = content[0].get('text', '')
+                        print(f"DEBUG TOOL RESPONSE: {text_content[:1000]}...")
                         data = json.loads(text_content)
                         products = data.get('products', [])
 

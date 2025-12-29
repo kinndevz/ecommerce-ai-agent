@@ -2,7 +2,7 @@
 Chat service with single-agent LangGraph workflow
 """
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 from langchain_core.messages import HumanMessage, AIMessage
 from app.agents.interceptors import UserContext
@@ -52,7 +52,8 @@ class ChatService:
                 id=str(uuid.uuid4()),
                 user_id=user_id,
                 thread_id=f"thread_{uuid.uuid4().hex[:16]}",
-                title=message_content[:100]
+                title=message_content[:100],
+                created_at=datetime.now(timezone.utc)
             )
             db.add(conversation)
             db.flush()
@@ -62,7 +63,8 @@ class ChatService:
             id=str(uuid.uuid4()),
             conversation_id=conversation.id,
             role="user",
-            content=message_content
+            content=message_content,
+            created_at=datetime.now(timezone.utc)
         )
         db.add(user_message)
         db.commit()
@@ -134,7 +136,8 @@ class ChatService:
             content=ai_response,
             message_metadata={
                 "loop_count": final_state.get("loop_count", 0) if 'final_state' in locals() else 0
-            }
+            },
+            created_at=datetime.now(timezone.utc)
         )
         db.add(ai_message)
         db.commit()

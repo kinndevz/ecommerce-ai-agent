@@ -14,7 +14,8 @@ def sync_all_products():
         products = db.query(Product).options(
             joinedload(Product.brand),
             joinedload(Product.category),
-            joinedload(Product.tags)
+            joinedload(Product.tags),
+            joinedload(Product.images)
         ).all()
 
         count = 0

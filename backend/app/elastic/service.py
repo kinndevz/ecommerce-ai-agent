@@ -4,12 +4,22 @@ from app.elastic.config import es_client, PRODUCT_INDEX
 
 def product_to_doc(p: Product):
     """Convert SQLAlchemy Model -> ES Dict"""
+
+    primary_image_url = ""
+    if p.images:
+        primary_img = next((img for img in p.images if img.is_primary), None)
+        if primary_img:
+            primary_image_url = primary_img.image_url
+        else:
+            primary_image_url = p.images[0].image_url
+
     return {
         "id": str(p.id),
         "name": p.name,
         "slug": p.slug,
         "price": float(p.price),
         "stock_quantity": p.stock_quantity,
+        "product_image": primary_image_url,
         "is_available": p.is_available,
         "brand_name": p.brand.name if p.brand else "",
         "category_name": p.category.name if p.category else "",

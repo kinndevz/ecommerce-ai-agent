@@ -32,6 +32,7 @@ def create_product_index():
                         "slug": {"type": "keyword"},
                         "price": {"type": "double"},
                         "stock_quantity": {"type": "integer"},
+                        "product_image": {"type": "text"},
                         "is_available": {"type": "boolean"},
                         "brand_name": {"type": "text"},
                         "category_name": {"type": "text"},

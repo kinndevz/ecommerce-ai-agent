@@ -7,7 +7,7 @@ import {
 import { cn } from '@/lib/utils'
 import { AiFillTwitch } from 'react-icons/ai'
 import { FaUserGraduate } from 'react-icons/fa'
-
+import DOMPurify from 'dompurify'
 export interface Message {
   id: string
   content: string
@@ -45,6 +45,38 @@ export const ChatMessage = ({
     }
   }
 
+  const renderContent = () => {
+    if (isUser) {
+      return (
+        <p
+          className={cn(
+            'text-sm leading-relaxed whitespace-pre-wrap wrap-break-word font-medium',
+            'text-primary-foreground'
+          )}
+        >
+          {message.content}
+        </p>
+      )
+    }
+
+    const cleanHtml = DOMPurify.sanitize(message.content, {
+      ADD_ATTR: ['target', 'class', 'src', 'alt', 'loading'],
+      ADD_TAGS: ['img', 'div', 'span', 'p', 'h4', 'ul', 'li', 'b', 'strong'],
+    })
+
+    return (
+      <div
+        className={cn(
+          'text-sm text-foreground leading-relaxed',
+          '[&_ul]:list-disc [&_ul]:pl-4 [&_ol]:list-decimal [&_ol]:pl-4',
+          '[&_a]:text-primary [&_a]:underline',
+          '[&_b]:font-bold [&_strong]:font-bold'
+        )}
+        dangerouslySetInnerHTML={{ __html: cleanHtml }}
+      />
+    )
+  }
+
   return (
     <div
       className={cn(
@@ -75,7 +107,8 @@ export const ChatMessage = ({
 
       <div
         className={cn(
-          'flex flex-col gap-1 max-w-[75%]',
+          'flex flex-col gap-1',
+          isAI ? 'max-w-[85%]' : 'max-w-[75%]',
           isUser && 'items-end',
           !showAvatar && (isUser ? 'mr-11' : 'ml-11')
         )}
@@ -92,20 +125,14 @@ export const ChatMessage = ({
               ),
             isAI &&
               cn(
-                'bg-muted border border-border',
+                'bg-background border border-border',
                 'rounded-tl-md shadow-sm',
-                'hover:shadow-md'
+                'hover:shadow-md',
+                'overflow-hidden'
               )
           )}
         >
-          <p
-            className={cn(
-              'text-sm leading-relaxed whitespace-pre-wrap wrap-break-word font-medium',
-              isUser ? 'text-primary-foreground' : 'text-foreground'
-            )}
-          >
-            {message.content}
-          </p>
+          {renderContent()}
         </div>
 
         <div
@@ -139,24 +166,28 @@ interface TimestampSeparatorProps {
 
 export const TimestampSeparator = ({ timestamp }: TimestampSeparatorProps) => {
   const formatDate = (dateInput: Date | string) => {
-    const date = new Date(dateInput)
-    const today = new Date()
-    const yesterday = new Date(today)
-    yesterday.setDate(yesterday.getDate() - 1)
+    try {
+      const date = new Date(dateInput)
+      const today = new Date()
+      const yesterday = new Date(today)
+      yesterday.setDate(yesterday.getDate() - 1)
 
-    const isToday = date.toDateString() === today.toDateString()
-    const isYesterday = date.toDateString() === yesterday.toDateString()
+      const isToday = date.toDateString() === today.toDateString()
+      const isYesterday = date.toDateString() === yesterday.toDateString()
 
-    if (isToday) {
-      return 'Hôm nay'
-    } else if (isYesterday) {
-      return 'Hôm qua'
-    } else {
-      return new Intl.DateTimeFormat('vi-VN', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-      }).format(date)
+      if (isToday) {
+        return 'Hôm nay'
+      } else if (isYesterday) {
+        return 'Hôm qua'
+      } else {
+        return new Intl.DateTimeFormat('vi-VN', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+        }).format(date)
+      }
+    } catch (e) {
+      return ''
     }
   }
 

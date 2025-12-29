@@ -59,7 +59,9 @@ class CartService:
         if not cart:
             cart = Cart(
                 id=str(uuid.uuid4()),
-                user_id=user_id
+                user_id=user_id,
+                created_at=datetime.now(timezone.utc),
+                updated_at=datetime.now(timezone.utc)
             )
             db.add(cart)
             db.commit()
@@ -152,7 +154,9 @@ class CartService:
                 product_id=product_id,
                 variant_id=variant_id,
                 quantity=quantity,
-                price=price
+                price=price,
+                created_at=datetime.now(timezone.utc),
+                updated_at=datetime.now(timezone.utc)
             )
 
             db.add(cart_item)

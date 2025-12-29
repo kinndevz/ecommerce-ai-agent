@@ -33,7 +33,7 @@ const BaseProductFields = {
   short_description: z.string().nullable().optional(),
   rating_average: z.number().nullable().optional(),
   review_count: z.number().optional(),
-  primary_image: z.string().optional(),
+  product_image: z.string().optional(),
 };
 
 // --- 2. Sub-schemas (Cho loại Rich Product) ---

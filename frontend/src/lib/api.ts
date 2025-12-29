@@ -8,7 +8,6 @@ import { API_ENDPOINT } from '@/api/services/constants'
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URLL || 'http://localhost:8000',
-  timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
   },

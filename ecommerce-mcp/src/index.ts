@@ -9,6 +9,9 @@ import {
   RichProductListOutput,
 } from "./types";
 
+// const BACKEND_URL = "https://ecommerce-ai-agent-b2lc.onrender.com";
+const BACKEND_URL = "https://cloudy-toe-mixed-healing.trycloudflare.com";
+
 export class MyMCP extends McpAgent {
   server = new McpServer({
     name: "Ecommerce MCP",
@@ -53,16 +56,13 @@ export class MyMCP extends McpAgent {
             Object.entries(requestParams).filter(([_, v]) => v != null)
           );
 
-          const response = await axios.get(
-            "https://ecommerce-ai-agent-b2lc.onrender.com/products/search",
-            {
-              params: cleanParams,
-              headers: {
-                "Content-Type": "application/json",
-              },
-              timeout: 5000,
-            }
-          );
+          const response = await axios.get(`${BACKEND_URL}/products/search`, {
+            params: cleanParams,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            timeout: 5000,
+          });
 
           const apiResponse = response.data;
 
@@ -125,7 +125,7 @@ export class MyMCP extends McpAgent {
           );
 
           const response = await axios.get(
-            "https://ecommerce-ai-agent-b2lc.onrender.com/products/new-arrivals",
+            `${BACKEND_URL}/products/new-arrivals`,
             {
               params: {
                 days: args.days,
@@ -222,7 +222,7 @@ export class MyMCP extends McpAgent {
 
           // Gọi Backend
           const response = await axios.post(
-            "https://conducted-father-caught-destinations.trycloudflare.com/cart/items",
+            `${BACKEND_URL}/cart/items`,
             {
               product_id: args.product_id,
               variant_id: args.variant_id,
@@ -237,10 +237,20 @@ export class MyMCP extends McpAgent {
           );
 
           const apiResponse = response.data;
+
+          const actionResult = {
+            status: "success",
+            added_item: {
+              product_id: args.product_id,
+              variant_id: args.variant_id,
+              quantity: args.quantity,
+            },
+            current_cart_state: apiResponse.data,
+          };
           const cleanData = CartAPIResponse.parse(apiResponse);
           return {
             content: [
-              { type: "text", text: JSON.stringify(apiResponse.data, null, 2) },
+              { type: "text", text: JSON.stringify(actionResult, null, 2) },
             ],
             structuredContent: cleanData,
           };

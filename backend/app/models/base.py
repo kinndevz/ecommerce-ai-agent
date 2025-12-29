@@ -1,12 +1,13 @@
 from sqlalchemy import Column, String, DateTime
 from datetime import datetime, timezone
+from sqlalchemy.sql import func
 
 
 class TimestampMixin:
     """Add created_at and updated_at timestamps"""
-    created_at = Column(DateTime, default=datetime.now(timezone.utc))
-    updated_at = Column(DateTime, default=datetime.now(timezone.utc),
-                        onupdate=datetime.now(timezone.utc))
+    created_at = Column(DateTime, server_default=func.now())
+    updated_at = Column(DateTime, server_default=func.now(),
+                        onupdate=func.now())
 
 
 class SoftDeleteMixin:

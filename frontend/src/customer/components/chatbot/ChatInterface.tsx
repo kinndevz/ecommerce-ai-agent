@@ -58,13 +58,25 @@ export const ChatInterface = () => {
   }, [currentConversation?.messages, isTyping, isMinimized, isInitializing])
 
   const mapApiMessagesToUi = (apiMessages: MessageResponse[]): Message[] => {
-    return apiMessages.map((msg) => ({
-      id: msg.id,
-      content: msg.content,
-      sender: msg.role === 'user' ? 'user' : 'ai',
-      timestamp: new Date(msg.created_at),
-      status: 'read',
-    }))
+    return apiMessages.map((msg) => {
+      let dateObj = new Date()
+      if (msg.created_at) {
+        const timeString =
+          typeof msg.created_at === 'string' && !msg.created_at.endsWith('Z')
+            ? `${msg.created_at}Z`
+            : msg.created_at
+
+        dateObj = new Date(timeString)
+      }
+
+      return {
+        id: msg.id,
+        content: msg.content,
+        sender: msg.role === 'user' ? 'user' : 'ai',
+        timestamp: dateObj,
+        status: 'read',
+      }
+    })
   }
 
   const handleSendMessage = async (content: string) => {
@@ -100,7 +112,7 @@ export const ChatInterface = () => {
         'bg-background border border-border rounded-2xl',
         'shadow-xl',
         'overflow-hidden',
-        isMinimized ? 'h-[66px]' : 'h-[600px]'
+        isMinimized ? 'h-16.5' : 'h-150'
       )}
       style={{
         right: 'calc(1.5rem + var(--removed-body-scroll-bar-size, 0px))',
