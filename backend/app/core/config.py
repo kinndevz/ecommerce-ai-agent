@@ -1,5 +1,8 @@
 from pydantic_settings import BaseSettings
 from typing import Optional
+from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
+from psycopg import AsyncConnection
+from psycopg.rows import dict_row
 
 
 class Settings(BaseSettings):
@@ -62,5 +65,41 @@ class Settings(BaseSettings):
         env_file = ".env"
         case_sensitive = True
 
+    @property
+    def database_url(self) -> str:
+        return self.DATABASE_URL
+
 
 settings = Settings()
+
+
+_checkpointer_instance = None
+_checkpointer_conn = None
+
+
+async def get_checkpointer():
+    global _checkpointer_instance, _checkpointer_conn
+
+    if _checkpointer_instance is None:
+        print("📦 Initializing PostgreSQL checkpointer...")
+        _checkpointer_conn = await AsyncConnection.connect(
+            settings.DATABASE_URL,
+            autocommit=True,
+            prepare_threshold=None,
+            row_factory=dict_row
+        )
+        _checkpointer_instance = AsyncPostgresSaver(conn=_checkpointer_conn)
+        await _checkpointer_instance.setup()
+        print("✅ PostgreSQL checkpointer ready")
+    return _checkpointer_instance
+
+
+async def close_checkpointer():
+    """Cleanup function to close DB connection on shutdown"""
+    global _checkpointer_instance, _checkpointer_conn
+
+    if _checkpointer_conn:
+        print("🔌 Closing PostgreSQL checkpointer connection...")
+        await _checkpointer_conn.close()
+        _checkpointer_conn = None
+        _checkpointer_instance = None

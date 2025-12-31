@@ -6,6 +6,7 @@ import { PublicRoute } from './shared/components/PublicRoute'
 import LoginPage from './customer/pages/LoginPage'
 import { ProtectedRoute } from './shared/components/ProtectedRoute'
 import HomePage from './customer/pages/HomePage'
+import DashboardPage from './admin/pages/DashboardPage'
 
 function App() {
   return (
@@ -22,6 +23,15 @@ function App() {
             }
           />
           <Route path='/home' element={<HomePage />} />
+
+          <Route
+            path='/admin/dashboard'
+            element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
 
           {/* 404 Not Found */}
           <Route path='*' element={<div>404 Page Not Found</div>} />

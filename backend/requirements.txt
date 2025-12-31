@@ -45,3 +45,5 @@ langchain-mcp-adapters
 httpx
 boto3
 python-multipart
+langgraph-checkpoint-postgres
+psycopg[binary,pool]

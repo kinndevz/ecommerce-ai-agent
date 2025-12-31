@@ -50,6 +50,10 @@ export const API_ENDPOINT = {
   CHAT_CONVERSATIONS: '/chat/conversations',
   CHAT_CONVERSATION_DETAIL: (id: string) => `/chat/conversations/${id}`,
   DELETE_CONVERSATION: (id: string) => `/chat/conversations/${id}`,
+
+  CHAT_STREAM: '/chat/messages/stream',
+  CHAT_CONVERSATION_STREAM: (id: string) =>
+    `/chat/conversations/${id}/messages/stream`,
 } as const
 
 export type HTTPMethod =

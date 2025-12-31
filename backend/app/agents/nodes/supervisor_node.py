@@ -103,12 +103,13 @@ Your ONLY job is to select the next specialist to handle the conversation.
             decision = await chain.ainvoke({"history": recent_messages})
         except Exception as e:
             print(f"Routing Error: {e}")
-            return {"next_node": "general_agent"}
+            return {"next_node": "general_agent", "shared_context": state.get("shared_context", {})}
 
         print(f"\n🧠 AI Analysis:")
         print(f"   → Reasoning: {decision.reasoning}")
         print(f"   → Routing to: {decision.next_node}")
 
         return {
-            "next_node": decision.next_node
+            "next_node": decision.next_node,
+            "shared_context": state.get("shared_context", {})
         }

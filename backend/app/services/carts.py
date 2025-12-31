@@ -129,7 +129,7 @@ class CartService:
             CartItem.cart_id == cart.id,
             CartItem.product_id == product_id,
             CartItem.variant_id == variant_id
-        ).first()
+        ).with_for_update().first()
 
         if existing_item:
             # Update quantity

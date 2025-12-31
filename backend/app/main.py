@@ -1,11 +1,12 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+import time
 from contextlib import asynccontextmanager
 from app.elastic.controller import init_elasticsearch
-from app.core.config import settings
-from app.routes import auth, account, users, brands, categories, products, tags, carts, orders, chat, media
+from app.core.config import settings, close_checkpointer
+from app.routes import auth, account, users, brands, categories, products, tags, carts, orders, chat, media, chat_streaming
 from app.utils.exceptions import (
     http_exception_handler,
     validation_exception_handler,
@@ -14,17 +15,19 @@ from app.utils.exceptions import (
     generic_exception_handler
 )
 from app.agents.mcp_manager import mcp_manager
+from app.agents.graph import get_agent_graph
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_elasticsearch()
     await mcp_manager.get_all_tools()
-
+    await get_agent_graph()
     yield
 
     print("Server Shutting down...")
     await mcp_manager.close()
+    await close_checkpointer()
 
 # Create FastAPI app
 app = FastAPI(
@@ -45,6 +48,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    start_time = time.time()
+
+    print(f"\n{'='*80}")
+    print(f"📥 REQUEST: {request.method} {request.url.path}")
+
+    response = await call_next(request)
+
+    process_time = time.time() - start_time
+    print(f"📤 RESPONSE: {response.status_code} ({process_time:.2f}s)")
+    print(f"{'='*80}\n")
+
+    return response
+
 # Exception handlers
 app.add_exception_handler(HTTPException, http_exception_handler)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
@@ -63,6 +82,7 @@ app.include_router(tags.router)
 app.include_router(carts.router)
 app.include_router(orders.router)
 app.include_router(chat.router)
+app.include_router(chat_streaming.router)
 app.include_router(media.router)
 
 

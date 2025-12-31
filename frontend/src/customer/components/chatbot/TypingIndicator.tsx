@@ -28,9 +28,6 @@ export const TypingIndicator = () => {
             style={{ animationDelay: '300ms' }}
           />
         </div>
-        <span className='text-xs text-muted-foreground ml-2'>
-          Đang tìm kiếm...
-        </span>
       </div>
     </div>
   )

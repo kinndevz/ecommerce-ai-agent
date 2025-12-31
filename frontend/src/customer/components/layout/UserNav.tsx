@@ -19,7 +19,7 @@ import { Skeleton } from '@/shared/components/ui/skeleton'
 interface UserNavProps {
   user: any
   isLoading: boolean
-  onLogout: () => void
+  onLogout?: () => void
 }
 
 export const UserNav = ({ user, isLoading, onLogout }: UserNavProps) => {
@@ -55,7 +55,7 @@ export const UserNav = ({ user, isLoading, onLogout }: UserNavProps) => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant='soft'
+          variant='outline'
           className='gap-2.5 h-10 px-4 hover:bg-primary/10 rounded-full'
         >
           <Avatar className='w-7 h-7'>
@@ -74,7 +74,7 @@ export const UserNav = ({ user, isLoading, onLogout }: UserNavProps) => {
           <div className='flex items-center gap-3'>
             <Avatar className='w-10 h-10 ring-2 ring-primary/10'>
               <AvatarImage src={user.avatar || ''} alt={user.full_name} />
-              <AvatarFallback className='bg-gradient-to-br from-primary to-primary/80 text-white text-sm font-semibold'>
+              <AvatarFallback className='bg-linear-to-br from-primary to-primary/80 text-white text-sm font-semibold'>
                 {getUserInitials()}
               </AvatarFallback>
             </Avatar>

@@ -43,6 +43,6 @@ Handle small talk, greetings, and closing conversations politely.
 
         return {
             "messages": [response],
-            # Xã giao xong thì END luôn, không cần QualityCheck cũng được (hoặc thích thì route qua)
-            "next_node": "END"
+            "next_node": "END",
+            "shared_context": state.get("shared_context", {})
         }

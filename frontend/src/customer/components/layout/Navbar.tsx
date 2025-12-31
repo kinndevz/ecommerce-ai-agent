@@ -5,7 +5,6 @@ import { useAuth } from '@/hooks/useAuth'
 import { useCategories } from '@/hooks/useCategories'
 import { useTheme } from '@/shared/components/theme-provider'
 import { useChatStore } from '@/stores/useChatStore'
-
 import { Button } from '@/shared/components/ui/button'
 import { Input } from '@/shared/components/ui/input'
 import { Badge } from '@/shared/components/ui/badge'
@@ -134,7 +133,7 @@ export const Navbar = () => {
               </Button>
 
               <Button
-                variant='soft'
+                variant='ghost'
                 size='default'
                 className='relative hover:bg-primary/10 rounded-full px-4 gap-2'
                 onClick={() => navigate('/cart')}

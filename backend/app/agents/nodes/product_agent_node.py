@@ -14,20 +14,38 @@ class ProductAgentNode:
 
     SYSTEM_PROMPT = """You are a product specialist for an e-commerce cosmetics store.
 
-**GOAL:**
-Help customers find products, verify prices, and answer questions using the available tools.
+**YOUR JOB:**
+Help customers find products using search tools.
 
-**GUIDELINES:**
-1. **CHECK HISTORY FIRST:**
-   - If the user asks about previously found products (e.g., "price of the first one"), use the chat history to answer. DO NOT call search tools again unnecessarily.
+**RESPONSE FORMAT (CRITICAL - ALWAYS FOLLOW):**
 
-2. **NEW REQUESTS:**
-   - Use search tools for new queries.
-   - If no products are found, apologize politely.
+When you find products, return HTML like this (WITHOUT markdown code blocks):
 
-3. **RESPONSE FORMAT:**
-   - Present products clearly with Name, Price, Brand, and a brief description.
-   - Be conversational and helpful.
+<div class="space-y-3">
+  <p class="text-base mb-3">Dạ, em tìm thấy <strong class="text-primary">{số lượng}</strong> sản phẩm phù hợp ạ:</p>
+  
+  <div class="grid gap-3">
+    <!-- Product Card -->
+    <div class="border border-border rounded-lg overflow-hidden hover:shadow-md transition-shadow bg-card">
+      <div class="flex gap-3 p-3">
+        <img src="{product.image_url}" alt="{product.name}" class="w-24 h-24 object-cover rounded-md flex-shrink-0">
+        <div class="flex-1 min-w-0">
+          <h3 class="font-semibold text-base mb-1 line-clamp-2">{product.name}</h3>
+          <p class="text-lg font-bold text-primary">{product.price}₫</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <p class="text-sm text-muted-foreground mt-3">💬 <em>Anh/chị muốn thêm sản phẩm nào vào giỏ hàng không ạ?</em></p>
+</div>
+
+**CRITICAL RULES:**
+- Return ONLY the HTML - do NOT wrap in ```html or ``` markdown blocks
+- Show ONLY: Image, Product Name, Price
+- NO brand, NO description, NO rating
+- If no products found: "Dạ, em không tìm thấy sản phẩm phù hợp ạ 😔"
+- Be friendly, use "anh/chị" and "em"
 """
 
     def __init__(self):
@@ -43,8 +61,7 @@ Help customers find products, verify prices, and answer questions using the avai
 
         tools = await mcp_manager.get_tools_for_agent("product")
 
-        # 1. Tự động nhận diện Search Tools dựa trên Metadata hoặc Tên
-        # Logic: Tool nào có category='search' HOẶC tên bắt đầu bằng 'search_' thì coi là tool tìm kiếm
+        # Identify search tools
         self.search_tool_names = {
             tool.name for tool in tools
             if tool.metadata.get("category") == "search" or tool.name.startswith("search_")
@@ -80,7 +97,6 @@ Help customers find products, verify prices, and answer questions using the avai
 
                     if isinstance(content, list) and len(content) > 0:
                         text_content = content[0].get('text', '')
-                        print(f"DEBUG TOOL RESPONSE: {text_content[:1000]}...")
                         data = json.loads(text_content)
                         products = data.get('products', [])
 
@@ -94,6 +110,14 @@ Help customers find products, verify prices, and answer questions using the avai
                     continue
 
         return []
+
+    def _clean_html_response(self, content: str) -> str:
+        clean_content = content\
+            .replace("```html", "")\
+            .replace("```", "")\
+            .strip()
+
+        return clean_content
 
     async def __call__(self, state: AgentState) -> dict:
         await self.initialize_agent()
@@ -131,10 +155,18 @@ Help customers find products, verify prices, and answer questions using the avai
                 final_shared_context["found_products"] = new_products
                 print(f"📤 Sharing {len(new_products)} products to context")
 
-            print(">>>>>> shared context", final_shared_context)
+            if output_messages:
+                last_message = output_messages[-1]
+                if isinstance(last_message, AIMessage):
+                    clean_content = self._clean_html_response(
+                        last_message.content)
+                    last_message.content = clean_content
+                    print(
+                        f"Cleaned response (Length: {len(clean_content)} chars)")
+
             return {
                 "messages": [output_messages[-1]] if output_messages else [],
-                "next_node": "quality_check",
+                "next_node": "END",
                 "shared_context": final_shared_context
             }
 
@@ -142,5 +174,6 @@ Help customers find products, verify prices, and answer questions using the avai
             traceback.print_exc()
             return {
                 "messages": [AIMessage(content="Xin lỗi, tôi gặp sự cố khi tìm kiếm sản phẩm.")],
-                "next_node": "quality_check"
+                "next_node": "END",
+                "shared_context": state.get("shared_context", {})
             }

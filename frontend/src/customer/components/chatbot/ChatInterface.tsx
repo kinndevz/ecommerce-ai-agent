@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Minimize2, Maximize2, X, RefreshCcw } from 'lucide-react'
-import { Button, buttonVariants } from '@/shared/components/ui/button'
+import { Button } from '@/shared/components/ui/button'
 import { ScrollArea } from '@/shared/components/ui/scroll-area'
 import {
   AlertDialog,
@@ -33,56 +33,49 @@ export const ChatInterface = () => {
     currentConversation,
     isLoading,
     isInitializing,
+    streamingStatus,
     initChat,
-    sendMessage,
+    sendMessageStreaming,
     startNewConversation,
     setIsOpen,
   } = useChatStore()
 
   const { user } = useAuth()
+
   useEffect(() => {
     initChat()
   }, [initChat])
 
+  // Scroll logic
   useEffect(() => {
     if (scrollAreaRef.current) {
       const scrollContainer = scrollAreaRef.current.querySelector(
         '[data-radix-scroll-area-viewport]'
       )
       if (scrollContainer) {
-        setTimeout(() => {
+        requestAnimationFrame(() => {
           scrollContainer.scrollTop = scrollContainer.scrollHeight
-        }, 100)
+        })
       }
     }
   }, [currentConversation?.messages, isTyping, isMinimized, isInitializing])
 
   const mapApiMessagesToUi = (apiMessages: MessageResponse[]): Message[] => {
-    return apiMessages.map((msg) => {
-      let dateObj = new Date()
-      if (msg.created_at) {
-        const timeString =
-          typeof msg.created_at === 'string' && !msg.created_at.endsWith('Z')
-            ? `${msg.created_at}Z`
-            : msg.created_at
-
-        dateObj = new Date(timeString)
-      }
-
-      return {
-        id: msg.id,
-        content: msg.content,
-        sender: msg.role === 'user' ? 'user' : 'ai',
-        timestamp: dateObj,
-        status: 'read',
-      }
-    })
+    return apiMessages.map((msg) => ({
+      id: msg.id,
+      content: msg.content,
+      sender: msg.role === 'user' ? 'user' : 'ai',
+      timestamp: new Date(msg.created_at),
+      status: 'read',
+    }))
   }
 
   const handleSendMessage = async (content: string) => {
     setIsTyping(true)
     try {
-      await sendMessage(content)
+      await sendMessageStreaming(content)
+    } catch (error) {
+      console.error('Send message error:', error)
     } finally {
       setIsTyping(false)
     }
@@ -90,7 +83,6 @@ export const ChatInterface = () => {
 
   const handleClose = () => {
     setIsClosing(true)
-    // Use shorter timeout for faster close
     setTimeout(() => {
       setIsOpen(false)
       setIsClosing(false)
@@ -101,9 +93,30 @@ export const ChatInterface = () => {
     startNewConversation()
   }
 
-  const uiMessages = currentConversation
+  // 1. Lấy tất cả tin nhắn
+  const rawUiMessages = currentConversation
     ? mapApiMessagesToUi(currentConversation.messages)
     : []
+
+  // 2. LỌC TIN NHẮN: Chỉ hiển thị những tin nhắn có nội dung thực sự
+  // Nếu AI đang stream tin nhắn rỗng (lúc mới bắt đầu), ta ẩn nó đi để hiện 3 chấm
+  const visibleMessages = rawUiMessages.filter((msg) => {
+    if (msg.sender === 'ai' && !msg.content?.trim()) return false
+    return true
+  })
+
+  // 3. XÁC ĐỊNH TIN NHẮN CUỐI CÙNG NGƯỜI DÙNG THẤY
+  const lastVisibleMessage =
+    visibleMessages.length > 0
+      ? visibleMessages[visibleMessages.length - 1]
+      : null
+
+  // 4. LOGIC HIỂN THỊ 3 CHẤM (FIX LỖI CỦA BẠN TẠI ĐÂY)
+  // Chỉ hiện khi: (Đang gõ hoặc Đang stream) VÀ (Tin cuối cùng KHÔNG PHẢI là AI)
+  // Giải thích: Ngay khi AI bắt đầu nhả chữ, visibleMessages sẽ có thêm tin nhắn AI,
+  // lúc đó lastVisibleMessage.sender là 'ai' -> Điều kiện dưới sai -> 3 chấm tắt ngay.
+  const shouldShowTypingIndicator =
+    (isTyping || !!streamingStatus) && lastVisibleMessage?.sender !== 'ai'
 
   return (
     <div
@@ -112,82 +125,60 @@ export const ChatInterface = () => {
         'bg-background border border-border rounded-2xl',
         'shadow-xl',
         'overflow-hidden',
-        isMinimized ? 'h-16.5' : 'h-150'
+        isMinimized ? 'h-16 right-6' : 'h-150 right-6',
+        isClosing && 'animate-out slide-out-to-bottom-4 fade-out duration-200'
       )}
-      style={{
-        right: 'calc(1.5rem + var(--removed-body-scroll-bar-size, 0px))',
-        transition: isClosing
-          ? 'opacity 0.2s ease-out'
-          : 'height 0.3s ease-out',
-        opacity: isClosing ? 0 : 1,
-      }}
     >
-      <div
-        className={cn(
-          'flex items-center justify-between px-5 border-b border-border shrink-0',
-          'bg-muted/50',
-          isMinimized ? 'py-2.5' : 'py-4'
-        )}
-      >
+      {/* Header */}
+      <div className='shrink-0 flex items-center justify-between px-4 py-3 border-b bg-muted/30'>
         <div className='flex items-center gap-3'>
           <div className='relative'>
-            <div className='w-11 h-11 rounded-full bg-accent flex items-center justify-center shadow-sm'>
-              <AiFillTwitch className='w-6 h-6 text-accent-foreground' />
-            </div>
-            <div className='absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-background shadow-sm' />
+            <AiFillTwitch className='w-8 h-8 text-primary' />
+            <div className='absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-background' />
           </div>
-          <div className='min-w-0'>
-            <h3 className='font-semibold text-base truncate text-foreground'>
-              AI Assistant
-            </h3>
-            <p className='text-xs text-muted-foreground/80 truncate font-medium'>
-              {isTyping ? 'Đang nhập...' : 'Trực tuyến'}
-            </p>
+          <div>
+            <h3 className='font-semibold text-sm'>AI Assistant</h3>
+            {streamingStatus ? (
+              <p className='text-xs text-muted-foreground animate-pulse'>
+                {streamingStatus}
+              </p>
+            ) : (
+              <p className='text-xs text-muted-foreground'>Sẵn sàng trợ giúp</p>
+            )}
           </div>
         </div>
 
-        <div className='flex items-center gap-2'>
-          {!isMinimized && (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  variant='ghost'
-                  size='icon'
-                  className='h-9 w-9 hover:bg-orange-500/15 hover:text-orange-600 dark:hover:text-orange-400 transition-colors'
-                  title='Cuộc trò chuyện mới'
-                >
-                  <RefreshCcw className='w-4 h-4' />
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>
-                    Bắt đầu cuộc trò chuyện mới?
-                  </AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Hành động này sẽ xóa toàn bộ lịch sử trò chuyện hiện tại và
-                    bắt đầu một cuộc hội thoại mới. Bạn có chắc chắn muốn tiếp
-                    tục không?
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Hủy</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={handleRefreshChat}
-                    className={buttonVariants({ variant: 'destructive' })}
-                  >
-                    Xác nhận
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          )}
+        <div className='flex items-center gap-1'>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant='ghost' size='icon' className='h-8 w-8'>
+                <RefreshCcw className='w-4 h-4' />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  Bắt đầu cuộc trò chuyện mới?
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  Cuộc trò chuyện hiện tại sẽ được lưu lại và bạn có thể xem lại
+                  sau.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Hủy</AlertDialogCancel>
+                <AlertDialogAction onClick={handleRefreshChat}>
+                  Xác nhận
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
           <Button
             variant='ghost'
             size='icon'
             onClick={() => setIsMinimized(!isMinimized)}
-            className='h-9 w-9 hover:bg-primary/15 hover:text-primary transition-all hover:scale-110'
-            title={isMinimized ? 'Mở rộng' : 'Thu gọn'}
+            className='h-8 w-8'
           >
             {isMinimized ? (
               <Maximize2 className='w-4 h-4' />
@@ -200,27 +191,25 @@ export const ChatInterface = () => {
             variant='ghost'
             size='icon'
             onClick={handleClose}
-            className='h-9 w-9 hover:bg-red-500/15 hover:text-red-600 dark:hover:text-red-400 transition-all hover:scale-110'
-            title='Đóng'
+            className='h-8 w-8 hover:bg-destructive/10'
           >
             <X className='w-4 h-4' />
           </Button>
         </div>
       </div>
 
+      {/* Body */}
       {!isMinimized && (
         <>
-          <div className='flex-1 overflow-hidden relative'>
-            {(isInitializing || (isLoading && !currentConversation)) && (
-              <div className='absolute inset-0 z-20 bg-background'>
-                <ChatLoadingSkeleton />
-              </div>
-            )}
-
-            <ScrollArea ref={scrollAreaRef} className='h-full'>
+          <div className='flex-1 overflow-hidden'>
+            <ScrollArea className='h-full' ref={scrollAreaRef}>
               <div className='p-4'>
-                {!isInitializing && uiMessages.length === 0 ? (
+                {isInitializing ? (
+                  <ChatLoadingSkeleton />
+                ) : !currentConversation ||
+                  !currentConversation.messages.length ? (
                   <div className='flex flex-col items-center justify-center h-full text-center space-y-5 animate-in fade-in duration-1000 py-12'>
+                    {/* Welcome UI */}
                     <div className='relative'>
                       <div className='w-20 h-20 rounded-full bg-accent/20 flex items-center justify-center shadow-sm border border-accent/20'>
                         <div className='w-16 h-16 rounded-full bg-accent flex items-center justify-center'>
@@ -241,12 +230,13 @@ export const ChatInterface = () => {
                   </div>
                 ) : (
                   <div className='space-y-2'>
-                    {uiMessages.map((message, index) => {
+                    {/* 👇 SỬ DỤNG DANH SÁCH visibleMessages ĐÃ LỌC */}
+                    {visibleMessages.map((message, index) => {
                       const prevMessage =
-                        index > 0 ? uiMessages[index - 1] : undefined
+                        index > 0 ? visibleMessages[index - 1] : undefined
                       const nextMessage =
-                        index < uiMessages.length - 1
-                          ? uiMessages[index + 1]
+                        index < visibleMessages.length - 1
+                          ? visibleMessages[index + 1]
                           : undefined
                       const showTimestamp =
                         !prevMessage ||
@@ -268,7 +258,9 @@ export const ChatInterface = () => {
                         </div>
                       )
                     })}
-                    {isTyping && <TypingIndicator />}
+
+                    {/* 👇 CHỈ HIỂN THỊ KHI ĐIỀU KIỆN ĐÚNG */}
+                    {shouldShowTypingIndicator && <TypingIndicator />}
                   </div>
                 )}
               </div>
@@ -278,7 +270,7 @@ export const ChatInterface = () => {
           <div className='shrink-0'>
             <ChatInput
               onSendMessage={handleSendMessage}
-              disabled={isTyping || isInitializing}
+              disabled={isTyping || isInitializing || !!streamingStatus}
               placeholder='Nhập tin nhắn...'
             />
           </div>

@@ -10,7 +10,8 @@ import {
 } from "./types";
 
 // const BACKEND_URL = "https://ecommerce-ai-agent-b2lc.onrender.com";
-const BACKEND_URL = "https://cloudy-toe-mixed-healing.trycloudflare.com";
+const BACKEND_URL =
+  "https://webcams-symposium-viewing-targets.trycloudflare.com";
 
 export class MyMCP extends McpAgent {
   server = new McpServer({

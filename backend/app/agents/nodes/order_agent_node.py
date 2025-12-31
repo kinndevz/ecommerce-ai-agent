@@ -11,30 +11,34 @@ from app.core.config import settings
 class OrderAgentNode:
     """Order specialist agent"""
 
-    # --- SỬA PROMPT MẠNH MẼ HƠN ---
     SYSTEM_PROMPT = """You are an Order Assistant for an e-commerce cosmetics store.
 
 **YOUR GOAL:**
-Help users add products to their cart based ONLY on their **LATEST** request.
+Manage the user's shopping cart using available tools.
 
-**⚠️ CRITICAL RULES (MUST FOLLOW):**
+**🚨 CRITICAL RULES (READ CAREFULLY):**
+1. **NO HALLUCINATION:** You DO NOT have direct access to the database. You CANNOT know if an item is added unless you successfully call the `add_to_cart` tool.
+2. **TOOL FIRST, TALK LATER:**
+   - If user asks to add/update items: **YOU MUST CALL `add_to_cart` FIRST.**
+   - Do NOT output any conversational text (like "Dạ, em đã thêm...") UNTIL you get the tool output.
+3. **MAPPING REFERENCES:**
+   - If user says "add product #3" (sản phẩm thứ 3), look at the **SHARED CONTEXT** below.
+   - Find the item at index 3 (or index 2 if 0-based), extract its `id`, and pass that `id` to the tool.
+   - Do NOT guess the ID. Use the one provided in context.
 
-1.  **IGNORE PAST ACTIONS:** 
-    - Look at the chat history ONLY to identify *which* product is being discussed (e.g., "that product").
-    - **NEVER** re-execute orders from previous turns.
-    - If the user said "Add product A" 5 minutes ago, and now says "Add product B", **ONLY ADD B**. Do NOT add A again.
+**RESPONSE FORMAT:**
+- After the tool executes successfully, report back to the user based on the **ACTUAL** return value of the tool.
+- Be friendly, use Vietnamese (anh/chị, em).
+- Use emojis: ✅, 📦, 💰.
 
-2.  **QUANTITY EXTRACTION:**
-    - Listen carefully to the number the user wants (e.g., "lấy 3 cái", "thêm 2 hộp", "quantity 5").
-    - You **MUST** pass this number to the `quantity` parameter of the `add_to_cart` tool.
-    - **Default is 1** ONLY if the user does not specify a number.
+**Example of correct thinking process:**
+User: "Thêm cái thứ 2 số lượng 1"
+Thought: "I see 'product #2' in Shared Context is ID '123-abc'. I must call tool `add_to_cart(product_id='123-abc', quantity=1)`."
+Action: Call tool.
+Observation: Tool returns success.
+Final Answer: "Dạ, em đã thêm [Product Name] vào giỏ rồi ạ!..."
 
-3.  **USE SHARED CONTEXT:**
-    - If user says "thêm cái này" (add this) or "lấy sản phẩm thứ 2" (get the 2nd product), look at the **SHARED CONTEXT** below to find the correct `product_id`.
-
-**TOOLS:**
-- `add_to_cart`: Use to add/update items.
-- `get_cart`: Use to check status.
+**🚫 DO NOT make up a response without calling the tool.**
 """
 
     def __init__(self):
@@ -51,7 +55,7 @@ Help users add products to their cart based ONLY on their **LATEST** request.
         llm = ChatOpenAI(
             model=self.model_name,
             api_key=settings.OPENAI_API_KEY,
-            temperature=0  # Quan trọng: Temperature = 0 để giảm thiểu sự "sáng tạo" lung tung
+            temperature=0
         )
 
         if tools:
@@ -73,10 +77,9 @@ Help users add products to their cart based ONLY on their **LATEST** request.
             "auth_token": state.get("auth_token", "")
         }
 
-        # Handle Shared Context (Giữ nguyên logic cũ của bạn)
         shared_context = state.get("shared_context", {})
         found_products = shared_context.get("found_products", [])
-        context_str = "NO PRODUCTS FOUND IN HISTORY."
+        context_str = "No products list available."
 
         if found_products:
             products_list = []
@@ -91,25 +94,33 @@ Help users add products to their cart based ONLY on their **LATEST** request.
                     name = p.get("name", "Unknown")
                     pid = p.get("id", "NoID")
                     price = p.get("price", 0)
-                    # Thêm ID để AI dễ map
                     items_desc.append(
-                        f"Product #{idx+1}: {name} (ID: {pid}) - {price}")
+                        f"Product #{idx+1}: {name} (ID: {pid}) - Price: {price}"
+                    )
 
             if items_desc:
                 context_str = "\n".join(items_desc)
 
-        # Inject context + STRICT INSTRUCTION
         dynamic_prompt = f"""{self.SYSTEM_PROMPT}
 
-=== 🛒 SHARED CONTEXT (SEARCH RESULTS) ===
-{context_str}
-==========================================
+========== 🛒 SHARED CONTEXT (SEARCH RESULTS) ==========
+The user is looking at this list. Use these IDs for "product #X" requests:
 
-⚠️ **REMINDER:** Only process the user's **LAST** message. Do not repeat old orders.
+{context_str}
+========================================================
 """
 
         messages = [SystemMessage(content=dynamic_prompt)]
-        messages.extend(state["messages"])
+        last_human_msg = None
+        for msg in reversed(state["messages"]):
+            if msg.type == "human":
+                last_human_msg = msg
+                break
+
+        if last_human_msg:
+            messages.append(last_human_msg)
+        else:
+            messages.extend(state["messages"])
 
         try:
             result = await self.agent.ainvoke(
@@ -118,15 +129,18 @@ Help users add products to their cart based ONLY on their **LATEST** request.
             )
 
             output_messages = result.get("messages", [])
+            last_message = output_messages[-1] if output_messages else None
 
             return {
-                "messages": [output_messages[-1]] if output_messages else [],
-                "next_node": "quality_check"
+                "messages": [last_message] if last_message else [],
+                "next_node": "END",
+                "shared_context": shared_context
             }
 
         except Exception:
             traceback.print_exc()
             return {
-                "messages": [AIMessage(content="Xin lỗi, tôi gặp sự cố khi xử lý đơn hàng.")],
-                "next_node": "quality_check"
+                "messages": [AIMessage(content="Xin lỗi, tôi gặp sự cố khi thêm vào giỏ hàng.")],
+                "next_node": "END",
+                "shared_context": shared_context
             }

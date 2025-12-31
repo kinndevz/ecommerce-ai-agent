@@ -6,21 +6,26 @@ import {
   type MessageResponse,
 } from '@/api/chat.api'
 import { toast } from 'sonner'
+import { StreamingClient } from '@/api/services/streaming'
 
+// ===== TYPES =====
 interface ChatState {
   conversations: ConversationSummary[]
   currentConversation: ConversationDetail | null
   isLoading: boolean
   isInitializing: boolean
   isOpen: boolean
+  streamingStatus: string | null
   setIsOpen: (open: boolean) => void
   initChat: () => Promise<void>
   sendMessage: (message: string) => Promise<void>
+  sendMessageStreaming: (message: string) => Promise<void>
   startNewConversation: () => void
   fetchConversationDetail: (id: string) => Promise<void>
   reset: () => void
 }
 
+// ===== HELPERS =====
 const sortMessagesByDate = (messages: MessageResponse[]) => {
   return messages.sort(
     (a, b) =>
@@ -28,32 +33,57 @@ const sortMessagesByDate = (messages: MessageResponse[]) => {
   )
 }
 
+const createTempMessage = (
+  role: 'user' | 'assistant',
+  content: string = ''
+): MessageResponse => ({
+  id: `${role}-${Date.now()}`,
+  role,
+  content,
+  created_at: new Date().toISOString(),
+})
+
+const hasRealConversationId = (id?: string): boolean => {
+  return !!id && id !== 'temp-id'
+}
+
+const createEmptyConversation = (
+  messages: MessageResponse[]
+): ConversationDetail => ({
+  id: undefined as any,
+  thread_id: '',
+  title: 'New Chat',
+  messages,
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+})
+
+// ===== STORE =====
 export const useChatStore = create<ChatState>((set, get) => ({
+  // State
   conversations: [],
   currentConversation: null,
   isLoading: false,
   isInitializing: false,
   isOpen: false,
+  streamingStatus: null,
+
+  // Actions
   setIsOpen: (open) => set({ isOpen: open }),
 
   initChat: async () => {
-    if (get().currentConversation || get().isInitializing) return
+    const { currentConversation, isInitializing } = get()
+    if (currentConversation || isInitializing) return
 
     set({ isInitializing: true })
+
     try {
-      const response = await chatAPI.getConversations(1, 1)
+      const { conversations } = await chatAPI.getConversations(1, 1)
 
-      if (response.conversations.length > 0) {
-        const latestId = response.conversations[0].id
-        const detail = await chatAPI.getConversationDetail(latestId)
-
-        if (detail.messages) {
-          detail.messages = sortMessagesByDate(detail.messages)
-        }
-
+      if (conversations.length > 0) {
+        const detail = await chatAPI.getConversationDetail(conversations[0].id)
+        detail.messages = sortMessagesByDate(detail.messages)
         set({ currentConversation: detail })
-      } else {
-        set({ currentConversation: null })
       }
     } catch (error) {
       console.error('Failed to init chat:', error)
@@ -64,11 +94,10 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
   fetchConversationDetail: async (id: string) => {
     set({ isLoading: true })
+
     try {
       const detail = await chatAPI.getConversationDetail(id)
-      if (detail.messages) {
-        detail.messages = sortMessagesByDate(detail.messages)
-      }
+      detail.messages = sortMessagesByDate(detail.messages)
       set({ currentConversation: detail })
     } catch (error) {
       toast.error('Không thể tải hội thoại')
@@ -81,30 +110,17 @@ export const useChatStore = create<ChatState>((set, get) => ({
     set({ currentConversation: null })
   },
 
+  // Legacy method (for backward compatibility)
   sendMessage: async (message: string) => {
     const { currentConversation } = get()
-    const tempUserMsg = {
-      id: Date.now().toString(),
-      role: 'user' as const,
-      content: message,
-      created_at: new Date().toISOString(),
-    }
+    const userMsg = createTempMessage('user', message)
 
-    set((state) => {
-      const prevMsgs = state.currentConversation?.messages || []
-      return {
-        currentConversation: {
-          ...state.currentConversation!,
-          id: state.currentConversation?.id || 'temp-id',
-          thread_id: state.currentConversation?.thread_id || '',
-          title: state.currentConversation?.title || 'New Chat',
-          created_at:
-            state.currentConversation?.created_at || new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          messages: [...prevMsgs, tempUserMsg],
-        },
-      }
-    })
+    set((state) => ({
+      currentConversation: {
+        ...(state.currentConversation || createEmptyConversation([])),
+        messages: [...(state.currentConversation?.messages || []), userMsg],
+      },
+    }))
 
     try {
       const response = await chatAPI.sendMessage({
@@ -112,20 +128,107 @@ export const useChatStore = create<ChatState>((set, get) => ({
         conversation_id: currentConversation?.id,
       })
 
-      set((state) => {
-        const currentMsgs = state.currentConversation?.messages || []
-
-        return {
-          currentConversation: {
-            ...state.currentConversation!,
-            id: response.conversation_id,
-            thread_id: response.thread_id,
-            messages: [...currentMsgs, response.message],
-          },
-        }
-      })
+      set((state) => ({
+        currentConversation: {
+          ...state.currentConversation!,
+          id: response.conversation_id,
+          thread_id: response.thread_id,
+          messages: [
+            ...(state.currentConversation?.messages || []),
+            response.message,
+          ],
+        },
+      }))
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Gửi tin nhắn thất bại')
+    }
+  },
+
+  // ✅ CLEAN: Streaming method
+  sendMessageStreaming: async (message: string) => {
+    const { currentConversation } = get()
+
+    const userMsg = createTempMessage('user', message)
+    const aiMsg = createTempMessage('assistant')
+
+    // Optimistic update
+    set((state) => ({
+      currentConversation: {
+        ...(state.currentConversation || createEmptyConversation([])),
+        messages: [
+          ...(state.currentConversation?.messages || []),
+          userMsg,
+          aiMsg,
+        ],
+      },
+    }))
+
+    const conversationId = hasRealConversationId(currentConversation?.id)
+      ? currentConversation!.id
+      : null
+
+    try {
+      const client = new StreamingClient()
+
+      await client.streamMessage(message, conversationId, {
+        onStatus: (statusMessage) => {
+          set({ streamingStatus: statusMessage })
+        },
+
+        onContent: (chunk) => {
+          set((state) => ({
+            currentConversation: {
+              ...state.currentConversation!,
+              messages: state.currentConversation!.messages.map((msg) =>
+                msg.id === aiMsg.id
+                  ? { ...msg, content: msg.content + chunk }
+                  : msg
+              ),
+            },
+          }))
+        },
+
+        // ✅ CLEAN: Backend provides all IDs
+        onDone: (messageId, conversationId, threadId) => {
+          set((state) => ({
+            streamingStatus: null,
+            currentConversation: {
+              ...state.currentConversation!,
+              id: conversationId || state.currentConversation!.id, // ✅ Update from backend
+              thread_id: threadId || state.currentConversation!.thread_id, // ✅ Update from backend
+              messages: state.currentConversation!.messages.map((msg) =>
+                msg.id === aiMsg.id ? { ...msg, id: messageId } : msg
+              ),
+            },
+          }))
+        },
+
+        onError: (error) => {
+          toast.error(error)
+
+          set((state) => ({
+            streamingStatus: null,
+            currentConversation: {
+              ...state.currentConversation!,
+              messages: state.currentConversation!.messages.filter(
+                (msg) => msg.id !== aiMsg.id
+              ),
+            },
+          }))
+        },
+      })
+    } catch (error: any) {
+      toast.error(error.message || 'Streaming failed')
+
+      set((state) => ({
+        streamingStatus: null,
+        currentConversation: {
+          ...state.currentConversation!,
+          messages: state.currentConversation!.messages.filter(
+            (msg) => msg.id !== aiMsg.id
+          ),
+        },
+      }))
     }
   },
 
@@ -136,6 +239,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
       isLoading: false,
       isInitializing: false,
       isOpen: false,
+      streamingStatus: null,
     })
   },
 }))
