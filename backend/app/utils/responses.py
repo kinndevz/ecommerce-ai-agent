@@ -273,3 +273,76 @@ class ResponseHandler:
                 "message": "Payment required to complete this order"
             }
         )
+
+    # ========== Media/Upload Specific ==========
+
+    @staticmethod
+    def files_uploaded_success(count: int, data: list):
+        """Files uploaded successfully"""
+        return ResponseHandler.success(
+            message=f"{count} file(s) uploaded successfully",
+            data=data
+        )
+
+    @staticmethod
+    def presigned_url_generated_success(data: dict):
+        """Single presigned URL generated"""
+        return ResponseHandler.success(
+            message="Presigned URL generated successfully",
+            data=data
+        )
+
+    @staticmethod
+    def presigned_urls_generated_success(count: int, data: list):
+        """Multiple presigned URLs generated"""
+        return ResponseHandler.success(
+            message=f"{count} presigned URL(s) generated successfully",
+            data=data
+        )
+
+    @staticmethod
+    def file_deleted_success():
+        """File deleted successfully"""
+        return ResponseHandler.success(
+            message="File deleted successfully",
+            data=None
+        )
+
+    @staticmethod
+    def invalid_file_type(allowed_types: set):
+        """Invalid file type"""
+        allowed = ', '.join(sorted(allowed_types))
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "success": False,
+                "message": f"Invalid file type. Allowed types: {allowed}"
+            }
+        )
+
+    @staticmethod
+    def file_too_large(max_size_mb: int, filename: str = None):
+        """File too large"""
+        if filename:
+            message = f"File '{filename}' too large (max {max_size_mb}MB)"
+        else:
+            message = f"File too large (max {max_size_mb}MB)"
+
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "success": False,
+                "message": message
+            }
+        )
+
+    @staticmethod
+    def too_many_files(max_count: int):
+        """Too many files in request"""
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "success": False,
+                "message": f"Maximum {max_count} files per request"
+            }
+        )

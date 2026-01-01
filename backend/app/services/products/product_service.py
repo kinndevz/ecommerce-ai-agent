@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func, desc, asc
 
-from app.models.product import Product, Tag
+from app.models.product import Product, Tag, ProductVariant, ProductImage
 from app.models.brand import Brand
 from app.models.category import Category
 from app.utils.responses import ResponseHandler
@@ -150,60 +150,138 @@ class ProductService:
 
     @staticmethod
     def create_product(db: Session, data: ProductCreateRequest, created_by_id: str):
-        """Create product"""
-
-        # Validations
-        if db.query(Product).filter(Product.slug == data.slug, Product.deleted_at.is_(None)).first():
+        #  VALIDATIONS
+        if db.query(Product).filter(
+            Product.slug == data.slug,
+            Product.deleted_at.is_(None)
+        ).first():
             ResponseHandler.already_exists_error("Product", "slug")
 
-        if db.query(Product).filter(Product.sku == data.sku, Product.deleted_at.is_(None)).first():
+        if db.query(Product).filter(
+            Product.sku == data.sku,
+            Product.deleted_at.is_(None)
+        ).first():
             ResponseHandler.already_exists_error("Product", "sku")
 
+        if data.variants:
+            variant_skus = [v.sku for v in data.variants]
+            existing_variants = db.query(ProductVariant).filter(
+                ProductVariant.sku.in_(variant_skus),
+                ProductVariant.deleted_at.is_(None)
+            ).first()
+
+            if existing_variants:
+                ResponseHandler.already_exists_error("Variant", "sku")
+
         brand = db.query(Brand).filter(
-            Brand.id == data.brand_id, Brand.deleted_at.is_(None)).first()
+            Brand.id == data.brand_id,
+            Brand.deleted_at.is_(None)
+        ).first()
         if not brand:
             ResponseHandler.not_found_error("Brand", data.brand_id)
 
         category = db.query(Category).filter(
-            Category.id == data.category_id, Category.deleted_at.is_(None)).first()
+            Category.id == data.category_id,
+            Category.deleted_at.is_(None)
+        ).first()
         if not category:
             ResponseHandler.not_found_error("Category", data.category_id)
 
-        # Create
-        product = Product(
-            id=str(uuid.uuid4()),
-            brand_id=data.brand_id,
-            category_id=data.category_id,
-            name=data.name,
-            slug=data.slug,
-            sku=data.sku,
-            short_description=data.short_description,
-            description=data.description,
-            how_to_use=data.how_to_use,
-            price=data.price,
-            sale_price=data.sale_price,
-            stock_quantity=data.stock_quantity,
-            is_available=True,
-            is_featured=data.is_featured,
-            skin_types=data.skin_types,
-            concerns=data.concerns,
-            benefits=data.benefits,
-            ingredients=data.ingredients,
-            created_by_id=created_by_id
-        )
+        #  CREATE
+        try:
+            # Create Product
+            now = datetime.now(timezone.utc)
+            product = Product(
+                id=str(uuid.uuid4()),
+                brand_id=data.brand_id,
+                category_id=data.category_id,
+                name=data.name,
+                slug=data.slug,
+                sku=data.sku,
+                short_description=data.short_description,
+                description=data.description,
+                how_to_use=data.how_to_use,
+                price=data.price,
+                sale_price=data.sale_price,
+                stock_quantity=data.stock_quantity,
+                is_available=True,
+                is_featured=data.is_featured,
+                skin_types=[
+                    st.value for st in data.skin_types] if data.skin_types else None,
+                concerns=[
+                    c.value for c in data.concerns] if data.concerns else None,
+                benefits=[
+                    b.value for b in data.benefits] if data.benefits else None,
+                ingredients=data.ingredients,
+                created_by_id=created_by_id,
+                created_at=now,
+                updated_at=now
+            )
 
-        # Add tags
-        if data.tag_ids:
-            tags = db.query(Tag).filter(Tag.id.in_(data.tag_ids)).all()
-            product.tags.extend(tags)
-            for tag in tags:
-                tag.usage_count += 1
+            # Add Tags
+            if data.tag_ids:
+                tags = db.query(Tag).filter(Tag.id.in_(data.tag_ids)).all()
+                product.tags.extend(tags)
+                for tag in tags:
+                    tag.usage_count += 1
 
-        db.add(product)
-        db.commit()
-        db.refresh(product)
+            db.add(product)
+            db.flush()
 
-        return ResponseHandler.create_success("Product", product.id, product)
+            # Create Product Images
+            if data.images:
+                for img_data in data.images:
+                    image = ProductImage(
+                        id=str(uuid.uuid4()),
+                        product_id=product.id,
+                        image_url=img_data.image_url,
+                        alt_text=img_data.alt_text or data.name,
+                        is_primary=img_data.is_primary,
+                        display_order=img_data.display_order,
+                        created_at=now,
+                        updated_at=now
+                    )
+                    db.add(image)
+
+            # Create Product Variants
+            if data.variants:
+                for variant_data in data.variants:
+                    variant = ProductVariant(
+                        id=str(uuid.uuid4()),
+                        product_id=product.id,
+                        name=variant_data.name,
+                        sku=variant_data.sku,
+                        price=variant_data.price,
+                        sale_price=variant_data.sale_price,
+                        stock_quantity=variant_data.stock_quantity,
+                        is_available=True,
+                        size=variant_data.size,
+                        size_unit=variant_data.size_unit,
+                        color=variant_data.color,
+                        shade_name=variant_data.shade_name,
+                        created_by_id=created_by_id,
+                        created_at=now,
+                        updated_at=now
+                    )
+                    db.add(variant)
+
+            db.commit()
+            db.expire(product)
+
+            product = db.query(Product).options(
+                joinedload(Product.images),
+                joinedload(Product.variants),
+                joinedload(Product.tags),
+                joinedload(Product.brand),
+                joinedload(Product.category)
+            ).filter(Product.id == product.id).first()
+            product_dict = format_product_detail(product)
+            return ResponseHandler.create_success("Product", product.id, product_dict)
+
+        except Exception as e:
+            db.rollback()
+            print(f"Failed to create product: {e}")
+            raise
 
     @staticmethod
     def update_product(db: Session, product_id: str, data: ProductUpdateRequest, updated_by_id: str):
@@ -236,6 +314,15 @@ class ProductService:
 
         # Update fields
         update_data = data.model_dump(exclude_unset=True, exclude={'tag_ids'})
+        if 'skin_types' in update_data and update_data['skin_types']:
+            update_data['skin_types'] = [
+                st.value for st in update_data['skin_types']]
+        if 'concerns' in update_data and update_data['concerns']:
+            update_data['concerns'] = [
+                c.value for c in update_data['concerns']]
+        if 'benefits' in update_data and update_data['benefits']:
+            update_data['benefits'] = [
+                b.value for b in update_data['benefits']]
         for key, value in update_data.items():
             setattr(product, key, value)
 

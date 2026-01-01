@@ -1,14 +1,17 @@
 from fastapi import APIRouter, Depends, UploadFile, File, Body
 from typing import List
 from app.models.user import User
-from app.utils.deps import get_current_active_user
+from app.utils.deps import require_permission
 from app.services.media import media_service
 from app.schemas.media import (
     PresignedUploadFileRequest,
     UploadFilesResponse,
-    PresignedUploadFileResponse
+    PresignedUploadFileResponse,
+    PresignedUploadFilesResponse,
+    PresignedUploadFilesRequest
 )
 from app.services.s3 import s3_service
+from app.utils.responses import ResponseHandler
 
 router = APIRouter(prefix="/media", tags=["Media"])
 
@@ -19,7 +22,7 @@ async def upload_files(
         ...,
         description="Multiple files (max 100, each max 5MB)"
     ),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(require_permission())
 ):
 
     return await media_service.upload_files(files)
@@ -28,7 +31,7 @@ async def upload_files(
 @router.post("/images/upload/presigned-url", response_model=PresignedUploadFileResponse)
 async def create_presigned_url(
     body: PresignedUploadFileRequest,
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(require_permission())
 ):
     return media_service.get_presigned_url(
         filename=body.filename,
@@ -39,7 +42,7 @@ async def create_presigned_url(
 @router.delete("/file")
 async def delete_file(
     file_url: str = Body(..., embed=True, description="Full S3 URL"),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(require_permission())
 ):
 
     # Extract S3 key from URL
@@ -52,5 +55,12 @@ async def delete_file(
             "message": "File deleted successfully"
         }
     else:
-        from app.utils.responses import ResponseHandler
         ResponseHandler.bad_request("Failed to delete file")
+
+
+@router.post("/images/upload/presigned-urls", response_model=PresignedUploadFilesResponse)
+async def create_presigned_urls(
+    body: PresignedUploadFilesRequest,
+    current_user: User = Depends(require_permission())
+):
+    return media_service.get_presigned_urls(body.files)

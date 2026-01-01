@@ -79,6 +79,7 @@ class ProductListItem(BaseModel):
     is_featured: bool
     rating_average: float
     review_count: int
+    views_count: int
 
     brand: BrandSimple
     category: CategorySimple

@@ -47,3 +47,10 @@ class PresignedUploadFileResponse(BaseModel):
 
     class Config(BaseConfig):
         pass
+
+
+class PresignedUploadFilesResponse(BaseModel):
+    """Presigned URLs for multiple files"""
+    success: bool
+    message: str
+    data: List[dict]

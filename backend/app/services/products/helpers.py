@@ -31,11 +31,7 @@ def format_tag(tag):
 def format_product_image(image):
     """Format product image"""
     return {
-        "id": image.id,
-        "image_url": image.image_url,
-        "alt_text": image.alt_text,
-        "is_primary": image.is_primary,
-        "display_order": image.display_order
+        **model_to_dict(image, exclude=[])
     }
 
 
@@ -44,15 +40,14 @@ def format_product_variant(variant):
     return {
         **model_to_dict(
             variant,
-            exclude=['created_at', 'updated_at', 'deleted_at',
-                     'created_by_id', 'updated_by_id', 'deleted_by_id', 'product_id']
+            exclude=['deleted_at', 'created_by_id',
+                     'updated_by_id', 'deleted_by_id', 'product_id']
         )
     }
 
 
 def format_product_list_item(product):
     """Format product for list view"""
-    # Get primary image
     primary_image = None
     if product.images:
         primary = next((img for img in product.images if img.is_primary), None)
@@ -61,9 +56,9 @@ def format_product_list_item(product):
     return {
         **model_to_dict(
             product,
-            exclude=['created_at', 'updated_at', 'deleted_at', 'created_by_id',
-                     'updated_by_id', 'deleted_by_id', 'description', 'how_to_use',
-                     'ingredients', 'views_count', 'brand_id', 'category_id']
+            exclude=['deleted_at', 'created_by_id', 'updated_by_id', 'deleted_by_id',
+                     'description', 'how_to_use', 'ingredients',
+                     'brand_id', 'category_id']
         ),
         "brand": format_brand(product.brand),
         "category": format_category(product.category),

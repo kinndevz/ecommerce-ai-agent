@@ -1,8 +1,10 @@
-from .requests import PresignedUploadFileRequest
-from .responses import UploadFilesResponse, PresignedUploadFileResponse
+from .requests import PresignedUploadFileRequest, PresignedUploadFilesRequest
+from .responses import UploadFilesResponse, PresignedUploadFileResponse, PresignedUploadFilesResponse
 
 __all__ = [
     "PresignedUploadFileRequest",
+    "PresignedUploadFilesRequest",
     "PresignedUploadFileResponse",
-    "UploadFilesResponse"
+    "UploadFilesResponse",
+    "PresignedUploadFilesResponse"
 ]

@@ -28,3 +28,9 @@ class PresignedUploadFileRequest(BaseModel):
                 "filesize": 1024000
             }
         }
+
+
+class PresignedUploadFilesRequest(BaseModel):
+    """Request presigned URLs for multiple files"""
+    files: List[dict] = Field(..., max_items=10,
+                              description="Array of {filename, filesize}")
