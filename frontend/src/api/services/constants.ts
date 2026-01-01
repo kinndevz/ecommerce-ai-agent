@@ -27,6 +27,52 @@ export const API_ENDPOINT = {
   DELETE_BRAND: (id: string) => `/brands/${id}`,
   TOGGLE_BRAND_STATUS: (id: string) => `/brands/${id}/toggle-status`,
 
+  // Media Routes
+  MEDIA_UPLOAD_FILES: '/media/images/upload',
+  MEDIA_PRESIGNED_URL: '/media/images/upload/presigned-url',
+  MEDIA_PRESIGNED_URLS: '/media/images/upload/presigned-urls',
+  MEDIA_DELETE_FILE: '/media/file',
+
+  // Product Routes
+  PRODUCTS: '/products',
+  PRODUCT_SEARCH: '/products/search',
+  PRODUCT_STATS: '/products/stats',
+  PRODUCT_LOW_STOCK: '/products/low-stock',
+  PRODUCT_OUT_OF_STOCK: '/products/out-of-stock',
+
+  // Discovery
+  PRODUCT_FEATURED: '/products/featured',
+  PRODUCT_TRENDING: '/products/trending',
+  PRODUCT_NEW_ARRIVALS: '/products/new-arrivals',
+  PRODUCT_ON_SALE: '/products/on-sale',
+
+  // Dynamic URL Generators
+  PRODUCT_BY_BRAND: (slug: string) => `/products/by-brand/${slug}`,
+  PRODUCT_BY_CATEGORY: (slug: string) => `/products/by-category/${slug}`,
+  PRODUCT_RELATED: (id: string) => `/products/${id}/related`,
+  PRODUCT_DETAIL: (id: string) => `/products/${id}`,
+
+  // Stock & Toggles
+  PRODUCT_UPDATE_STOCK: (id: string) => `/products/${id}/stock`,
+  PRODUCT_TOGGLE_AVAILABILITY: (id: string) =>
+    `/products/${id}/toggle-availability`,
+  PRODUCT_TOGGLE_FEATURED: (id: string) => `/products/${id}/toggle-featured`,
+
+  // Tags
+  PRODUCT_TAGS: (id: string) => `/products/${id}/tags`,
+  PRODUCT_REMOVE_TAG: (id: string, tagId: string) =>
+    `/products/${id}/tags/${tagId}`,
+
+  // Images
+  PRODUCT_IMAGES: (id: string) => `/products/${id}/images`,
+  PRODUCT_IMAGE_DETAIL: (id: string, imageId: string) =>
+    `/products/${id}/images/${imageId}`,
+
+  // Variants
+  PRODUCT_VARIANTS: (id: string) => `/products/${id}/variants`,
+  PRODUCT_VARIANT_DETAIL: (id: string, variantId: string) =>
+    `/products/${id}/variants/${variantId}`,
+
   // User Routes
   GET_ALL_USERS: '/users',
   GENERATE_USER: '/users',

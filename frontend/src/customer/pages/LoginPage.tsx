@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
-import { LoginForm } from '@/modules/auth/components/LoginForm'
-import { RegisterForm } from '@/modules/auth/components/RegisterForm'
+
 import { ModeToggle } from '@/shared/components/mode-toggle'
 import { Button } from '@/shared/components/ui/button'
 import {
@@ -10,6 +9,8 @@ import {
 } from '@/shared/components/ui/avatar'
 import { Sparkles, ShoppingBag, Star, Zap } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
+import { LoginForm } from '../components/auth/LoginForm'
+import { RegisterForm } from '../components/auth/RegisterForm'
 
 const ROUTES = {
   home: '/home',
@@ -84,7 +85,7 @@ const LoginPage = () => {
       <div className='fixed top-4 left-4 sm:top-6 sm:left-6 z-50'>
         <Button
           asChild
-          variant='soft'
+          variant='default'
           size='sm'
           className='rounded-2xl px-4 h-10 backdrop-blur-md'
         >
@@ -113,7 +114,7 @@ const LoginPage = () => {
               <div className='relative z-10 space-y-8 animate-slide-in-left'>
                 {/* Logo & Brand */}
                 <div className='space-y-6'>
-                  <div className='inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-gradient-to-r from-primary/15 to-primary/10 border-2 border-primary/30 backdrop-blur shadow-md hover:shadow-lg hover:scale-102 transition-all duration-300'>
+                  <div className='inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-linear-to-r from-primary/15 to-primary/10 border-2 border-primary/30 backdrop-blur shadow-md hover:shadow-lg hover:scale-102 transition-all duration-300'>
                     <Sparkles className='w-4 h-4 text-primary animate-pulse' />
                     <span className='text-sm font-extrabold text-primary tracking-wider uppercase'>
                       Premium Beauty
@@ -188,7 +189,7 @@ const LoginPage = () => {
                         src='/src/assets/male-avatar.png'
                         alt='Le Hoang'
                       />
-                      <AvatarFallback className='bg-gradient-to-br from-primary via-secondary to-accent text-white font-bold'>
+                      <AvatarFallback className='bg-linear-to-br from-primary via-secondary to-accent text-white font-bold'>
                         LH
                       </AvatarFallback>
                     </Avatar>
@@ -218,7 +219,7 @@ const LoginPage = () => {
                 {/* Mobile Logo (Visible only on mobile) */}
                 <div className='lg:hidden text-center mb-10'>
                   <div className='inline-flex items-center gap-3 mb-3'>
-                    <div className='w-11 h-11 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-md'>
+                    <div className='w-11 h-11 rounded-xl bg-linear-to-br from-primary to-secondary flex items-center justify-center shadow-md'>
                       <Sparkles className='w-6 h-6 text-white' />
                     </div>
                     <h2 className='text-3xl font-serif font-bold gradient-text'>

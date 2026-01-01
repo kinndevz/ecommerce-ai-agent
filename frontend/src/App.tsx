@@ -7,6 +7,7 @@ import LoginPage from './customer/pages/LoginPage'
 import { ProtectedRoute } from './shared/components/ProtectedRoute'
 import HomePage from './customer/pages/HomePage'
 import DashboardPage from './admin/pages/DashboardPage'
+import ProductsPage from './admin/pages/ProductsPage'
 
 function App() {
   return (
@@ -29,6 +30,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path='/admin/products'
+            element={
+              <ProtectedRoute>
+                <ProductsPage />
               </ProtectedRoute>
             }
           />

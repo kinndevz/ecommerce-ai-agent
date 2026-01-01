@@ -1,129 +1,178 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(0.99 0.002 264);
-  --foreground: oklch(0.2 0.02 264);
-  --card: oklch(0.98 0.005 264);
-  --card-foreground: oklch(0.2 0.02 264);
-  --popover: oklch(0.99 0.002 264);
-  --popover-foreground: oklch(0.2 0.02 264);
-  --primary: oklch(0.52 0.18 20);
-  --primary-foreground: oklch(0.99 0.005 20);
-  --secondary: oklch(0.82 0.06 80);
-  --secondary-foreground: oklch(0.15 0.02 80);
-  --muted: oklch(0.94 0.01 264);
-  --muted-foreground: oklch(0.48 0.03 264);
-  --accent: oklch(0.88 0.04 50);
-  --accent-foreground: oklch(0.15 0.02 50);
-  --destructive: oklch(0.55 0.22 25);
+  /* Light Mode - Softer, more elegant palette */
+  --background: oklch(0.99 0.002 240);
+  --foreground: oklch(0.15 0.01 240);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.15 0.01 240);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0.01 240);
+
+  /* Primary: Elegant Teal/Emerald */
+  --primary: oklch(0.55 0.14 180);
+  --primary-foreground: oklch(0.99 0.005 180);
+
+  /* Secondary: Soft Purple */
+  --secondary: oklch(0.92 0.04 280);
+  --secondary-foreground: oklch(0.2 0.02 280);
+
+  /* Muted: Subtle gray-blue */
+  --muted: oklch(0.96 0.008 240);
+  --muted-foreground: oklch(0.5 0.02 240);
+
+  /* Accent: Warm Blue */
+  --accent: oklch(0.94 0.03 240);
+  --accent-foreground: oklch(0.2 0.02 240);
+
+  /* Destructive: Softer Red */
+  --destructive: oklch(0.58 0.18 25);
   --destructive-foreground: oklch(0.99 0.005 25);
-  --border: oklch(0.88 0.01 264);
-  --input: oklch(0.88 0.01 264);
-  --ring: oklch(0.52 0.18 20);
-  --chart-1: oklch(0.52 0.18 20);
-  --chart-2: oklch(0.82 0.06 80);
-  --chart-3: oklch(0.88 0.04 50);
-  --chart-4: oklch(0.55 0.22 25);
-  --chart-5: oklch(0.48 0.03 264);
-  --sidebar: oklch(0.98 0.005 264);
-  --sidebar-foreground: oklch(0.2 0.02 264);
-  --sidebar-primary: oklch(0.52 0.18 20);
-  --sidebar-primary-foreground: oklch(0.99 0.005 20);
-  --sidebar-accent: oklch(0.88 0.04 50);
-  --sidebar-accent-foreground: oklch(0.15 0.02 50);
-  --sidebar-border: oklch(0.88 0.01 264);
-  --sidebar-ring: oklch(0.52 0.18 20);
-  /* Elegant font pairing: Manrope (sans) for body, Playfair Display for headings */
+
+  /* Borders: Subtle and refined */
+  --border: oklch(0.92 0.008 240);
+  --input: oklch(0.92 0.008 240);
+  --ring: oklch(0.55 0.14 180);
+
+  /* Charts: Harmonious palette */
+  --chart-1: oklch(0.55 0.14 180); /* Teal */
+  --chart-2: oklch(0.6 0.16 280); /* Purple */
+  --chart-3: oklch(0.65 0.14 140); /* Green */
+  --chart-4: oklch(0.6 0.16 40); /* Amber */
+  --chart-5: oklch(0.58 0.16 340); /* Pink */
+
+  /* Sidebar */
+  --sidebar: oklch(0.99 0.002 240);
+  --sidebar-foreground: oklch(0.15 0.01 240);
+  --sidebar-primary: oklch(0.55 0.14 180);
+  --sidebar-primary-foreground: oklch(0.99 0.005 180);
+  --sidebar-accent: oklch(0.94 0.03 240);
+  --sidebar-accent-foreground: oklch(0.2 0.02 240);
+  --sidebar-border: oklch(0.92 0.008 240);
+  --sidebar-ring: oklch(0.55 0.14 180);
+
+  /* Fonts */
   --font-sans: 'Manrope', ui-sans-serif, system-ui, -apple-system, Segoe UI,
     Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
   --font-serif: 'Playfair Display', ui-serif, Georgia, Cambria,
     'Times New Roman', Times, serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     'Liberation Mono', 'Courier New', monospace;
+
+  /* Radius */
   --radius: 0.5rem;
+
+  /* Shadows - More refined */
   --shadow-x: 0;
   --shadow-y: 1px;
   --shadow-blur: 3px;
   --shadow-spread: 0px;
-  --shadow-opacity: 0.1;
-  --shadow-color: oklch(0 0 0);
-  --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-  --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-  --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
-    0 1px 2px -1px hsl(0 0% 0% / 0.1);
+  --shadow-opacity: 0.08;
+  --shadow-color: oklch(0.2 0 0);
+  --shadow-2xs: 0 1px 2px 0px hsl(0 0% 0% / 0.04);
+  --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.06);
+  --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.08),
+    0 1px 2px -1px hsl(0 0% 0% / 0.08);
   --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-  --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
-    0 2px 4px -1px hsl(0 0% 0% / 0.1);
-  --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
-    0 4px 6px -1px hsl(0 0% 0% / 0.1);
-  --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
-    0 8px 10px -1px hsl(0 0% 0% / 0.1);
-  --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+  --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.08),
+    0 2px 4px -2px hsl(0 0% 0% / 0.06);
+  --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.08),
+    0 4px 6px -4px hsl(0 0% 0% / 0.06);
+  --shadow-xl: 0 20px 25px -5px hsl(0 0% 0% / 0.08),
+    0 8px 10px -6px hsl(0 0% 0% / 0.06);
+  --shadow-2xl: 0 25px 50px -12px hsl(0 0% 0% / 0.15);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 }
 
 .dark {
-  --background: oklch(0.13 0.015 264);
-  --foreground: oklch(0.96 0.01 264);
-  --card: oklch(0.17 0.02 264);
-  --card-foreground: oklch(0.96 0.01 264);
-  --popover: oklch(0.17 0.02 264);
-  --popover-foreground: oklch(0.96 0.01 264);
-  --primary: oklch(0.68 0.16 25);
-  --primary-foreground: oklch(0.12 0.015 25);
-  --secondary: oklch(0.88 0.06 80);
-  --secondary-foreground: oklch(0.12 0.015 80);
-  --muted: oklch(0.21 0.02 264);
-  --muted-foreground: oklch(0.65 0.02 264);
-  --accent: oklch(0.92 0.04 50);
-  --accent-foreground: oklch(0.12 0.015 50);
-  --destructive: oklch(0.62 0.24 25);
-  --destructive-foreground: oklch(0.96 0.01 25);
-  --border: oklch(0.25 0.02 264);
-  --input: oklch(0.25 0.02 264);
-  --ring: oklch(0.68 0.16 25);
-  --chart-1: oklch(0.68 0.16 25);
-  --chart-2: oklch(0.88 0.06 80);
-  --chart-3: oklch(0.92 0.04 50);
-  --chart-4: oklch(0.62 0.24 25);
-  --chart-5: oklch(0.65 0.02 264);
-  --sidebar: oklch(0.17 0.02 264);
-  --sidebar-foreground: oklch(0.96 0.01 264);
-  --sidebar-primary: oklch(0.68 0.16 25);
-  --sidebar-primary-foreground: oklch(0.12 0.015 25);
-  --sidebar-accent: oklch(0.92 0.04 50);
-  --sidebar-accent-foreground: oklch(0.12 0.015 50);
-  --sidebar-border: oklch(0.25 0.02 264);
-  --sidebar-ring: oklch(0.68 0.16 25);
+  /* Dark Mode - Deeper, more sophisticated */
+  --background: oklch(0.11 0.012 240);
+  --foreground: oklch(0.96 0.008 240);
+
+  --card: oklch(0.15 0.015 240);
+  --card-foreground: oklch(0.96 0.008 240);
+
+  --popover: oklch(0.15 0.015 240);
+  --popover-foreground: oklch(0.96 0.008 240);
+
+  /* Primary: Brighter Teal for dark mode */
+  --primary: oklch(0.65 0.16 180);
+  --primary-foreground: oklch(0.12 0.012 180);
+
+  /* Secondary: Vibrant Purple */
+  --secondary: oklch(0.4 0.12 280);
+  --secondary-foreground: oklch(0.96 0.008 280);
+
+  /* Muted: Balanced gray */
+  --muted: oklch(0.22 0.015 240);
+  --muted-foreground: oklch(0.68 0.02 240);
+
+  /* Accent: Bright Blue */
+  --accent: oklch(0.28 0.025 240);
+  --accent-foreground: oklch(0.96 0.008 240);
+
+  /* Destructive: Vivid Red */
+  --destructive: oklch(0.62 0.2 25);
+  --destructive-foreground: oklch(0.96 0.008 25);
+
+  /* Borders: Visible but subtle */
+  --border: oklch(0.28 0.02 240);
+  --input: oklch(0.28 0.02 240);
+  --ring: oklch(0.65 0.16 180);
+
+  /* Charts: Vibrant for dark backgrounds */
+  --chart-1: oklch(0.65 0.16 180); /* Bright Teal */
+  --chart-2: oklch(0.68 0.18 280); /* Bright Purple */
+  --chart-3: oklch(0.7 0.16 140); /* Bright Green */
+  --chart-4: oklch(0.72 0.18 60); /* Bright Amber */
+  --chart-5: oklch(0.68 0.18 340); /* Bright Pink */
+
+  /* Sidebar */
+  --sidebar: oklch(0.15 0.015 240);
+  --sidebar-foreground: oklch(0.96 0.008 240);
+  --sidebar-primary: oklch(0.65 0.16 180);
+  --sidebar-primary-foreground: oklch(0.12 0.012 180);
+  --sidebar-accent: oklch(0.28 0.025 240);
+  --sidebar-accent-foreground: oklch(0.96 0.008 240);
+  --sidebar-border: oklch(0.28 0.02 240);
+  --sidebar-ring: oklch(0.65 0.16 180);
+
+  /* Fonts */
   --font-sans: 'Manrope', ui-sans-serif, system-ui, -apple-system, Segoe UI,
     Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
   --font-serif: 'Playfair Display', ui-serif, Georgia, Cambria,
     'Times New Roman', Times, serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     'Liberation Mono', 'Courier New', monospace;
+
+  /* Radius */
   --radius: 0.5rem;
+
+  /* Shadows - Softer for dark mode */
   --shadow-x: 0;
   --shadow-y: 1px;
   --shadow-blur: 3px;
   --shadow-spread: 0px;
-  --shadow-opacity: 0.1;
+  --shadow-opacity: 0.3;
   --shadow-color: oklch(0 0 0);
-  --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-  --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-  --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
-    0 1px 2px -1px hsl(0 0% 0% / 0.1);
-  --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-  --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
-    0 2px 4px -1px hsl(0 0% 0% / 0.1);
-  --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
-    0 4px 6px -1px hsl(0 0% 0% / 0.1);
-  --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
-    0 8px 10px -1px hsl(0 0% 0% / 0.1);
-  --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+  --shadow-2xs: 0 1px 2px 0px hsl(0 0% 0% / 0.3);
+  --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.4);
+  --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.4),
+    0 1px 2px -1px hsl(0 0% 0% / 0.4);
+  --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.5), 0 1px 2px -1px hsl(0 0% 0% / 0.5);
+  --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.4),
+    0 2px 4px -2px hsl(0 0% 0% / 0.4);
+  --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.4),
+    0 4px 6px -4px hsl(0 0% 0% / 0.4);
+  --shadow-xl: 0 20px 25px -5px hsl(0 0% 0% / 0.5),
+    0 8px 10px -6px hsl(0 0% 0% / 0.5);
+  --shadow-2xl: 0 25px 50px -12px hsl(0 0% 0% / 0.6);
 }
 
 @theme inline {
@@ -179,6 +228,35 @@
   --shadow-2xl: var(--shadow-2xl);
 }
 
+/* Additional utility classes for enhanced visuals */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+}
+
+@layer utilities {
+  /* Glass morphism effect */
+  .glass {
+    background: oklch(from var(--background) l c h / 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Subtle glow effect */
+  .glow {
+    box-shadow: 0 0 20px oklch(from var(--primary) l c h / 0.2);
+  }
+
+  .glow-sm {
+    box-shadow: 0 0 10px oklch(from var(--primary) l c h / 0.15);
+  }
+}
 @layer base {
   * {
     @apply border-border outline-ring/50;

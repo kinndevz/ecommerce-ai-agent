@@ -16,7 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/shared/components/ui/form'
-import { loginSchema, type LoginFormValues } from '../auth.schema'
+import { loginSchema, type LoginFormValues } from './auth.schema'
 import { useAuth } from '@/hooks/useAuth'
 
 export const LoginForm = () => {
@@ -200,7 +200,7 @@ export const LoginForm = () => {
             <Button
               key={provider.id}
               type='button'
-              variant='soft'
+              variant='default'
               size='default'
               className='h-11'
               disabled={isFetching}
