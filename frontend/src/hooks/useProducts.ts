@@ -1,5 +1,16 @@
-import { useQuery, keepPreviousData } from '@tanstack/react-query'
-import { productAPI, type ProductQueryParams } from '@/api/product.api'
+import {
+  useQuery,
+  keepPreviousData,
+  useQueryClient,
+  useMutation,
+} from '@tanstack/react-query'
+import {
+  productAPI,
+  type CreateProductRequest,
+  type ProductQueryParams,
+} from '@/api/product.api'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 
 // Query Keys
 export const productKeys = {
@@ -35,5 +46,23 @@ export function useProduct(id: string) {
     queryKey: productKeys.detail(id),
     queryFn: () => productAPI.getById(id),
     enabled: !!id,
+  })
+}
+
+export function useCreateProduct() {
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
+
+  return useMutation({
+    mutationFn: (data: CreateProductRequest) => productAPI.create(data),
+    onSuccess: () => {
+      toast.success('Product created successfully')
+      queryClient.invalidateQueries({ queryKey: productKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: productKeys.stats() })
+      navigate('/admin/products')
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || 'Failed to create product')
+    },
   })
 }

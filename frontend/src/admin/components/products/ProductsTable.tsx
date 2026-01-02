@@ -36,6 +36,7 @@ import {
 import { Skeleton } from '@/shared/components/ui/skeleton'
 import { Badge } from '@/shared/components/ui/badge'
 import type { ProductListItem } from '@/api/product.api'
+import { useNavigate } from 'react-router-dom'
 
 interface ProductsTableProps {
   products: ProductListItem[]
@@ -81,6 +82,7 @@ export function ProductsTable({
       {} as Record<string, boolean>
     )
   )
+  const navigate = useNavigate()
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -364,16 +366,14 @@ export function ProductsTable({
                   {visibleColumns.status && (
                     <TableCell>
                       <Badge
-                        variant={
-                          product.is_available ? 'default' : 'destructive'
-                        }
+                        variant='outline'
                         className={
                           product.is_available
-                            ? 'bg-green-500 hover:bg-green-600'
-                            : 'bg-red-500 hover:bg-red-600'
+                            ? 'border-emerald-500/50 text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30'
+                            : 'border-orange-500/50 text-orange-700 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/30'
                         }
                       >
-                        {product.is_available ? 'Active' : 'Out of Stock'}
+                        {product.is_available ? 'Active' : 'Out Of Stock'}
                       </Badge>
                     </TableCell>
                   )}
@@ -388,9 +388,13 @@ export function ProductsTable({
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align='end'>
-                        <DropdownMenuItem>
-                          <Eye className='mr-2 h-4 w-4' />
-                          View Details
+                        <DropdownMenuItem
+                          onClick={() =>
+                            navigate(`/admin/products/${product.id}`)
+                          }
+                        >
+                          <Eye className='w-4 h-4 mr-2' />
+                          View details
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <Edit className='mr-2 h-4 w-4' />

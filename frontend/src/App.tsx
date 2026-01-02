@@ -8,6 +8,8 @@ import { ProtectedRoute } from './shared/components/ProtectedRoute'
 import HomePage from './customer/pages/HomePage'
 import DashboardPage from './admin/pages/DashboardPage'
 import ProductsPage from './admin/pages/ProductsPage'
+import AddProductPage from './admin/pages/AddProductPage'
+import ViewProductPage from './admin/pages/ViewProductPage'
 
 function App() {
   return (
@@ -39,6 +41,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <ProductsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/products/add'
+            element={
+              <ProtectedRoute>
+                <AddProductPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/products/:id'
+            element={
+              <ProtectedRoute>
+                <ViewProductPage />
               </ProtectedRoute>
             }
           />
