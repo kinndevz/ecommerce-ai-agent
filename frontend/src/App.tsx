@@ -10,6 +10,8 @@ import DashboardPage from './admin/pages/DashboardPage'
 import ProductsPage from './admin/pages/ProductsPage'
 import AddProductPage from './admin/pages/AddProductPage'
 import ViewProductPage from './admin/pages/ViewProductPage'
+import UsersPage from './admin/pages/UsersPage'
+import AddUserPage from './admin/pages/AddUserPage'
 
 function App() {
   return (
@@ -57,6 +59,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <ViewProductPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/users'
+            element={
+              <ProtectedRoute>
+                <UsersPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/users/add'
+            element={
+              <ProtectedRoute>
+                <AddUserPage />
               </ProtectedRoute>
             }
           />

@@ -1,61 +1,56 @@
-// User Status Values (lowercase - matches API)
+// User Status Values (UPPERCASE - matches API)
 export const USER_STATUS = {
-  ACTIVE: 'active',
-  INACTIVE: 'inactive',
-  SUSPENDED: 'suspended',
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  SUSPENDED: 'SUSPENDED', // If backend doesn't support, remove this
 } as const
 
 export type UserStatusType = (typeof USER_STATUS)[keyof typeof USER_STATUS]
 
-// User Role Values (lowercase - matches API)
+// User Role Values (UPPERCASE - matches API)
 export const USER_ROLE = {
-  ADMIN: 'admin',
-  MANAGER: 'manager',
-  STAFF: 'staff',
-  CUSTOMER: 'customer',
+  ADMIN: 'ADMIN',
+  CUSTOMER: 'CUSTOMER',
+  SELLER: 'SELLER',
 } as const
 
 export type UserRoleType = (typeof USER_ROLE)[keyof typeof USER_ROLE]
 
-// User Status Config for UI (use lowercase keys since USER_STATUS values are lowercase)
+// User Status Config for UI (UPPERCASE keys to match API values)
 export const USER_STATUS_CONFIG: Record<
-  UserStatusType,
+  string,
   { label: string; className: string }
 > = {
-  active: {
+  ACTIVE: {
     label: 'Active',
     className: 'bg-green-500/10 text-green-500 border-green-500/20',
   },
-  inactive: {
+  INACTIVE: {
     label: 'Inactive',
     className: 'bg-gray-500/10 text-gray-500 border-gray-500/20',
   },
-  suspended: {
+  SUSPENDED: {
     label: 'Suspended',
     className: 'bg-red-500/10 text-red-500 border-red-500/20',
   },
 }
 
-// User Role Config for UI (use lowercase keys since USER_ROLE values are lowercase)
+// User Role Config for UI (UPPERCASE keys to match API values)
 export const USER_ROLE_CONFIG: Record<
-  UserRoleType,
+  string,
   { label: string; className: string }
 > = {
-  admin: {
+  ADMIN: {
     label: 'Admin',
     className: 'bg-red-500/10 text-red-500 border-red-500/20',
   },
-  manager: {
-    label: 'Manager',
-    className: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
-  },
-  staff: {
-    label: 'Staff',
-    className: 'bg-green-500/10 text-green-500 border-green-500/20',
-  },
-  customer: {
+  CUSTOMER: {
     label: 'Customer',
     className: 'bg-gray-500/10 text-gray-500 border-gray-500/20',
+  },
+  SELLER: {
+    label: 'Seller',
+    className: 'bg-blue-500/10 text-blue-500 border-blue-500/20',
   },
 }
 
