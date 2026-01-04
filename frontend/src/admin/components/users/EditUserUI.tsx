@@ -11,6 +11,7 @@ import {
   Phone,
   Shield,
   CheckCircle2,
+  Ban,
   AlertCircle,
   Save,
   X,
@@ -38,25 +39,22 @@ import { Card } from '@/shared/components/ui/card'
 import { Separator } from '@/shared/components/ui/separator'
 import { Skeleton } from '@/shared/components/ui/skeleton'
 import { useUser, useUpdateUser } from '@/hooks/useUsers'
+import { useActiveRoles } from '@/hooks/useRoles'
 import type { UpdateUserRequest } from '@/api/user.api'
 import { AvatarUploadSection } from '@/admin/components/users/AvatarUploadSection'
-import {
-  USER_ROLE,
-  USER_ROLE_CONFIG,
-  USER_STATUS_CONFIG,
-} from '@/api/services/user.constants'
+import { USER_STATUS, USER_STATUS_CONFIG } from '@/api/services/user.constants'
 
-//  VALIDATION SCHEMA
+// ===== VALIDATION SCHEMA =====
 const editUserFormSchema = z.object({
   full_name: z.string().min(2, 'Name must be at least 2 characters'),
   phone_number: z.string().optional().nullable(),
-  avatar: z.url().optional().nullable(),
-  role_id: z.string().min(1, 'Role is required'),
+  avatar: z.string().url().optional().nullable(),
+  role_id: z.string().optional(), // Optional - only send if changed
 })
 
 type EditUserFormValues = z.infer<typeof editUserFormSchema>
 
-//  MAIN COMPONENT
+// ===== MAIN COMPONENT =====
 export function EditUserUI() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -65,6 +63,10 @@ export function EditUserUI() {
   // Fetch user data
   const { data: response, isLoading: loadingUser } = useUser(id!)
   const user = response?.data
+
+  // Fetch active roles for dropdown
+  const { data: rolesResponse, isLoading: loadingRoles } = useActiveRoles()
+  const roles = rolesResponse?.data || []
 
   // Update mutation
   const updateUser = useUpdateUser()
@@ -80,20 +82,20 @@ export function EditUserUI() {
     },
   })
 
-  // POPULATE FORM WHEN USER DATA LOADS
+  // ===== POPULATE FORM WHEN USER DATA LOADS =====
   useEffect(() => {
     if (user) {
       form.reset({
         full_name: user.full_name,
         phone_number: user.phone_number || null,
         avatar: user.avatar || null,
-        role_id: user.role.id,
+        role_id: user.role.id, // Set current role as default
       })
       setAvatarUrl(user.avatar || null)
     }
   }, [user, form])
 
-  // HANDLERS
+  // ===== HANDLERS =====
   const onSubmit = (data: EditUserFormValues) => {
     if (!id) return
 
@@ -101,7 +103,11 @@ export function EditUserUI() {
       full_name: data.full_name,
       phone_number: data.phone_number || null,
       avatar: avatarUrl || null,
-      role_id: data.role_id,
+    }
+
+    // Only include role_id if it was changed
+    if (data.role_id && data.role_id !== user?.role.id) {
+      payload.role_id = data.role_id
     }
 
     updateUser.mutate(
@@ -123,12 +129,12 @@ export function EditUserUI() {
     navigate(`/admin/users/${id}`)
   }
 
-  // LOADING STATE
-  if (loadingUser) {
+  // ===== LOADING STATE =====
+  if (loadingUser || loadingRoles) {
     return <LoadingSkeleton />
   }
 
-  // NOT FOUND
+  // ===== NOT FOUND =====
   if (!user) {
     return (
       <div className='flex items-center justify-center min-h-screen'>
@@ -146,11 +152,11 @@ export function EditUserUI() {
     )
   }
 
-  // MAIN RENDER
+  // ===== MAIN RENDER =====
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='min-h-screen'>
-        {/* STICKY HEADER */}
+        {/* ===== STICKY HEADER ===== */}
         <div className='sticky top-0 z-20 bg-background/95 backdrop-blur border-b shadow-sm'>
           <div className='max-w-7xl mx-auto px-6 py-4'>
             {/* Breadcrumb */}
@@ -220,11 +226,11 @@ export function EditUserUI() {
           </div>
         </div>
 
-        {/* FORM CONTENT */}
+        {/* ===== FORM CONTENT ===== */}
         <div className='max-w-7xl mx-auto px-6 py-8'>
           <Card className='overflow-hidden border shadow-sm'>
             <div className='grid grid-cols-1 md:grid-cols-12'>
-              {/* LEFT SIDEBAR */}
+              {/* ===== LEFT SIDEBAR ===== */}
               <div className='md:col-span-4 border-r p-8 bg-muted/30'>
                 <div className='space-y-6'>
                   {/* Avatar Section */}
@@ -288,7 +294,7 @@ export function EditUserUI() {
                 </div>
               </div>
 
-              {/* RIGHT CONTENT */}
+              {/* ===== RIGHT CONTENT ===== */}
               <div className='md:col-span-8 p-8 space-y-8'>
                 {/* General Information */}
                 <section className='space-y-4'>
@@ -386,17 +392,14 @@ export function EditUserUI() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {Object.entries(USER_ROLE).map(([key, value]) => {
-                              const config = USER_ROLE_CONFIG[value]
-                              return (
-                                <SelectItem key={value} value={value}>
-                                  <div className='flex items-center gap-2'>
-                                    <Shield className='w-4 h-4' />
-                                    <span>{config.label}</span>
-                                  </div>
-                                </SelectItem>
-                              )
-                            })}
+                            {roles.map((role) => (
+                              <SelectItem key={role.id} value={role.id}>
+                                <div className='flex items-center gap-2'>
+                                  <Shield className='w-4 h-4' />
+                                  <span>{role.name}</span>
+                                </div>
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -440,7 +443,7 @@ export function EditUserUI() {
   )
 }
 
-// HELPER COMPONENTS
+// ===== HELPER COMPONENTS =====
 interface InfoItemProps {
   label: string
   value: React.ReactNode

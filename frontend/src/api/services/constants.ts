@@ -33,6 +33,18 @@ export const API_ENDPOINT = {
   MEDIA_PRESIGNED_URLS: '/media/images/upload/presigned-urls',
   MEDIA_DELETE_FILE: '/media/file',
 
+  // Role Routes
+  ROLES: '/roles',
+  ROLE_STATS: '/roles/stats',
+  ROLE_DETAIL: (id: string) => `/roles/${id}`,
+  ROLE_ASSIGN_PERMISSIONS: (id: string) => `/roles/${id}/permissions/assign`,
+  ROLE_REMOVE_PERMISSIONS: (id: string) => `/roles/${id}/permissions/remove`,
+
+  // Permission Roues
+  PERMISSIONS: '/roles/permissions',
+  PERMISSIONS_ALL: '/roles/permissions/all',
+  PERMISSIONS_GROUPED: '/roles/permissions/grouped',
+  PERMISSIONS_DETAIL: (id: string) => `/roles/permissions/${id}`,
   // Product Routes
   PRODUCTS: '/products',
   PRODUCT_SEARCH: '/products/search',

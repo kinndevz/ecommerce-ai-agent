@@ -14,6 +14,7 @@ import UsersPage from './admin/pages/UsersPage'
 import AddUserPage from './admin/pages/AddUserPage'
 import ViewUserPage from './admin/pages/ViewUserPage'
 import EditUserPage from './admin/pages/EditUserPage'
+import RolesPermissionsPage from './admin/pages/RolesPermissionsPage'
 
 function App() {
   return (
@@ -93,6 +94,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <EditUserPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/roles'
+            element={
+              <ProtectedRoute>
+                <RolesPermissionsPage />
               </ProtectedRoute>
             }
           />

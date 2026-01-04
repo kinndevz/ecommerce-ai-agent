@@ -8,10 +8,9 @@ import {
   IconSettings,
   IconTruckDelivery,
   IconUsers,
+  IconUserShield,
   IconWorld,
 } from '@tabler/icons-react'
-
-import { NavDocuments } from '@/admin/components/sidebar/nav-documents'
 import { NavMain } from '@/admin/components/sidebar/nav-main'
 import { NavSecondary } from '@/admin/components/sidebar/nav-secondary'
 import { NavUser } from '@/admin/components/sidebar/nav-user'
@@ -57,6 +56,11 @@ const data = {
       title: 'Users ',
       url: '/admin/users',
       icon: IconUsers,
+    },
+    {
+      title: 'Roles & Permissions ',
+      url: '/admin/roles',
+      icon: IconUserShield,
     },
   ],
   navSecondary: [
