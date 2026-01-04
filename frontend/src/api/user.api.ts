@@ -33,6 +33,7 @@ interface UserIncludeRole {
   id: string
   name: string
   description: string
+  permissions?: Permission[]
 }
 
 export interface User {

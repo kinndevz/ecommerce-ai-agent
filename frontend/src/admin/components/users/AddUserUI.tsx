@@ -110,7 +110,6 @@ export default function AddUserUI() {
 
   return (
     <div className='max-w-7xl p-6 pb-20'>
-      {' '}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

@@ -12,6 +12,8 @@ import AddProductPage from './admin/pages/AddProductPage'
 import ViewProductPage from './admin/pages/ViewProductPage'
 import UsersPage from './admin/pages/UsersPage'
 import AddUserPage from './admin/pages/AddUserPage'
+import ViewUserPage from './admin/pages/ViewUserPage'
+import EditUserPage from './admin/pages/EditUserPage'
 
 function App() {
   return (
@@ -75,6 +77,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <AddUserPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/users/:id'
+            element={
+              <ProtectedRoute>
+                <ViewUserPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/users/:id/edit'
+            element={
+              <ProtectedRoute>
+                <EditUserPage />
               </ProtectedRoute>
             }
           />
