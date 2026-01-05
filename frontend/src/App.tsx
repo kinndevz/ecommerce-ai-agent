@@ -15,8 +15,20 @@ import AddUserPage from './admin/pages/AddUserPage'
 import ViewUserPage from './admin/pages/ViewUserPage'
 import EditUserPage from './admin/pages/EditUserPage'
 import RolesPermissionsPage from './admin/pages/RolesPermissionsPage'
+import MaintenancePage from './shared/pages/MaintenancePage'
+import NotFoundPage from './shared/pages/NotFoundPage'
+import BrandsPage from './admin/pages/BrandsPage'
+import AddBrandPage from './admin/pages/AddBrandPage'
+import ViewBrandPage from './admin/pages/ViewBrandPage'
+import EditBrandPage from './admin/pages/EditBrandPage'
 
 function App() {
+  const isMaintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === 'true'
+
+  if (isMaintenanceMode) {
+    return <MaintenancePage />
+  }
+
   return (
     <ThemeProvider defaultTheme='dark' storageKey='vite-ui-theme'>
       <AuthProvider>
@@ -105,9 +117,44 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path='/admin/brands'
+            element={
+              <ProtectedRoute>
+                <BrandsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/brands/add'
+            element={
+              <ProtectedRoute>
+                <AddBrandPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/brands/:id'
+            element={
+              <ProtectedRoute>
+                <ViewBrandPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/brands/:id/edit'
+            element={
+              <ProtectedRoute>
+                <EditBrandPage />
+              </ProtectedRoute>
+            }
+          />
 
-          {/* 404 Not Found */}
-          <Route path='*' element={<div>404 Page Not Found</div>} />
+          {/* Error routes */}
+          <Route path='/maintenance' element={<MaintenancePage />} />
+
+          {/* 404 - Must be last */}
+          <Route path='*' element={<NotFoundPage />} />
         </Routes>
       </AuthProvider>
     </ThemeProvider>

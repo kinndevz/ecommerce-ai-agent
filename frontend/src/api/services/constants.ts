@@ -18,6 +18,22 @@ export const API_ENDPOINT = {
   TOGGLE_CATEGORY_STATUS: (id: string) => `/categories/${id}/toggle-status`,
   MOVE_CATEGORY: (id: string) => `/categories/${id}/move`,
 
+  // Cart Endpoints
+  GET_CART: '/cart',
+  ADD_TO_CART: '/cart/items',
+  CLEAR_CART: '/cart',
+  UPDATE_CART_ITEM: (id: string) => `/cart/items/${id}`,
+  REMOVE_CART_ITEM: (id: string) => `/cart/items/${id}`,
+
+  // Order Endpoints
+  CREATE_ORDER: '/orders',
+  GET_MY_ORDERS: '/orders',
+  GET_ALL_ORDERS_ADMIN: '/orders/all',
+  GET_ORDER_STATS: '/orders/stats',
+  GET_ORDER_DETAIL: (id: string) => `/orders/${id}`,
+  CANCEL_ORDER: (id: string) => `/orders/${id}/cancel`,
+  UPDATE_ORDER_STATUS: (id: string) => `/orders/${id}/status`,
+
   // Brand Routes
   GET_ALL_BRANDS: '/brands',
   GET_BRAND_DETAIL: (id: string) => `/brands/${id}`,
