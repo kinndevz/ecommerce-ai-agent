@@ -96,7 +96,6 @@ export function useCreateRole() {
       queryClient.invalidateQueries({ queryKey: roleKeys.lists() })
       queryClient.invalidateQueries({ queryKey: roleKeys.stats() })
       queryClient.invalidateQueries({ queryKey: roleKeys.active() })
-      navigate('/admin/roles')
     },
     onError: (error: any) => {
       toast.error(error?.response?.data?.message || 'Failed to create role')
@@ -120,7 +119,6 @@ export function useUpdateRole() {
       queryClient.invalidateQueries({ queryKey: roleKeys.detail(variables.id) })
       queryClient.invalidateQueries({ queryKey: roleKeys.stats() })
       queryClient.invalidateQueries({ queryKey: roleKeys.active() })
-      navigate('/admin/roles')
     },
     onError: (error: any) => {
       toast.error(error?.response?.data?.message || 'Failed to update role')

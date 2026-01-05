@@ -41,6 +41,8 @@ import {
   ChevronsRight,
 } from 'lucide-react'
 import type { RoleDetailData } from '@/api/role.api'
+import { ViewRoleDialog } from './ViewRoleDialog'
+import { EditRoleDialog } from './EditRoleDialog'
 
 interface RolesTableProps {
   roles: RoleDetailData[]
@@ -84,6 +86,8 @@ export function RolesTable({
       {} as Record<string, boolean>
     )
   )
+  const [viewRoleId, setViewRoleId] = useState<string | null>(null)
+  const [editRoleId, setEditRoleId] = useState<string | null>(null)
   const navigate = useNavigate()
 
   const handleSelectAll = (checked: boolean) => {
@@ -318,26 +322,16 @@ export function RolesTable({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align='end'>
                           <DropdownMenuItem
-                            onClick={() => navigate(`/admin/roles/${role.id}`)}
+                            onClick={() => setViewRoleId(role.id)}
                           >
                             <Eye className='mr-2 h-4 w-4' />
                             View Details
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() =>
-                              navigate(`/admin/roles/${role.id}/permissions`)
-                            }
-                          >
-                            <Settings className='mr-2 h-4 w-4' />
-                            Manage Permissions
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() =>
-                              navigate(`/admin/roles/${role.id}/edit`)
-                            }
+                            onClick={() => setEditRoleId(role.id)}
                           >
                             <Edit className='mr-2 h-4 w-4' />
-                            Edit
+                            Edit Role
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
@@ -435,6 +429,18 @@ export function RolesTable({
           </Button>
         </div>
       </div>
+
+      {/* Dialogs */}
+      <ViewRoleDialog
+        roleId={viewRoleId}
+        open={!!viewRoleId}
+        onOpenChange={(open) => !open && setViewRoleId(null)}
+      />
+      <EditRoleDialog
+        roleId={editRoleId}
+        open={!!editRoleId}
+        onOpenChange={(open) => !open && setEditRoleId(null)}
+      />
     </div>
   )
 }
