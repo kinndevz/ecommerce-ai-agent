@@ -25,6 +25,8 @@ import CategoriesPage from './admin/pages/CategoriesPage'
 import AddCategoryPage from './admin/pages/AddCategoryPage'
 import ViewCategoryPage from './admin/pages/ViewCategoryPage'
 import EditCategoryPage from './admin/pages/EditCategoryPage'
+import OrdersPage from './admin/pages/OrdersPage'
+import ViewOrderPage from './admin/pages/ViewOrderPage'
 
 function App() {
   const isMaintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === 'true'
@@ -186,7 +188,23 @@ function App() {
               </ProtectedRoute>
             }
           />
-
+          {/* Admin Orders Routes */}
+          <Route
+            path='/admin/orders'
+            element={
+              <ProtectedRoute>
+                <OrdersPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/orders/:id'
+            element={
+              <ProtectedRoute>
+                <ViewOrderPage />
+              </ProtectedRoute>
+            }
+          />
           {/* Error routes */}
           <Route path='/maintenance' element={<MaintenancePage />} />
 

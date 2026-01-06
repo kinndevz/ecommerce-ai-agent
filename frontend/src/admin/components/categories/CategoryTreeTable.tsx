@@ -12,6 +12,7 @@ import {
   Package,
   Hash,
   Layers,
+  MoreHorizontal,
 } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import { Badge } from '@/shared/components/ui/badge'
@@ -384,12 +385,8 @@ function CategoryRow({
         <div className='col-span-1 flex items-center justify-end'>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant='ghost'
-                size='icon'
-                className='h-9 w-9 opacity-0 group-hover:opacity-100 transition-opacity'
-              >
-                <MoreVertical className='w-4 h-4' />
+              <Button variant='ghost' size='icon'>
+                <MoreHorizontal className='w-4 h-4' />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end' className='w-48'>
