@@ -21,6 +21,10 @@ import BrandsPage from './admin/pages/BrandsPage'
 import AddBrandPage from './admin/pages/AddBrandPage'
 import ViewBrandPage from './admin/pages/ViewBrandPage'
 import EditBrandPage from './admin/pages/EditBrandPage'
+import CategoriesPage from './admin/pages/CategoriesPage'
+import AddCategoryPage from './admin/pages/AddCategoryPage'
+import ViewCategoryPage from './admin/pages/ViewCategoryPage'
+import EditCategoryPage from './admin/pages/EditCategoryPage'
 
 function App() {
   const isMaintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === 'true'
@@ -146,6 +150,39 @@ function App() {
             element={
               <ProtectedRoute>
                 <EditBrandPage />
+              </ProtectedRoute>
+            }
+          />
+          {/* Admin Categories Routes */}
+          <Route
+            path='/admin/categories'
+            element={
+              <ProtectedRoute>
+                <CategoriesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/categories/add'
+            element={
+              <ProtectedRoute>
+                <AddCategoryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/categories/:id'
+            element={
+              <ProtectedRoute>
+                <ViewCategoryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/categories/:id/edit'
+            element={
+              <ProtectedRoute>
+                <EditCategoryPage />
               </ProtectedRoute>
             }
           />

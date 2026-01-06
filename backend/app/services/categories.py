@@ -161,6 +161,7 @@ class CategoryService:
                     "Parent category", data.parent_id)
 
         # Create
+        now = datetime.now(timezone.utc)
         category = Category(
             id=str(uuid.uuid4()),
             parent_id=data.parent_id,
@@ -170,7 +171,9 @@ class CategoryService:
             image_url=data.image_url,
             display_order=data.display_order,
             is_active=True,
-            created_by_id=created_by_id
+            created_by_id=created_by_id,
+            created_at=now,
+            updated_at=now
         )
 
         db.add(category)
