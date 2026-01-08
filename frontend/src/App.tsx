@@ -27,6 +27,7 @@ import ViewCategoryPage from './admin/pages/ViewCategoryPage'
 import EditCategoryPage from './admin/pages/EditCategoryPage'
 import OrdersPage from './admin/pages/OrdersPage'
 import ViewOrderPage from './admin/pages/ViewOrderPage'
+import EditProductPage from './admin/pages/EditProductPage'
 
 function App() {
   const isMaintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === 'true'
@@ -72,6 +73,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <AddProductPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/admin/products/:id/edit'
+            element={
+              <ProtectedRoute>
+                <EditProductPage />
               </ProtectedRoute>
             }
           />

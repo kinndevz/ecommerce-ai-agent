@@ -99,9 +99,7 @@ export function OrdersTable({
 
   return (
     <div className='space-y-4'>
-      {/* Table */}
       <div className='rounded-xl border bg-card overflow-hidden shadow-sm'>
-        {/* Table Header - Sử dụng text-xs đậm và uppercase để gọn gàng */}
         <div className='grid grid-cols-12 gap-4 px-6 py-4 bg-muted/40 border-b font-semibold text-xs text-muted-foreground uppercase tracking-wider'>
           <div className='col-span-2 flex items-center gap-1'>Order ID</div>
           <div className='col-span-2 text-center'>Date</div>
@@ -112,14 +110,12 @@ export function OrdersTable({
           <div className='col-span-1 text-right'>Action</div>
         </div>
 
-        {/* Table Body */}
         <div className='divide-y divide-border/50'>
           {orders.map((order) => (
             <div
               key={order.id}
               className='group grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-muted/30 transition-all duration-200'
             >
-              {/* Order Number - Tăng lên text-sm để dễ đọc */}
               <div className='col-span-2 flex items-center'>
                 <button
                   onClick={() => navigate(`/admin/orders/${order.id}`)}
@@ -129,7 +125,6 @@ export function OrdersTable({
                 </button>
               </div>
 
-              {/* Date - Text-sm nhưng màu nhạt hơn */}
               <div className='col-span-2 flex items-center justify-center'>
                 <TooltipProvider>
                   <Tooltip>
@@ -146,14 +141,12 @@ export function OrdersTable({
                 </TooltipProvider>
               </div>
 
-              {/* Total - Text-sm đậm */}
               <div className='col-span-2 flex items-center justify-center'>
                 <span className='text-sm font-semibold text-foreground'>
                   {formatCurrency(order.total)}
                 </span>
               </div>
 
-              {/* Items Count */}
               <div className='col-span-1 flex items-center justify-center'>
                 <Badge
                   variant='secondary'
@@ -163,7 +156,6 @@ export function OrdersTable({
                 </Badge>
               </div>
 
-              {/* Payment Status - Badge chỉnh padding */}
               <div className='col-span-2 flex items-center justify-center'>
                 <Badge
                   variant='outline'
@@ -175,7 +167,6 @@ export function OrdersTable({
                 </Badge>
               </div>
 
-              {/* Order Status */}
               <div className='col-span-2 flex items-center justify-center'>
                 <Badge
                   variant='outline'
@@ -187,7 +178,6 @@ export function OrdersTable({
                 </Badge>
               </div>
 
-              {/* Actions */}
               <div className='col-span-1 flex items-center justify-end'>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -228,7 +218,6 @@ export function OrdersTable({
         </div>
       </div>
 
-      {/* Pagination - Text-sm cho đồng bộ */}
       {totalPages > 1 && (
         <div className='flex items-center justify-between py-4 px-2'>
           <p className='text-sm text-muted-foreground font-medium'>
@@ -297,7 +286,6 @@ export function OrdersTable({
         </div>
       )}
 
-      {/* Status Change Dialog */}
       {statusChangeOrder && (
         <UpdateOrderStatusDialog
           orderId={statusChangeOrder.id}

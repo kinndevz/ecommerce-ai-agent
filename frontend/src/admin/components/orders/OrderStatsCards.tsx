@@ -26,7 +26,6 @@ export function OrderStatsCards() {
 
   if (!stats) return null
 
-  // Helper format tiền tệ
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
@@ -37,7 +36,7 @@ export function OrderStatsCards() {
   const cards = [
     {
       title: 'Total Revenue',
-      value: formatCurrency(stats.total_revenue), // Format tiền ở đây cho đẹp
+      value: formatCurrency(stats.total_revenue),
       description: 'Awaiting confirmation',
       icon: Landmark,
       color: 'text-orange-600',
@@ -85,15 +84,12 @@ export function OrderStatsCards() {
               </div>
             </div>
             <div>
-              {/* Tăng size title lên text-sm và dùng màu nhạt hơn */}
               <p className='text-sm font-medium text-muted-foreground mb-1'>
                 {card.title}
               </p>
-              {/* Tăng size số liệu lên 3xl để nổi bật */}
               <h3 className='text-2xl lg:text-3xl font-bold mb-1.5 text-foreground group-hover:text-primary transition-colors tracking-tight'>
                 {card.value}
               </h3>
-              {/* Description rõ ràng hơn */}
               <p className='text-xs font-medium text-muted-foreground/80'>
                 {card.description}
               </p>

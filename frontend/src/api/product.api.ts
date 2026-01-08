@@ -426,38 +426,38 @@ export const productAPI = {
   },
 
   //  Images
-  //   addImage: async (
-  //     id: string,
-  //     imageData: ProductImageCreateRequest
-  //   ): Promise<ApiSuccessResponse<ProductImageData>> => {
-  //     const { data } = await api.post<ApiSuccessResponse<ProductImageData>>(
-  //       API_ENDPOINT.PRODUCT_IMAGES(id),
-  //       imageData
-  //     )
-  //     return data
-  //   },
+  addImage: async (
+    id: string,
+    imageData: ProductImageCreateRequest
+  ): Promise<ApiSuccessResponse<ProductImageData>> => {
+    const { data } = await api.post<ApiSuccessResponse<ProductImageData>>(
+      API_ENDPOINT.PRODUCT_IMAGES(id),
+      imageData
+    )
+    return data
+  },
 
-  //   updateImage: async (
-  //     id: string,
-  //     imageId: string,
-  //     imageData: ProductImageUpdateRequest
-  //   ): Promise<ApiSuccessResponse<ProductImageData>> => {
-  //     const { data } = await api.patch<ApiSuccessResponse<ProductImageData>>(
-  //       API_ENDPOINT.PRODUCT_IMAGE_DETAIL(id, imageId),
-  //       imageData
-  //     )
-  //     return data
-  //   },
+  updateImage: async (
+    id: string,
+    imageId: string,
+    imageData: ProductImageUpdateRequest
+  ): Promise<ApiSuccessResponse<ProductImageData>> => {
+    const { data } = await api.patch<ApiSuccessResponse<ProductImageData>>(
+      API_ENDPOINT.PRODUCT_IMAGE_DETAIL(id, imageId),
+      imageData
+    )
+    return data
+  },
 
-  //   deleteImage: async (
-  //     id: string,
-  //     imageId: string
-  //   ): Promise<ApiSuccessResponse<null>> => {
-  //     const { data } = await api.delete<ApiSuccessResponse<null>>(
-  //       API_ENDPOINT.PRODUCT_IMAGE_DETAIL(id, imageId)
-  //     )
-  //     return data
-  //   },
+  deleteImage: async (
+    id: string,
+    imageId: string
+  ): Promise<ApiSuccessResponse<null>> => {
+    const { data } = await api.delete<ApiSuccessResponse<null>>(
+      API_ENDPOINT.PRODUCT_IMAGE_DETAIL(id, imageId)
+    )
+    return data
+  },
 
   //  Variants
 

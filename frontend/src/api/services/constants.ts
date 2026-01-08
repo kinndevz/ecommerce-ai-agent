@@ -34,6 +34,14 @@ export const API_ENDPOINT = {
   CANCEL_ORDER: (id: string) => `/orders/${id}/cancel`,
   UPDATE_ORDER_STATUS: (id: string) => `/orders/${id}/status`,
 
+  // Tags
+  TAGS: '/tags',
+  TAG_POPULAR: '/tags/popular',
+  TAG_STATS: '/tags/stats',
+  TAG_BY_SLUG: (slug: string) => `/tags/slug/${slug}`,
+  TAG_DETAIL: (id: string) => `/tags/${id}`,
+  TAG_MERGE: '/tags/merge',
+
   // Brand Routes
   GET_ALL_BRANDS: '/brands',
   GET_BRAND_DETAIL: (id: string) => `/brands/${id}`,

@@ -396,7 +396,11 @@ export function ProductsTable({
                           <Eye className='w-4 h-4 mr-2' />
                           View details
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() =>
+                            navigate(`/admin/products/${product.id}/edit`)
+                          }
+                        >
                           <Edit className='mr-2 h-4 w-4' />
                           Edit
                         </DropdownMenuItem>
