@@ -118,12 +118,12 @@ export function EditProductUI() {
 
       {/* TABS */}
       <Tabs
+        key={product.id}
         value={activeTab}
         onValueChange={setActiveTab}
         className='space-y-6'
       >
-        {' '}
-        <TabsList className='w-full grid grid-cols-3 h-12'>
+        <TabsList className='grid w-full grid-cols-3 h-12'>
           <TabsTrigger value='basic' className='gap-2'>
             <Info className='w-4 h-4' />
             Basic Info
@@ -137,12 +137,15 @@ export function EditProductUI() {
             Variants ({product.variants?.length || 0})
           </TabsTrigger>
         </TabsList>
+
         <TabsContent value='basic' className='space-y-6'>
           <ProductBasicInfoTab product={product} />
         </TabsContent>
+
         <TabsContent value='images' className='space-y-6'>
           <ProductImagesTab product={product} />
         </TabsContent>
+
         <TabsContent value='variants' className='space-y-6'>
           <ProductVariantsTab product={product} />
         </TabsContent>

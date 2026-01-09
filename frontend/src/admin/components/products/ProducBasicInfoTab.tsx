@@ -36,9 +36,9 @@ import { useUpdateProduct } from '@/hooks/useProducts'
 import { useBrands } from '@/hooks/useBrands'
 import { useCategories } from '@/hooks/useCategories'
 import { SkinType, SkinConcern, ProductBenefit } from '@/api/services/enums'
-import type { ProductDetail } from '@/api/product.api'
 import { productFormSchema } from './product.schema'
 import { ProfessionalEditor } from './RichTextEditor'
+import type { ProductDetail } from '@/api/product.api'
 
 interface ProductBasicInfoTabProps {
   product: ProductDetail
@@ -76,8 +76,9 @@ export function ProductBasicInfoTab({ product }: ProductBasicInfoTabProps) {
     },
   })
 
-  // Populate form
   useEffect(() => {
+    if (loadingBrands || loadingCategories) return
+
     form.reset({
       name: product.name,
       slug: product.slug,
@@ -97,7 +98,7 @@ export function ProductBasicInfoTab({ product }: ProductBasicInfoTabProps) {
       tag_ids: product.tags?.map((t) => t.id),
       ingredients: product.ingredients,
     })
-  }, [product, form])
+  }, [product, form, loadingBrands, loadingCategories, brands, categories])
 
   const onSubmit = (data: any) => {
     updateProduct.mutate({ id: product.id, data })
@@ -341,21 +342,34 @@ export function ProductBasicInfoTab({ product }: ProductBasicInfoTabProps) {
                     <FormItem>
                       <FormLabel>Brand *</FormLabel>
                       <Select
+                        key={field.value || 'no-brand'}
                         onValueChange={field.onChange}
                         value={field.value}
                         disabled={loadingBrands}
                       >
                         <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder='Select brand' />
+                          <SelectTrigger className='w-full'>
+                            <SelectValue
+                              placeholder={
+                                loadingBrands
+                                  ? 'Loading brands...'
+                                  : 'Select brand'
+                              }
+                            />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {brands.map((brand) => (
-                            <SelectItem key={brand.id} value={brand.id}>
-                              {brand.name}
+                          {loadingBrands ? (
+                            <SelectItem value='loading' disabled>
+                              Loading...
                             </SelectItem>
-                          ))}
+                          ) : (
+                            brands.map((brand) => (
+                              <SelectItem key={brand.id} value={brand.id}>
+                                {brand.name}
+                              </SelectItem>
+                            ))
+                          )}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -370,26 +384,39 @@ export function ProductBasicInfoTab({ product }: ProductBasicInfoTabProps) {
                     <FormItem>
                       <FormLabel>Category *</FormLabel>
                       <Select
+                        key={field.value || 'no-category'}
                         onValueChange={field.onChange}
                         value={field.value}
                         disabled={loadingCategories}
                       >
                         <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder='Select category' />
+                          <SelectTrigger className='w-full'>
+                            <SelectValue
+                              placeholder={
+                                loadingCategories
+                                  ? 'Loading categories...'
+                                  : 'Select category'
+                              }
+                            />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {flatCategories.map((cat) => (
-                            <SelectItem key={cat.id} value={cat.id}>
-                              <span
-                                style={{ paddingLeft: `${cat.level * 12}px` }}
-                              >
-                                {cat.level > 0 && '└─ '}
-                                {cat.name}
-                              </span>
+                          {loadingCategories ? (
+                            <SelectItem value='loading' disabled>
+                              Loading...
                             </SelectItem>
-                          ))}
+                          ) : (
+                            flatCategories.map((cat) => (
+                              <SelectItem key={cat.id} value={cat.id}>
+                                <span
+                                  style={{ paddingLeft: `${cat.level * 12}px` }}
+                                >
+                                  {cat.level > 0 && '└─ '}
+                                  {cat.name}
+                                </span>
+                              </SelectItem>
+                            ))
+                          )}
                         </SelectContent>
                       </Select>
                       <FormMessage />
