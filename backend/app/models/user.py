@@ -52,6 +52,8 @@ class User(Base):
     preference = relationship(
         "UserPreference", back_populates="user", uselist=False)
     product_views = relationship("ProductView", back_populates="user")
+    notifications = relationship(
+        "Notification", back_populates="user", cascade="all, delete-orphan")
 
 
 class RefreshToken(Base):

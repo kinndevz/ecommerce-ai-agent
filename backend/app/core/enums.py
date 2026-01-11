@@ -1,7 +1,22 @@
 from enum import Enum
 
 
-# ========== ORDER ENUMS ==========
+# NOTIFICATION ENUMS
+class NotificationType(str, Enum):
+    """Notification types"""
+    ORDER_CREATED = "ORDER_CREATED"
+    ORDER_CONFIRMED = "ORDER_CONFIRMED"
+    ORDER_SHIPPED = "ORDER_SHIPPED"
+    ORDER_DELIVERED = "ORDER_DELIVERED"
+    ORDER_CANCELLED = "ORDER_CANCELLED"
+    PAYMENT_SUCCESS = "PAYMENT_SUCCESS"
+    PAYMENT_FAILED = "PAYMENT_FAILED"
+    REVIEW_RECEIVED = "REVIEW_RECEIVED"
+    PROMOTION = "PROMOTION"
+    SYSTEM = "SYSTEM"
+
+
+# ORDER ENUMS
 class OrderStatus(str, Enum):
     """Order status values"""
     PENDING = "pending"
@@ -60,7 +75,7 @@ class PaymentMethod(str, Enum):
         return display_names.get(method, method)
 
 
-# ========== PRODUCT ENUMS ==========
+# PRODUCT ENUMS
 class SkinType(str, Enum):
     """Skin type values"""
     OILY = "oily"
