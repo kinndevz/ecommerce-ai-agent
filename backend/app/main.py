@@ -16,6 +16,7 @@ from app.utils.exceptions import (
 )
 from app.agents.mcp_manager import mcp_manager
 from app.agents.graph import get_agent_graph
+from app.core.redis_rate_limit_middleware import RedisRateLimitMiddleware
 
 
 @asynccontextmanager
@@ -47,6 +48,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# RATE LIMITING
+app.add_middleware(RedisRateLimitMiddleware)
 
 
 @app.middleware("http")

@@ -1,6 +1,33 @@
 from enum import Enum
 
 
+class UserStatus(str, Enum):
+    ACTIVE = "ACTIVE"
+    INACTIVE = "INACTIVE"
+
+
+class HTTPMethod(str, Enum):
+    GET = "GET"
+    POST = "POST"
+    PUT = "PUT"
+    DELETE = "DELETE"
+    PATCH = "PATCH"
+
+
+class VerificationCodeType(str, Enum):
+    REGISTER = "REGISTER"
+    FORGOT_PASSWORD = "FORGOT_PASSWORD"
+    LOGIN = "LOGIN"
+    DISABLE_2FA = "DISABLE_2FA"
+
+
+class RateLimitTier(str, Enum):
+    STRICT = "strict"
+    MODERATE = "moderate"
+    RELAXED = "relaxed"
+    UNRESTRICTED = "unrestricted"
+
+
 # NOTIFICATION ENUMS
 class NotificationType(str, Enum):
     """Notification types"""

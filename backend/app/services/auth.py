@@ -2,8 +2,9 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timedelta, timezone
 import uuid
 from fastapi import Response
-from app.models.user import User, RefreshToken, VerificationCode, UserStatus, VerificationCodeType
+from app.models.user import User, RefreshToken, VerificationCode, VerificationCodeType
 from app.models.role import Role
+from app.core.enums import UserStatus
 from app.core.security import (
     hash_password, verify_password,
     create_access_token, create_refresh_token, verify_refresh_token,

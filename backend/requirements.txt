@@ -47,3 +47,4 @@ boto3
 python-multipart
 langgraph-checkpoint-postgres
 psycopg[binary,pool]
+redis

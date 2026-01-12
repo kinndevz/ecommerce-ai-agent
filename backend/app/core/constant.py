@@ -9,20 +9,7 @@ class UserRole:
     SELLER = "SELLER"
 
 
-class UserStatus(str, Enum):
-    ACTIVE = "ACTIVE"
-    INACTIVE = "INACTIVE"
-
-
-class HTTPMethod(str, Enum):
-    GET = "GET"
-    POST = "POST"
-    PUT = "PUT"
-    DELETE = "DELETE"
-    PATCH = "PATCH"
-
-
-# ========== ORDER CONSTANTS ==========
+# ORDER CONSTANTS
 class OrderConstants:
     """Order-related constants"""
 
@@ -56,7 +43,7 @@ class PaymentConstants:
     COD_FEE = Decimal('0.00')  # No fee for COD
 
 
-# ========== CART CONSTANTS ==========
+# CART CONSTANTS
 class CartConstants:
     """Cart-related constants"""
 
@@ -65,7 +52,7 @@ class CartConstants:
     CART_EXPIRY_DAYS = 30  # Auto-clear after 30 days
 
 
-# ========== PRODUCT CONSTANTS ==========
+# PRODUCT CONSTANTS
 class ProductConstants:
     """Product-related constants"""
 

@@ -61,6 +61,19 @@ class Settings(BaseSettings):
     # Open api key
     OPENAI_API_KEY: str
 
+    # Redis Cloud (Rate Limiting)
+    REDIS_HOST: str
+    REDIS_PORT: int
+    REDIS_PASSWORD: str
+    REDIS_USERNAME: str
+    REDIS_DB: int
+    REDIS_SSL: bool
+    REDIS_MAX_CONNECTIONS: int
+    REDIS_SOCKET_TIMEOUT: int
+    REDIS_SOCKET_CONNECT_TIMEOUT: int
+    REDIS_KEY_PREFIX: str
+    REDIS_KEY_TTL: int
+
     class Config:
         env_file = ".env"
         case_sensitive = True
@@ -68,6 +81,12 @@ class Settings(BaseSettings):
     @property
     def database_url(self) -> str:
         return self.DATABASE_URL
+
+    @property
+    def redis_url(self) -> str:
+        """Generate Redis URL"""
+        auth = f"{self.REDIS_USERNAME}:{self.REDIS_PASSWORD}"
+        return f"redis://{auth}@{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
 
 
 settings = Settings()

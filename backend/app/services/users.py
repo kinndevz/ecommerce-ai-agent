@@ -4,7 +4,7 @@ from app.models.role import Role
 from app.models.user import User
 from app.utils.responses import ResponseHandler
 from app.schemas.users import UserCreateRequest, UserUpdateRequest
-from app.core.constant import UserStatus
+from app.core.enums import UserStatus
 from app.core.security import hash_password
 from datetime import datetime, timezone
 import uuid

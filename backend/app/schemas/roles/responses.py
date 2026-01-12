@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
-from app.core.constant import HTTPMethod
+from app.core.enums import HTTPMethod
 
 
 class BaseConfig:

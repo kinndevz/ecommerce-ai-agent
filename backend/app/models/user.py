@@ -1,14 +1,9 @@
 from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from datetime import datetime
-import enum
 from app.db.database import Base
 from datetime import datetime, timezone
-
-
-class UserStatus(str, enum.Enum):
-    ACTIVE = "ACTIVE"
-    INACTIVE = "INACTIVE"
+from app.core.enums import UserStatus, VerificationCodeType
 
 
 class User(Base):
@@ -68,13 +63,6 @@ class RefreshToken(Base):
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
 
     user = relationship("User", back_populates="refresh_tokens")
-
-
-class VerificationCodeType(str, enum.Enum):
-    REGISTER = "REGISTER"
-    FORGOT_PASSWORD = "FORGOT_PASSWORD"
-    LOGIN = "LOGIN"
-    DISABLE_2FA = "DISABLE_2FA"
 
 
 class VerificationCode(Base):

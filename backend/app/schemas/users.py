@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr, Field
 from typing import List, Optional
-from app.core.constant import HTTPMethod, UserStatus
+from app.core.enums import HTTPMethod, UserStatus
 from datetime import datetime
 
 

@@ -2,11 +2,10 @@ from pydantic import BaseModel
 from typing import Optional
 from app.schemas.users import RoleOut
 from datetime import datetime
-from app.core.constant import UserStatus
-
-# ========== User Profile Schema ==========
+from app.core.enums import UserStatus
 
 
+# User Profile Schema
 class AccountBase(BaseModel):
     """User profile with full role & permissions"""
     id: str
@@ -24,7 +23,7 @@ class AccountBase(BaseModel):
         from_attributes = True
 
 
-# ========== Update User Schema ==========
+# Update User Schema
 class UpdateUserProfileRequest(BaseModel):
     """Update user profile request"""
     full_name: Optional[str] = None
@@ -32,7 +31,7 @@ class UpdateUserProfileRequest(BaseModel):
     avatar: Optional[str] = None
 
 
-# ========== Change Password Schema ==========
+# Change Password Schema
 class ChangePasswordRequest(BaseModel):
     """Change password request"""
     old_password: str
@@ -48,7 +47,7 @@ class ChangePasswordRequest(BaseModel):
         return True
 
 
-# ========== Response Wrapper ==========
+# Response Wrapper
 
 class UserProfileResponse(BaseModel):
     """Wrapped response for user profile"""

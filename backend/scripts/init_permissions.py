@@ -2,7 +2,8 @@ from fastapi.routing import APIRoute
 from app.main import app
 from app.core.security import hash_password
 from app.core.config import settings
-from app.models.user import User, UserStatus
+from app.models.user import User
+from app.core.enums import UserStatus
 from app.models.role import Role, Permission, HTTPMethod
 from app.db.database import SessionLocal
 import sys

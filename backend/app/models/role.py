@@ -1,10 +1,9 @@
 from sqlalchemy import Column, String, Boolean, DateTime, Table, ForeignKey, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from datetime import datetime
-import enum
 from app.db.database import Base
 from datetime import datetime, timezone
-
+from app.core.enums import HTTPMethod
 
 # Association table for many-to-many relationship
 role_permissions = Table(
@@ -14,14 +13,6 @@ role_permissions = Table(
     Column('permission_id', String, ForeignKey(
         'permissions.id'), primary_key=True)
 )
-
-
-class HTTPMethod(str, enum.Enum):
-    GET = "GET"
-    POST = "POST"
-    PUT = "PUT"
-    DELETE = "DELETE"
-    PATCH = "PATCH"
 
 
 class Role(Base):
