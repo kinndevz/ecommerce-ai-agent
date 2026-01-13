@@ -3,11 +3,10 @@ import json
 import traceback
 from typing import Dict, List, Optional, Any
 from pydantic import BaseModel, ValidationError
-
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_core.tools import BaseTool
 from app.core.config import settings
-from app.agents.interceptors import inject_auth_token
+from app.agents.interceptors import inject_auth_token, append_structured_content
 
 
 class ToolMetadata(BaseModel):
@@ -44,7 +43,7 @@ class MCPManager:
             if not self.server_config:
                 raise ValueError("No MCP server configured.")
             self.client = MultiServerMCPClient(
-                self.server_config, tool_interceptors=[inject_auth_token])
+                self.server_config, tool_interceptors=[inject_auth_token, append_structured_content])
             print(f"🔗 MCP Client connected")
         return self.client
 

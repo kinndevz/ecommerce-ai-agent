@@ -1,3 +1,11 @@
+/**
+ * Helper Utilities
+ */
+
+/**
+ * Create tool description with metadata
+ * Format: "{metadata_json} | {human_description}"
+ */
 export function createToolDescription(
   metadata: {
     agent: string;
@@ -7,4 +15,24 @@ export function createToolDescription(
   humanDescription: string
 ): string {
   return `${JSON.stringify(metadata)} | ${humanDescription}`;
+}
+
+/**
+ * Validate auth token presence
+ */
+export function validateAuthToken(token?: string): void {
+  if (!token) {
+    throw new Error("No auth token provided (internal error).");
+  }
+}
+
+/**
+ * Clean parameters (remove null/undefined values)
+ */
+export function cleanParams<T extends Record<string, any>>(
+  params: T
+): Partial<T> {
+  return Object.fromEntries(
+    Object.entries(params).filter(([_, v]) => v != null)
+  ) as Partial<T>;
 }

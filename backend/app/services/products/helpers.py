@@ -62,7 +62,7 @@ def format_product_list_item(product):
         ),
         "brand": format_brand(product.brand),
         "category": format_category(product.category),
-        "primary_image": primary_image,
+        "product_image": primary_image,
         "tags": [format_tag(tag) for tag in product.tags]
     }
 

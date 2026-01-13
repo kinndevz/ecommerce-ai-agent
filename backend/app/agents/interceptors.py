@@ -1,5 +1,7 @@
+import json
 from dataclasses import dataclass
 from langchain_mcp_adapters.interceptors import MCPToolCallRequest
+from mcp.types import TextContent
 
 
 @dataclass
@@ -18,14 +20,22 @@ async def inject_auth_token(
     # 1. Access runtime context directly (như template)
     runtime = request.runtime
     auth_token = runtime.context.auth_token
-
-    # Debug log nhẹ để biết code đang chạy
     print(f"🔐 [Interceptor] Injecting Token: {auth_token[:15]}...")
 
     # 2. Inject into arguments using dictionary unpacking
-    # Chỉ inject __auth_token như bạn yêu cầu
     modified_request = request.override(
         args={**request.args, "__auth_token": auth_token}
     )
 
     return await handler(modified_request)
+
+
+async def append_structured_content(request: MCPToolCallRequest, handler):
+    """Append structured content from artifact to tool message."""
+    result = await handler(request)
+    if result.structuredContent:
+        result.content += [
+            TextContent(type="text", text=json.dumps(
+                result.structuredContent)),
+        ]
+    return result

@@ -27,17 +27,13 @@ class ProductService:
             total = response['hits']['total']['value']
             hits = response['hits']['hits']
             products_data = [hit['_source'] for hit in hits]
-            total_pages = (total + limit - 1) // limit if limit > 0 else 1
 
-            return ResponseHandler.success(
-                message="Products retrieved successfully",
-                data={
-                    "products": products_data,
-                    "total": total,
-                    "page": page,
-                    "limit": limit,
-                    "total_pages": total_pages
-                }
+            return ResponseHandler.get_list_success(
+                resource_name="Products",
+                data=products_data,
+                total=total,
+                limit=limit,
+                page=page
             )
         except Exception as e:
             return ResponseHandler.error_response(message=str(e))

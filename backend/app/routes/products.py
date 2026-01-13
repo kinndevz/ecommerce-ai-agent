@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from typing import Optional
+from typing import List, Optional
 from app.db.database import get_db
 from app.models.user import User
+from app.schemas.common import APIResponse
 from app.utils.deps import require_permission
 from app.services.products import (
     ProductService,
@@ -13,6 +14,7 @@ from app.services.products import (
 )
 from app.schemas.products import (
     get_product_filters,
+    ProductListItem,
     ProductCreateRequest,
     ProductUpdateRequest,
     AddTagsRequest,
@@ -129,17 +131,18 @@ def get_trending_products(
     return ProductDiscoveryService.get_trending(db, days, limit)
 
 
-@router.get("/new-arrivals", response_model=ProductListResponse)
+@router.get("/new-arrivals", response_model=APIResponse[List[ProductListItem]])
 def get_new_arrivals(
     days: int = Query(30, ge=1, le=90),
     limit: int = Query(10, ge=1, le=50),
+    page: int = Query(1, ge=1),
     db: Session = Depends(get_db)
 ):
     """Get new arrival products - Public endpoint"""
-    return ProductDiscoveryService.get_new_arrivals(db, days, limit)
+    return ProductDiscoveryService.get_new_arrivals(db, days, limit, page)
 
 
-@router.get("/on-sale", response_model=ProductListResponse)
+@router.get("/on-sale", response_model=APIResponse[ProductListItem])
 def get_products_on_sale(
     limit: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db)

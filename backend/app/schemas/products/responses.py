@@ -83,7 +83,7 @@ class ProductListItem(BaseModel):
 
     brand: BrandSimple
     category: CategorySimple
-    primary_image: Optional[str]
+    product_image: Optional[str]
     tags: List[TagSimple]
 
     class Config(BaseConfig):

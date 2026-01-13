@@ -1,7 +1,6 @@
 from datetime import datetime, timezone, timedelta
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func, desc
-
 from app.models.product import Product
 from app.models.brand import Brand
 from app.models.category import Category
@@ -63,12 +62,12 @@ class ProductDiscoveryService:
         )
 
     @staticmethod
-    def get_new_arrivals(db: Session, days: int = 30, limit: int = 10):
+    def get_new_arrivals(db: Session, days: int = 30, limit: int = 10, page: int = 1):
         """Get new arrival products"""
 
         since = datetime.now(timezone.utc) - timedelta(days=days)
 
-        products = db.query(Product).options(
+        query = db.query(Product).options(
             joinedload(Product.brand),
             joinedload(Product.category),
             joinedload(Product.images),
@@ -77,15 +76,22 @@ class ProductDiscoveryService:
             Product.deleted_at.is_(None),
             Product.is_available == True,
             Product.created_at >= since
-        ).order_by(
-            desc(Product.created_at)
-        ).limit(limit).all()
+        )
+
+        total = query.count()
+        products = query.order_by(desc(Product.created_at))\
+            .offset((page - 1) * limit)\
+            .limit(limit)\
+            .all()
 
         products_data = [format_product_list_item(p) for p in products]
 
-        return ResponseHandler.success(
-            message="New arrival products retrieved successfully",
-            data={"products": products_data, "total": len(products_data)}
+        return ResponseHandler.get_list_success(
+            resource_name="Products New Arrival",
+            data=products_data,
+            total=total,
+            limit=limit,
+            page=page
         )
 
     @staticmethod
