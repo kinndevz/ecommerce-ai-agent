@@ -89,7 +89,7 @@ export const NewArrivalsInputSchema = z.object({
   limit: z
     .number()
     .optional()
-    .default(3)
+    .default(10)
     .describe("Number of products to return"),
   page: z.number().optional().default(1).describe("Page number"),
 });

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Search, ShoppingCart, Sun, Moon } from 'lucide-react'
+import { Search, ShoppingCart, Sun, Moon, MessageSquare } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { useCategories } from '@/hooks/useCategories'
 import { useTheme } from '@/shared/components/theme-provider'
@@ -130,6 +130,17 @@ export const Navbar = () => {
                 ) : (
                   <Moon className='w-5 h-5' />
                 )}
+              </Button>
+
+              <Button
+                variant='ghost'
+                size='default'
+                className='hover:bg-primary/10 rounded-full px-4 gap-2'
+                onClick={() => navigate('/chat')}
+              >
+                <MessageSquare className='w-5 h-5' />
+
+                <span className='hidden sm:inline font-medium'>AI Chat</span>
               </Button>
 
               <Button

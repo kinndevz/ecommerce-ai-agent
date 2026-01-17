@@ -6,7 +6,7 @@ from pydantic import BaseModel, ValidationError
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_core.tools import BaseTool
 from app.core.config import settings
-from app.agents.interceptors import inject_auth_token, append_structured_content
+from app.agent.interceptors import inject_auth_token, append_structured_content
 
 
 class ToolMetadata(BaseModel):

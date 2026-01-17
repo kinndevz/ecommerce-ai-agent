@@ -28,6 +28,7 @@ import EditCategoryPage from './admin/pages/EditCategoryPage'
 import OrdersPage from './admin/pages/OrdersPage'
 import ViewOrderPage from './admin/pages/ViewOrderPage'
 import EditProductPage from './admin/pages/EditProductPage'
+import ChatPage from './customer/pages/ChatPage'
 
 function App() {
   const isMaintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === 'true'
@@ -50,6 +51,8 @@ function App() {
             }
           />
           <Route path='/home' element={<HomePage />} />
+
+          <Route path='/chat' element={<ChatPage />} />
 
           <Route
             path='/admin/dashboard'

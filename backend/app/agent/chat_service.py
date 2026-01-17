@@ -1,20 +1,13 @@
-"""
-Chat service with single-agent LangGraph workflow
-"""
 import uuid
 from datetime import datetime, timezone
-from sqlalchemy.orm import Session
-from langchain_core.messages import HumanMessage, AIMessage
-from app.agents.interceptors import UserContext
+from sqlalchemy.orm import Session, joinedload
+
 from app.models.conversation import Conversation, Message
 from app.utils.responses import ResponseHandler
-from app.agents.graph import get_agent_graph
-from app.agents.state import AgentState
-from langchain_core.runnables import RunnableConfig
+from app.agent.agent import get_unified_agent
 
 
 class ChatService:
-
     @staticmethod
     async def send_message(
         db: Session,
@@ -23,21 +16,6 @@ class ChatService:
         conversation_id: str = None,
         auth_token: str = None
     ):
-        """
-        Send message using single-agent LangGraph workflow
-
-        Args:
-            db: Database session
-            user_id: User ID
-            message_content: User's message
-            conversation_id: Existing conversation ID (optional)
-            auth_token: User's authentication token (for MCP tools)
-
-        Returns:
-            Response with AI's reply
-        """
-
-        # GET OR CREATE CONVERSATION
         if conversation_id:
             conversation = db.query(Conversation).filter(
                 Conversation.id == conversation_id,
@@ -47,7 +25,6 @@ class ChatService:
             if not conversation:
                 return ResponseHandler.not_found_error("Conversation", conversation_id)
         else:
-            # Create new conversation
             conversation = Conversation(
                 id=str(uuid.uuid4()),
                 user_id=user_id,
@@ -58,7 +35,6 @@ class ChatService:
             db.add(conversation)
             db.flush()
 
-        # SAVE USER MESSAGE
         user_message = Message(
             id=str(uuid.uuid4()),
             conversation_id=conversation.id,
@@ -69,122 +45,40 @@ class ChatService:
         db.add(user_message)
         db.commit()
 
-        # CREATE INITIAL STATE
-        initial_state: AgentState = {
-            "messages": [HumanMessage(content=message_content)],
-            "user_id": user_id,
-            "auth_token": auth_token or "",
-            "loop_count": 0,
-            "max_loops": 5
-        }
+        agent = await get_unified_agent()
+        result = await agent.chat(
+            user_id=user_id,
+            message=message_content,
+            conversation_id=conversation.thread_id,
+            auth_token=auth_token or ""
+        )
 
-        # ✅ DEBUG: Print để kiểm tra
-        print(f"🔐 [ChatService] Initializing state with:")
-        print(f"   user_id: {user_id}")
-        print(f"   auth_token: {auth_token[:20] if auth_token else 'NONE'}...")
-
-        # RUN AGENT GRAPH
-        graph = await get_agent_graph()
-
-        try:
-            print("\n" + "="*80)
-            print("🚀 STARTING AGENT WORKFLOW")
-            print("="*80)
-            print(f"   User: {user_id}")
-            print(f"   Query: {message_content}")
-            print(f"   Thread: {conversation.thread_id}")
-            print("="*80 + "\n")
-
-            config = RunnableConfig(
-                configurable={
-                    "thread_id": conversation.thread_id,
-                    "user_id": user_id,
-                    "auth_token": auth_token or ""
-                },
-            )
-
-            final_state = await graph.ainvoke(initial_state, config)
-
-            print("\n" + "="*80)
-            print("✅ WORKFLOW COMPLETED")
-            print("="*80)
-            print(f"   Total loops: {final_state.get('loop_count', 0)}")
-            print("="*80 + "\n")
-
-            # EXTRACT AI RESPONSE
-            ai_messages = [
-                msg for msg in final_state["messages"]
-                if isinstance(msg, AIMessage) and msg.content
-            ]
-
-            if ai_messages:
-                ai_response = ai_messages[-1].content
-            else:
-                ai_response = "Xin lỗi, tôi không thể tạo phản hồi phù hợp."
-
-        except Exception as e:
-            import traceback
-            traceback.print_exc()
-
-            ai_response = f"Xin lỗi, tôi gặp lỗi khi xử lý yêu cầu: {str(e)}"
-
-        # SAVE AI RESPONSE
         ai_message = Message(
             id=str(uuid.uuid4()),
             conversation_id=conversation.id,
             role="assistant",
-            content=ai_response,
-            message_metadata={
-                "loop_count": final_state.get("loop_count", 0) if 'final_state' in locals() else 0
-            },
+            content=result["content"],
+            message_metadata=result.get("metadata", {}),
             created_at=datetime.now(timezone.utc)
         )
         db.add(ai_message)
         db.commit()
         db.refresh(ai_message)
 
-        # FORMAT RESPONSE
-        response_data = {
-            "conversation_id": conversation.id,
-            "thread_id": conversation.thread_id,
-            "message": {
-                "id": ai_message.id,
-                "role": ai_message.role,
-                "content": ai_message.content,
-                "message_metadata": ai_message.message_metadata,
-                "created_at": ai_message.created_at
-            }
-        }
-
         return ResponseHandler.success(
-            message="Message sent successfully",
-            data=response_data
+            message="Message sent",
+            data={
+                "conversation_id": conversation.id,
+                "thread_id": conversation.thread_id,
+                "message": {
+                    "id": ai_message.id,
+                    "role": ai_message.role,
+                    "content": ai_message.content,
+                    "message_metadata": ai_message.message_metadata,
+                    "created_at": ai_message.created_at
+                }
+            }
         )
-
-    @staticmethod
-    def _get_conversation_history(
-        conversation: Conversation,
-        limit: int = 20
-    ) -> list:
-        """
-        Get conversation history as LangChain messages
-
-        Args:
-            conversation: Conversation instance
-            limit: Max number of messages to retrieve
-
-        Returns:
-            List of LangChain messages
-        """
-        messages = []
-
-        for msg in conversation.messages[-limit:]:
-            if msg.role == "user":
-                messages.append(HumanMessage(content=msg.content))
-            elif msg.role == "assistant":
-                messages.append(AIMessage(content=msg.content))
-
-        return messages
 
     @staticmethod
     def get_conversations(
@@ -236,8 +130,6 @@ class ChatService:
         conversation_id: str
     ):
         """Get conversation with all messages"""
-        from sqlalchemy.orm import joinedload
-
         conversation = db.query(Conversation).options(
             joinedload(Conversation.messages)
         ).filter(
@@ -272,13 +164,7 @@ class ChatService:
         )
 
     @staticmethod
-    def delete_conversation(
-        db: Session,
-        user_id: str,
-        conversation_id: str
-    ):
-        """Delete a conversation"""
-
+    def delete_conversation(db: Session, user_id: str, conversation_id: str):
         conversation = db.query(Conversation).filter(
             Conversation.id == conversation_id,
             Conversation.user_id == user_id
@@ -287,10 +173,14 @@ class ChatService:
         if not conversation:
             return ResponseHandler.not_found_error("Conversation", conversation_id)
 
+        db.query(Message).filter(
+            Message.conversation_id == conversation_id
+        ).delete()
+
         db.delete(conversation)
         db.commit()
 
         return ResponseHandler.success(
-            message="Conversation deleted successfully",
-            data={"deleted_id": conversation_id}
+            message="Conversation deleted",
+            data={"conversation_id": conversation_id}
         )

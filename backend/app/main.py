@@ -14,8 +14,8 @@ from app.utils.exceptions import (
     sqlalchemy_exception_handler,
     generic_exception_handler
 )
-from app.agents.mcp_manager import mcp_manager
-from app.agents.graph import get_agent_graph
+from app.agent.mcp_manager import mcp_manager
+from app.agent.agent import get_unified_agent
 from app.core.redis_rate_limit_middleware import RedisRateLimitMiddleware
 
 
@@ -23,7 +23,7 @@ from app.core.redis_rate_limit_middleware import RedisRateLimitMiddleware
 async def lifespan(app: FastAPI):
     await init_elasticsearch()
     await mcp_manager.get_all_tools()
-    await get_agent_graph()
+    await get_unified_agent()
     yield
 
     print("Server Shutting down...")

@@ -4,7 +4,7 @@ from typing import Tuple
 from app.db.database import get_db
 from app.models.user import User
 from app.utils.deps import get_current_user, get_current_user_with_token
-from app.agents.chat_service import ChatService
+from app.agent.chat_service import ChatService
 from app.schemas.chat import ChatRequest, ChatResponse
 from app.schemas.common import APIResponse
 

@@ -60,8 +60,31 @@ export const ChatMessage = ({
     }
 
     const cleanHtml = DOMPurify.sanitize(message.content, {
-      ADD_ATTR: ['target', 'class', 'src', 'alt', 'loading'],
-      ADD_TAGS: ['img', 'div', 'span', 'p', 'h4', 'ul', 'li', 'b', 'strong'],
+      ADD_ATTR: [
+        'target',
+        'class',
+        'src',
+        'alt',
+        'loading',
+        'onclick',
+        'data-product-id',
+        'data-variant-id',
+      ],
+      ADD_TAGS: [
+        'img',
+        'div',
+        'span',
+        'p',
+        'h4',
+        'h3',
+        'ul',
+        'li',
+        'b',
+        'strong',
+        'button',
+        'em',
+      ],
+      ALLOW_UNKNOWN_PROTOCOLS: false,
     })
 
     return (
@@ -70,7 +93,18 @@ export const ChatMessage = ({
           'text-sm text-foreground leading-relaxed',
           '[&_ul]:list-disc [&_ul]:pl-4 [&_ol]:list-decimal [&_ol]:pl-4',
           '[&_a]:text-primary [&_a]:underline',
-          '[&_b]:font-bold [&_strong]:font-bold'
+          '[&_b]:font-bold [&_strong]:font-bold',
+
+          '[&_.overflow-x-auto]:scrollbar-thin [&_.overflow-x-auto]:scrollbar-thumb-rounded',
+          '[&_.overflow-x-auto]:scrollbar-thumb-muted-foreground/20',
+          '[&_.overflow-x-auto]:scrollbar-track-transparent',
+          '[&_.overflow-x-auto:hover]:scrollbar-thumb-muted-foreground/40',
+          // Product card specific styles
+          '[&_.product-card]:bg-card [&_.product-card]:border-border',
+          '[&_.product-card:hover]:shadow-xl [&_.product-card:hover]:border-primary/30',
+          '[&_.product-card_img]:transition-transform [&_.product-card_img]:duration-500',
+          '[&_.product-card:hover_img]:scale-110',
+          '[&_.product-card_button]:transition-all [&_.product-card_button]:cursor-pointer'
         )}
         dangerouslySetInnerHTML={{ __html: cleanHtml }}
       />

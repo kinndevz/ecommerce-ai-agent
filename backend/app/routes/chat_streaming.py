@@ -7,7 +7,7 @@ from app.models.user import User
 from app.models.conversation import Conversation
 from app.utils.deps import get_current_user_with_token
 from app.schemas.chat import ChatRequest
-from app.agents.chat_service import ChatService
+from app.agent.chat_service import ChatService
 from app.services.streaming import get_streaming_service
 from app.utils.responses import ResponseHandler
 

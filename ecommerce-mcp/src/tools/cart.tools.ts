@@ -126,19 +126,7 @@ function registerAddToCart(server: McpServer) {
         // Parse response
         const cartData = CartAPIResponseSchema.parse(response.data);
 
-        // Format success message
-        const result = {
-          status: "success",
-          message: "Item added to cart successfully",
-          added_item: {
-            product_id: args.product_id,
-            variant_id: args.variant_id,
-            quantity: args.quantity,
-          },
-          current_cart_state: cartData,
-        };
-
-        return formatSuccessResponse(result);
+        return formatSuccessResponse(cartData);
       } catch (error: any) {
         return formatErrorResponse(error.message);
       }
@@ -191,18 +179,7 @@ function registerUpdateCartItem(server: McpServer) {
         // Parse response
         const cartData = CartAPIResponseSchema.parse(response.data);
 
-        // Format success message
-        const result = {
-          status: "success",
-          message: "Cart item updated successfully",
-          updated_item: {
-            item_id: args.item_id,
-            new_quantity: args.quantity,
-          },
-          current_cart_state: cartData,
-        };
-
-        return formatSuccessResponse(result);
+        return formatSuccessResponse(cartData);
       } catch (error: any) {
         return formatErrorResponse(error.message);
       }
@@ -250,15 +227,7 @@ function registerRemoveCartItem(server: McpServer) {
         // Parse response
         const cartData = CartAPIResponseSchema.parse(response.data);
 
-        // Format success message
-        const result = {
-          status: "success",
-          message: "Item removed from cart successfully",
-          removed_item_id: args.item_id,
-          current_cart_state: cartData,
-        };
-
-        return formatSuccessResponse(result);
+        return formatSuccessResponse(cartData);
       } catch (error: any) {
         return formatErrorResponse(error.message);
       }
@@ -303,14 +272,7 @@ function registerClearCart(server: McpServer) {
         // Parse response
         const cartData = CartAPIResponseSchema.parse(response.data);
 
-        // Format success message
-        const result = {
-          status: "success",
-          message: "Cart cleared successfully",
-          current_cart_state: cartData,
-        };
-
-        return formatSuccessResponse(result);
+        return formatSuccessResponse(cartData);
       } catch (error: any) {
         return formatErrorResponse(error.message);
       }
