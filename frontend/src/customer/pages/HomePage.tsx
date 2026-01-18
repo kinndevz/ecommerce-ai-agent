@@ -5,7 +5,6 @@ import { ShopByCategory } from '../components/home/ShopByCategory'
 import { FeaturedProducts } from '../components/home/FeaturedProducts'
 import { Sidebar } from '../components/layout/Sidebar'
 import { Footer } from '../components/layout/Footer'
-import { FloatingChatButton } from '../components/chatbot'
 
 export default function HomePage() {
   return (
@@ -37,8 +36,6 @@ export default function HomePage() {
       </div>
 
       <Footer />
-
-      <FloatingChatButton unreadCount={0} />
     </div>
   )
 }

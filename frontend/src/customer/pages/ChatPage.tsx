@@ -1,5 +1,19 @@
 import { useState, useRef, useEffect } from 'react'
-import { MessageSquare, Send, RefreshCcw, Menu, X, Loader2 } from 'lucide-react'
+import {
+  Send,
+  Menu,
+  X,
+  Loader2,
+  Bot,
+  User,
+  LogOut,
+  RefreshCcw,
+  Sparkles,
+  Search,
+  ShoppingCart,
+  ChevronDown,
+  ArrowLeftToLine,
+} from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import { ScrollArea } from '@/shared/components/ui/scroll-area'
 import {
@@ -13,19 +27,56 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/shared/components/ui/alert-dialog'
-import { cn } from '@/lib/utils'
-import { AiFillTwitch } from 'react-icons/ai'
+import { Card, CardContent } from '@/shared/components/ui/card'
 import {
-  ChatMessage,
-  TimestampSeparator,
-  type Message,
-} from '../components/chatbot/ChatMessage'
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/shared/components/ui/tooltip'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/shared/components/ui/dropdown-menu'
+import { cn } from '@/lib/utils'
+import { ChatMessage, type Message } from '../components/chatbot/ChatMessage'
 import { TypingIndicator } from '../components/chatbot/TypingIndicator'
 import { type MessageResponse } from '@/api/chat.api'
 import { useChatStore } from '@/stores/useChatStore'
 import { ChatLoadingSkeleton } from '../components/chatbot/ChatLoadingSkeleton'
 import { useAuth } from '@/hooks/useAuth'
 import { Input } from '@/shared/components/ui/input'
+import { useNavigate } from 'react-router-dom'
+import { Avatar, AvatarImage } from '@/shared/components/ui/avatar'
+
+// Component gợi ý câu hỏi
+const SuggestionCard = ({
+  icon: Icon,
+  label,
+  query,
+  onClick,
+}: {
+  icon: any
+  label: string
+  query: string
+  onClick: (q: string) => void
+}) => (
+  <Card
+    className='bg-card hover:bg-accent/50 cursor-pointer transition-all duration-300 group shadow-sm border-border/60 hover:border-primary/50'
+    onClick={() => onClick(query)}
+  >
+    <CardContent className='p-4 flex flex-col items-center text-center gap-3'>
+      <div className='w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300'>
+        <Icon className='w-5 h-5 text-primary' />
+      </div>
+      <div>
+        <p className='font-medium text-sm text-card-foreground'>{label}</p>
+      </div>
+    </CardContent>
+  </Card>
+)
 
 export default function ChatPage() {
   const [isTyping, setIsTyping] = useState(false)
@@ -33,6 +84,7 @@ export default function ChatPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const navigate = useNavigate()
 
   const {
     currentConversation,
@@ -51,12 +103,12 @@ export default function ChatPage() {
     initChat()
   }, [initChat])
 
+  // Auto-scroll logic
   useEffect(() => {
     if (scrollAreaRef.current) {
       const scrollContainer = scrollAreaRef.current.querySelector(
         '[data-radix-scroll-area-viewport]'
       )
-
       if (scrollContainer) {
         requestAnimationFrame(() => {
           scrollContainer.scrollTop = scrollContainer.scrollHeight
@@ -78,16 +130,13 @@ export default function ChatPage() {
 
   const handleSendMessage = async () => {
     if (!inputValue.trim() || isTyping || streamingStatus) return
-
     const messageToSend = inputValue.trim()
-
     setInputValue('')
     setIsTyping(true)
-
     try {
       await sendMessageStreaming(messageToSend)
     } catch (error) {
-      console.error('Send message error:', error)
+      console.error('Error:', error)
     } finally {
       setIsTyping(false)
     }
@@ -109,264 +158,175 @@ export default function ChatPage() {
     : []
 
   const visibleMessages = rawUiMessages.filter((msg) => {
-    if (msg.sender === 'ai' && !msg.content?.trim()) return false
+    if (
+      msg.sender === 'ai' &&
+      !msg.content?.trim() &&
+      (!msg.artifacts || msg.artifacts.length === 0)
+    )
+      return false
     return true
   })
 
-  const lastVisibleMessage =
-    visibleMessages.length > 0
-      ? visibleMessages[visibleMessages.length - 1]
-      : null
-
   const shouldShowTypingIndicator =
     (isTyping || !!streamingStatus || !!currentToolCall) &&
-    lastVisibleMessage?.sender !== 'ai'
+    visibleMessages[visibleMessages.length - 1]?.sender !== 'ai'
 
   return (
-    <div className='flex h-screen bg-background'>
+    <div className='flex h-screen bg-background overflow-hidden font-sans text-foreground'>
       {isSidebarOpen && (
         <div
-          className='fixed inset-0 bg-black/50 z-40 lg:hidden'
+          className='fixed inset-0 bg-background/80 backdrop-blur-sm z-40 lg:hidden'
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
-      {/* Sidebar */}
       <aside
         className={cn(
           'fixed lg:relative inset-y-0 left-0 z-50',
-          'w-72 bg-card border-r border-border',
-          'transform transition-transform duration-200 ease-in-out',
-          'lg:translate-x-0',
+          'w-72 lg:w-80 bg-muted/30 border-r border-border',
+          'transform transition-transform duration-300 ease-in-out',
+          'lg:translate-x-0 flex flex-col',
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
-        <div className='flex flex-col h-full'>
-          <div className='flex items-center justify-between p-4 border-b'>
-            <div className='flex items-center gap-3'>
-              <div className='w-10 h-10 rounded-full bg-primary flex items-center justify-center'>
-                <AiFillTwitch className='w-6 h-6 text-primary-foreground' />
-              </div>
-
-              <div>
-                <h2 className='font-semibold text-sm'>AI Assistant</h2>
-                <p className='text-xs text-muted-foreground'>Shopping Helper</p>
-              </div>
+        <div className='h-16 flex items-center px-6 border-b border-border/40'>
+          <div className='flex items-center gap-3'>
+            <div className='w-8 h-8 rounded-lg text-primary-foreground flex items-center justify-center'>
+              <Avatar>
+                <AvatarImage
+                  src={'src/assets/company-logo.svg'}
+                  className='object-cover'
+                />
+              </Avatar>
             </div>
-
-            <Button
-              variant='ghost'
-              size='icon'
-              className='lg:hidden'
-              onClick={() => setIsSidebarOpen(false)}
-            >
-              <X className='w-4 h-4' />
-            </Button>
+            <span className='font-bold text-lg tracking-tight'>Beauty AI</span>
           </div>
+          <Button
+            variant='ghost'
+            size='icon'
+            className='ml-auto lg:hidden'
+            onClick={() => setIsSidebarOpen(false)}
+          >
+            <X className='w-5 h-5' />
+          </Button>
+        </div>
 
-          <ScrollArea className='flex-1 p-4'>
-            <div className='space-y-2'>
-              <Button variant='ghost' className='w-full justify-start gap-3'>
-                <MessageSquare className='w-4 h-4' />
-                <span>Chats</span>
+        <ScrollArea className='flex-1 px-4 py-6'>
+          <div className='space-y-6'>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  className='w-full justify-start gap-2 shadow-sm'
+                  variant='default'
+                  onClick={() => navigate('/home')}
+                >
+                  <ArrowLeftToLine className='w-4 h-4' /> Back to shop
+                </Button>
+              </AlertDialogTrigger>
+            </AlertDialog>
+
+            <div>
+              <h3 className='text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 px-2'>
+                History
+              </h3>
+              <Button
+                variant='ghost'
+                className='w-full justify-start text-muted-foreground font-normal bg-accent/50'
+              >
+                Current Session ({currentConversation?.messages.length || 0})
               </Button>
-
-              <div className='pt-4'>
-                <p className='text-xs text-muted-foreground px-3 mb-2'>
-                  Recent Conversations
-                </p>
-
-                <div className='space-y-1'>
-                  {currentConversation && (
-                    <div className='p-3 rounded-lg bg-accent/50 border border-accent'>
-                      <p className='text-sm font-medium truncate'>
-                        Current Chat
-                      </p>
-                      <p className='text-xs text-muted-foreground mt-1'>
-                        {currentConversation.messages.length} messages
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
             </div>
-          </ScrollArea>
+          </div>
+        </ScrollArea>
 
-          <div className='p-4 border-t'>
-            <div className='flex items-center gap-3'>
-              <div className='w-10 h-10 rounded-full bg-muted flex items-center justify-center overflow-hidden'>
-                {user?.avatar ? (
-                  <img
-                    src={user.avatar}
-                    alt={user.full_name || 'User'}
-                    className='w-full h-full object-cover'
-                  />
-                ) : (
-                  <span className='text-sm font-medium'>
-                    {user?.full_name?.charAt(0) || 'U'}
-                  </span>
-                )}
-              </div>
-
-              <div className='flex-1 min-w-0'>
-                <p className='text-sm font-medium truncate'>
-                  {user?.full_name || 'Guest'}
-                </p>
-                <p className='text-xs text-muted-foreground truncate'>
-                  {user?.email || 'guest@example.com'}
-                </p>
-              </div>
+        <div className='p-4 border-t border-border/40 bg-background/50'>
+          <div className='flex items-center gap-3 p-2 rounded-lg hover:bg-accent transition-colors cursor-pointer group'>
+            <div className='w-9 h-9 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border'>
+              {user?.avatar ? (
+                <img src={user.avatar} className='w-full h-full object-cover' />
+              ) : (
+                <User className='w-5 h-5 text-muted-foreground' />
+              )}
             </div>
+            <div className='flex-1 min-w-0'>
+              <p className='text-sm font-medium truncate'>
+                {user?.full_name || 'Guest'}
+              </p>
+              <p className='text-xs text-muted-foreground truncate'>
+                {user?.email}
+              </p>
+            </div>
+            <LogOut className='w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity' />
           </div>
         </div>
       </aside>
 
-      {/* Main Chat Area */}
-      <main className='flex-1 flex flex-col min-w-0'>
-        {/* Chat Header */}
-        <header className='flex items-center justify-between px-6 py-4 border-b bg-card/50 backdrop-blur-sm'>
-          <div className='flex items-center gap-3'>
-            <Button
-              variant='ghost'
-              size='icon'
-              className='lg:hidden'
-              onClick={() => setIsSidebarOpen(true)}
-            >
-              <Menu className='w-5 h-5' />
-            </Button>
-
-            <div>
-              <h1 className='text-lg font-semibold'>Shopping Assistant</h1>
-
-              {streamingStatus || currentToolCall ? (
-                <div className='flex items-center gap-2'>
-                  <Loader2 className='w-3 h-3 animate-spin text-primary' />
-                  <p className='text-sm text-muted-foreground animate-pulse'>
-                    {currentToolCall || streamingStatus}
-                  </p>
-                </div>
-              ) : (
-                <p className='text-sm text-muted-foreground'>
-                  Ready to help you find products
-                </p>
-              )}
-            </div>
-          </div>
-
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant='outline' size='sm' className='gap-2'>
-                <RefreshCcw className='w-4 h-4' />
-                <span className='hidden sm:inline'>New Chat</span>
-              </Button>
-            </AlertDialogTrigger>
-
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Start a new conversation?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Your current conversation will be saved and you can view it
-                  later.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleRefreshChat}>
-                  Start New
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+      <main className='flex-1 flex flex-col min-w-0 relative bg-background'>
+        <header className='lg:hidden h-14 flex items-center justify-between px-4 border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-10'>
+          <Button
+            variant='ghost'
+            size='icon'
+            onClick={() => setIsSidebarOpen(true)}
+          >
+            <Menu className='w-5 h-5' />
+          </Button>
+          <span className='font-semibold'>Beauty AI</span>
+          <div className='w-9'></div>
         </header>
 
-        {/* Messages */}
-        <div className='flex-1 overflow-hidden'>
+        <div className='flex-1 overflow-hidden relative'>
           <ScrollArea ref={scrollAreaRef} className='h-full'>
-            <div className='max-w-4xl mx-auto'>
+            <div className='max-w-6xl mx-auto px-4 md:px-8 py-8 pb-32'>
               {isInitializing ? (
-                <ChatLoadingSkeleton />
+                <div className='pt-10'>
+                  <ChatLoadingSkeleton />
+                </div>
               ) : !currentConversation || visibleMessages.length === 0 ? (
-                <div className='flex flex-col items-center justify-center h-full px-6 py-12 text-center'>
-                  <div className='w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4'>
-                    <MessageSquare className='w-8 h-8 text-primary' />
+                <div className='flex flex-col items-center justify-center min-h-[60vh] space-y-8 animate-in fade-in zoom-in-95 duration-500'>
+                  <div className='w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center'>
+                    <Sparkles className='w-8 h-8 text-primary' />
                   </div>
-
-                  <h2 className='text-xl font-semibold mb-2'>
-                    Welcome to Beauty Shop Assistant!
+                  <h2 className='text-2xl font-bold tracking-tight text-foreground text-center'>
+                    What can I help you with?
                   </h2>
-
-                  <p className='text-muted-foreground mb-6 max-w-md'>
-                    I'm here to help you find the perfect beauty products. Ask
-                    me anything!
-                  </p>
-
-                  <div className='flex flex-wrap gap-2 justify-center'>
-                    <button
-                      onClick={() => setInputValue('Show me Cerave products')}
-                      className='px-4 py-2 text-sm bg-muted hover:bg-accent rounded-full transition-colors'
-                    >
-                      🔍 Search Products
-                    </button>
-
-                    <button
-                      onClick={() =>
-                        setInputValue('Recommend skincare routine')
-                      }
-                      className='px-4 py-2 text-sm bg-muted hover:bg-accent rounded-full transition-colors'
-                    >
-                      ✨ Recommendations
-                    </button>
-
-                    <button
-                      onClick={() => setInputValue('Show my cart')}
-                      className='px-4 py-2 text-sm bg-muted hover:bg-accent rounded-full transition-colors'
-                    >
-                      🛒 View Cart
-                    </button>
+                  <div className='grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-2xl'>
+                    <SuggestionCard
+                      icon={Search}
+                      label='Find Products'
+                      query='Show me Cerave products'
+                      onClick={setInputValue}
+                    />
+                    <SuggestionCard
+                      icon={Sparkles}
+                      label='Get Advice'
+                      query='Routine for oily skin'
+                      onClick={setInputValue}
+                    />
+                    <SuggestionCard
+                      icon={ShoppingCart}
+                      label='My Cart'
+                      query='Check my cart'
+                      onClick={setInputValue}
+                    />
                   </div>
                 </div>
               ) : (
-                <div className='space-y-4'>
-                  {visibleMessages.map((message, index) => {
-                    const prevMessage =
-                      index > 0 ? visibleMessages[index - 1] : undefined
-
-                    const nextMessage =
-                      index < visibleMessages.length - 1
-                        ? visibleMessages[index + 1]
-                        : undefined
-
-                    const showTimestamp =
-                      !prevMessage ||
-                      new Date(message.timestamp).toDateString() !==
-                        new Date(prevMessage.timestamp).toDateString()
-
-                    const showAvatar =
-                      !nextMessage || message.sender !== nextMessage.sender
-
-                    return (
-                      <div key={message.id}>
-                        {showTimestamp && (
-                          <TimestampSeparator timestamp={message.timestamp} />
-                        )}
-
-                        <ChatMessage
-                          message={message}
-                          showAvatar={showAvatar}
-                          userAvatar={user?.avatar || ''}
-                        />
-                      </div>
-                    )
-                  })}
+                <div className='flex flex-col'>
+                  {visibleMessages.map((message) => (
+                    <ChatMessage
+                      key={message.id}
+                      message={message}
+                      userAvatar={user?.avatar || ''}
+                    />
+                  ))}
 
                   {shouldShowTypingIndicator && (
-                    <div className='mt-1'>
+                    <div className='pl-11 animate-in fade-in'>
                       <TypingIndicator />
                       {(currentToolCall || streamingStatus) && (
-                        <p className='text-xs text-muted-foreground ml-14 animate-pulse'>
+                        <span className='text-xs text-muted-foreground ml-2 animate-pulse'>
                           {currentToolCall || streamingStatus}
-                        </p>
+                        </span>
                       )}
                     </div>
                   )}
@@ -376,35 +336,50 @@ export default function ChatPage() {
           </ScrollArea>
         </div>
 
-        {/* Chat Input */}
-        <div className='border-t bg-card/80 backdrop-blur-sm'>
-          <div className='max-w-4xl mx-auto px-6 py-4'>
-            <div className='flex items-end gap-3'>
-              <div className='flex-1 relative'>
-                <Input
-                  ref={textareaRef as any}
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyDown={handleKeyPress}
-                  placeholder='What are you looking for?'
-                  disabled={isTyping || isInitializing || !!streamingStatus}
-                  className='pr-12 min-h-13 resize-none rounded-2xl'
-                />
+        <div className='absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-linear-to-t from-background via-background/95 to-transparent'>
+          <div className='max-w-6xl mx-auto'>
+            <div className='relative flex items-end shadow-2xl rounded-3xl bg-background border border-input focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all duration-300'>
+              <Input
+                ref={textareaRef as any}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleKeyPress}
+                placeholder='Ask anything...'
+                disabled={isTyping || isInitializing || !!streamingStatus}
+                className='flex-1 border-none shadow-none bg-transparent focus-visible:ring-0 min-h-15 py-5 px-4 text-base placeholder:text-muted-foreground/80'
+                autoComplete='off'
+              />
+              <div className='pr-3 pb-3 flex items-center gap-1 self-end'>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        onClick={handleSendMessage}
+                        disabled={
+                          !inputValue.trim() ||
+                          isTyping ||
+                          isInitializing ||
+                          !!streamingStatus
+                        }
+                        size='icon'
+                        className={cn(
+                          'h-10 w-10 rounded-full transition-all duration-300',
+                          inputValue.trim()
+                            ? 'bg-primary text-primary-foreground shadow-md hover:scale-105'
+                            : 'bg-muted text-muted-foreground'
+                        )}
+                      >
+                        {isTyping ? (
+                          <div className='w-2 h-2 bg-current rounded-full animate-ping' />
+                        ) : (
+                          <Send className='w-5 h-5 ml-0.5' />
+                        )}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Send Message</TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
-
-              <Button
-                onClick={handleSendMessage}
-                disabled={
-                  !inputValue.trim() ||
-                  isTyping ||
-                  isInitializing ||
-                  !!streamingStatus
-                }
-                size='icon'
-                className='h-11 w-11 rounded-full shrink-0'
-              >
-                <Send className='w-5 h-5' />
-              </Button>
             </div>
           </div>
         </div>
