@@ -1,18 +1,67 @@
 import api from '@/lib/api'
 import { API_ENDPOINT } from './services/constants'
 
-// INTERFACES & TYPES
-export interface ChatMessageRequest {
+// PRODUCT TYPES (from MCP artifacts)
+export interface ProductData {
+  id: string
+  name: string
+  slug: string
+  tags: string[]
+  price: number
+  benefits: string[]
+  concerns: string[]
+  brand_name: string
+  skin_types: string[]
+  description: string
+  is_available: boolean
+  category_name: string
+  product_image: string
+  rating_average: number
+  stock_quantity: number
+}
+
+export interface ProductMeta {
+  page: number
+  limit: number
+  total: number
+  total_pages: number
+}
+
+export interface MCPData {
+  data: ProductData[]
+  meta: ProductMeta
   message: string
-  conversation_id?: string
+  success: boolean
+}
+
+export interface Artifact {
+  success: boolean
+  data_mcp: MCPData
+  tool_name: string
+  tool_call_id: string
+}
+
+// MESSAGE TYPES
+export interface MessageMetadata {
+  artifacts?: Artifact[]
+  tool_calls?: number
+  has_artifacts?: boolean
+  [key: string]: any
 }
 
 export interface MessageResponse {
   id: string
   role: 'user' | 'assistant' | 'system'
   content: string
-  message_metadata?: Record<string, any>
+  artifacts?: Artifact[]
+  message_metadata?: MessageMetadata
   created_at: string
+}
+
+// REQUEST/RESPONSE TYPES
+export interface ChatMessageRequest {
+  message: string
+  conversation_id?: string
 }
 
 export interface ChatResponse {
@@ -26,17 +75,17 @@ export interface ConversationSummary {
   thread_id: string
   title: string
   created_at: string
-  updated_at: string
+  updated_at: string | null
   message_count: number
 }
 
 export interface ConversationDetail {
   id: string
   thread_id: string
-  title: string | null
+  title: string
   messages: MessageResponse[]
   created_at: string
-  updated_at: string
+  updated_at: string | null
 }
 
 export interface ConversationsResponse {
@@ -50,16 +99,12 @@ export interface ConversationsResponse {
 export interface ApiSuccessResponse<T = any> {
   success: boolean
   message: string
-  data: T | null
+  data: T
   meta?: Record<string, any> | null
 }
 
 // CHAT API METHODS
 export const chatAPI = {
-  /**
-   * Send message to AI assistant
-   * Creates new conversation if conversation_id not provided
-   */
   sendMessage: async (
     messageData: ChatMessageRequest
   ): Promise<ChatResponse> => {
@@ -75,11 +120,6 @@ export const chatAPI = {
     return data.data
   },
 
-  /**
-   * Get user's conversation list
-   * @param page - Page number (default: 1)
-   * @param limit - Items per page (default: 20)
-   */
   getConversations: async (
     page: number = 1,
     limit: number = 20
@@ -98,9 +138,6 @@ export const chatAPI = {
     return data.data
   },
 
-  /**
-   * Get conversation detail with all messages
-   */
   getConversationDetail: async (
     conversationId: string
   ): Promise<ConversationDetail> => {
@@ -115,14 +152,11 @@ export const chatAPI = {
     return data.data
   },
 
-  /**
-   * Delete a conversation
-   */
   deleteConversation: async (
     conversationId: string
-  ): Promise<{ deleted_id: string }> => {
+  ): Promise<{ conversation_id: string }> => {
     const { data } = await api.delete<
-      ApiSuccessResponse<{ deleted_id: string }>
+      ApiSuccessResponse<{ conversation_id: string }>
     >(API_ENDPOINT.DELETE_CONVERSATION(conversationId))
 
     if (!data.success || !data.data) {

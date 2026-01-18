@@ -6,6 +6,13 @@
 
 @custom-variant dark (&:is(.dark *));
 
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 /* 
    2. COLOR PALETTE (Bộ màu mới bạn cung cấp)
 */

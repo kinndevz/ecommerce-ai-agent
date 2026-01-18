@@ -65,23 +65,29 @@ class UnifiedAgent:
         return self.agent
 
     def _extract_tool_artifacts(self, messages: List) -> List[ToolArtifact]:
-        """Extract structured artifacts from ToolMessages"""
         artifacts = []
+        start_index = 0
+        for i in range(len(messages) - 1, -1, -1):
+            if isinstance(messages[i], HumanMessage):
+                start_index = i + 1
+                break
 
-        for msg in messages:
+        for msg in messages[start_index:]:
             if isinstance(msg, ToolMessage):
-                # Get artifact from ToolMessage
-                artifact_data = getattr(msg, 'artifact', None)
+                raw_artifact = getattr(msg, 'artifact', None)
 
-                if artifact_data and isinstance(artifact_data, dict):
-                    # Extract structured_content from MCP
-                    structured = artifact_data.get('structured_content', {})
+                if raw_artifact:
+                    data_payload = {}
+                    if isinstance(raw_artifact, dict) and "structured_content" in raw_artifact:
+                        data_payload = raw_artifact["structured_content"]
+                    else:
+                        data_payload = raw_artifact
 
                     artifacts.append({
                         "tool_name": msg.name,
                         "tool_call_id": msg.tool_call_id,
-                        "data_mcp": structured if structured else artifact_data,
-                        "success": structured.get('success', True) if structured else True
+                        "data_mcp": data_payload,
+                        "success": True
                     })
 
         return artifacts
@@ -137,7 +143,7 @@ class UnifiedAgent:
 
             return {
                 "content": ai_content,
-                "artifacts": artifacts,  # ✅ NEW: List of tool results
+                "artifacts": artifacts,
                 "metadata": {
                     "tool_calls": tool_calls_count,
                     "has_artifacts": len(artifacts) > 0

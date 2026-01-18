@@ -134,7 +134,7 @@ export const FeaturedProducts = () => {
         >
           <Button
             size='lg'
-            variant='soft'
+            variant='default'
             className='group h-12 px-8 rounded-full border-2 border-border/50 hover:border-primary/30 hover:bg-primary/5 transition-all duration-200'
           >
             View All Products
@@ -248,7 +248,7 @@ const ProductCard = ({
           </Button>
           <Button
             size='sm'
-            variant='soft'
+            variant='default'
             className='w-9 h-9 p-0 backdrop-blur-sm bg-white/95 dark:bg-gray-800/95 hover:bg-white dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full'
           >
             <Eye className='w-4 h-4' />

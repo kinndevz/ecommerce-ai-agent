@@ -1,155 +1,150 @@
-import { getAccessToken } from '@/api/services/token.service'
+import type { Artifact } from '@/api/chat.api'
+import { API_ENDPOINT } from '../constants'
+import { getAccessToken } from '../token.service'
 
-// ===== TYPES =====
-export enum StreamEventType {
-  STATUS = 'status',
-  CONTENT = 'content',
-  DONE = 'done',
-  ERROR = 'error',
+interface StreamCallbacks {
+  onStatus?: (status: string) => void
+  onToolCall?: (toolName: string) => void
+  onArtifact?: (artifact: Artifact) => void
+  onContent?: (chunk: string) => void
+  onDone?: (messageId: string, conversationId: string, threadId: string) => void
+  onError?: (error: string) => void
 }
 
-export interface StreamEvent {
-  type: StreamEventType
+interface StreamEvent {
+  type: 'status' | 'artifact' | 'content' | 'done' | 'error'
   message?: string
   stage?: string
+  tool_name?: string
+  tool_call_id?: string
+  data?: any
+  success?: boolean
   chunk?: string
   message_id?: string
   conversation_id?: string
   thread_id?: string
   total_length?: number
+  total_artifacts?: number
 }
 
-export interface StreamOptions {
-  signal?: AbortSignal
-  onStatus?: (message: string, stage?: string) => void
-  onContent?: (chunk: string) => void
-  onDone?: (
-    messageId: string,
-    conversationId: string,
-    threadId?: string
-  ) => void // ✅ UPDATE
-  onError?: (error: string) => void
-}
-
-// ===== CLIENT =====
 export class StreamingClient {
-  private baseUrl: string
+  private readonly baseURL: string
 
-  constructor(baseUrl?: string) {
-    this.baseUrl =
-      baseUrl || import.meta.env.VITE_API_BASE_URLL || 'http://localhost:8000'
+  constructor() {
+    this.baseURL = import.meta.env.VITE_API_BASE_URLL || 'http://localhost:8000'
   }
 
   async streamMessage(
     message: string,
     conversationId: string | null,
-    options: StreamOptions = {}
+    callbacks: StreamCallbacks
   ): Promise<void> {
-    const token = getAccessToken()
-    if (!token) throw new Error('Authentication required')
+    const accessToken = getAccessToken()
 
-    const url = this.buildUrl(conversationId)
-    const response = await this.sendRequest(
-      url,
-      token,
-      message,
-      conversationId,
-      options.signal
-    )
-
-    await this.processStream(response, options)
-  }
-
-  private buildUrl(conversationId: string | null): string {
-    return conversationId
-      ? `${this.baseUrl}/chat/conversations/${conversationId}/messages/stream`
-      : `${this.baseUrl}/chat/messages/stream`
-  }
-
-  private async sendRequest(
-    url: string,
-    token: string,
-    message: string,
-    conversationId: string | null,
-    signal?: AbortSignal
-  ): Promise<Response> {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message, conversation_id: conversationId }),
-      signal,
-    })
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+    if (!accessToken) {
+      callbacks.onError?.('Unauthorized: Please login first')
+      return
     }
 
-    if (!response.body) {
-      throw new Error('Response body is null')
-    }
-
-    return response
-  }
-
-  private async processStream(
-    response: Response,
-    options: StreamOptions
-  ): Promise<void> {
-    const reader = response.body!.getReader()
-    const decoder = new TextDecoder()
+    const url = `${this.baseURL}${API_ENDPOINT.CHAT_STREAM}`
 
     try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          message,
+          conversation_id: conversationId,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.message || `HTTP ${response.status}`)
+      }
+
+      const reader = response.body?.getReader()
+      if (!reader) throw new Error('Response body is not readable')
+
+      const decoder = new TextDecoder()
+      let buffer = ''
+
       while (true) {
         const { done, value } = await reader.read()
+
         if (done) break
 
-        const chunk = decoder.decode(value, { stream: true })
-        this.parseEvents(chunk, options)
-      }
-    } finally {
-      reader.releaseLock()
-    }
-  }
+        buffer += decoder.decode(value, { stream: true })
 
-  private parseEvents(chunk: string, options: StreamOptions): void {
-    const lines = chunk.split('\n')
+        const lines = buffer.split('\n')
+        buffer = lines.pop() || ''
 
-    for (const line of lines) {
-      if (line.startsWith('data: ')) {
-        try {
-          const event: StreamEvent = JSON.parse(line.slice(6))
-          this.handleEvent(event, options)
-        } catch (error) {
-          console.error('Failed to parse SSE event:', error)
+        for (const line of lines) {
+          if (!line.trim() || !line.startsWith('data: ')) continue
+
+          try {
+            const jsonStr = line.slice(6)
+            const event: StreamEvent = JSON.parse(jsonStr)
+
+            this.handleEvent(event, callbacks)
+          } catch (err) {
+            console.error('Parse error:', err, 'Line:', line)
+          }
         }
       }
+    } catch (error: any) {
+      console.error('Streaming error:', error)
+      callbacks.onError?.(error.message || 'Connection failed')
     }
   }
 
-  private handleEvent(event: StreamEvent, options: StreamOptions): void {
+  private handleEvent(event: StreamEvent, callbacks: StreamCallbacks): void {
     switch (event.type) {
-      case StreamEventType.STATUS:
-        options.onStatus?.(event.message || '', event.stage)
+      case 'status':
+        if (event.message) {
+          callbacks.onStatus?.(event.message)
+        }
         break
 
-      case StreamEventType.CONTENT:
-        options.onContent?.(event.chunk || '')
+      case 'artifact':
+        if (event.tool_name) {
+          callbacks.onToolCall?.(event.tool_name)
+        }
+
+        if (event.data) {
+          const artifact: Artifact = {
+            success: event.success ?? true,
+            data_mcp: event.data,
+            tool_name: event.tool_name || 'unknown',
+            tool_call_id: event.tool_call_id || '',
+          }
+          callbacks.onArtifact?.(artifact)
+        }
         break
 
-      case StreamEventType.DONE:
-        // ✅ FIX: Pass conversation_id and thread_id
-        options.onDone?.(
-          event.message_id || '',
-          event.conversation_id || '',
-          event.thread_id
-        )
+      case 'content':
+        if (event.chunk) {
+          callbacks.onContent?.(event.chunk)
+        }
         break
 
-      case StreamEventType.ERROR:
-        options.onError?.(event.message || 'Unknown error')
+      case 'done':
+        if (event.message_id && event.conversation_id && event.thread_id) {
+          callbacks.onDone?.(
+            event.message_id,
+            event.conversation_id,
+            event.thread_id
+          )
+        }
+        break
+
+      case 'error':
+        if (event.message) {
+          callbacks.onError?.(event.message)
+        }
         break
     }
   }

@@ -8,12 +8,17 @@ import { cn } from '@/lib/utils'
 import { AiFillTwitch } from 'react-icons/ai'
 import { FaUserGraduate } from 'react-icons/fa'
 import DOMPurify from 'dompurify'
+import { ProductCarousel } from './ProductCarousel'
+import type { Artifact, ProductData } from '@/api/chat.api'
+import { toast } from 'sonner'
+
 export interface Message {
   id: string
   content: string
   sender: 'user' | 'ai'
   timestamp: Date | string
   status?: 'sending' | 'sent' | 'read'
+  artifacts?: Artifact[]
 }
 
 interface ChatMessageProps {
@@ -32,94 +37,36 @@ export const ChatMessage = ({
   const isUser = message.sender === 'user'
   const isAI = message.sender === 'ai'
 
-  const formatTime = (dateInput: Date | string) => {
-    try {
-      const date = new Date(dateInput)
-      return new Intl.DateTimeFormat('vi-VN', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-      }).format(date)
-    } catch (e) {
-      return ''
-    }
+  const handleAddToCart = (product: ProductData) => {
+    toast.success(`Added "${product.name}" to cart!`)
+    console.log('Add to cart:', product)
   }
 
-  const renderContent = () => {
-    if (isUser) {
-      return (
-        <p
-          className={cn(
-            'text-sm leading-relaxed whitespace-pre-wrap wrap-break-word font-medium',
-            'text-primary-foreground'
-          )}
-        >
-          {message.content}
-        </p>
-      )
-    }
-
-    const cleanHtml = DOMPurify.sanitize(message.content, {
-      ADD_ATTR: [
-        'target',
-        'class',
-        'src',
-        'alt',
-        'loading',
-        'onclick',
-        'data-product-id',
-        'data-variant-id',
-      ],
-      ADD_TAGS: [
-        'img',
-        'div',
-        'span',
-        'p',
-        'h4',
-        'h3',
-        'ul',
-        'li',
-        'b',
-        'strong',
-        'button',
-        'em',
-      ],
-      ALLOW_UNKNOWN_PROTOCOLS: false,
-    })
-
-    return (
-      <div
-        className={cn(
-          'text-sm text-foreground leading-relaxed',
-          '[&_ul]:list-disc [&_ul]:pl-4 [&_ol]:list-decimal [&_ol]:pl-4',
-          '[&_a]:text-primary [&_a]:underline',
-          '[&_b]:font-bold [&_strong]:font-bold',
-
-          '[&_.overflow-x-auto]:scrollbar-thin [&_.overflow-x-auto]:scrollbar-thumb-rounded',
-          '[&_.overflow-x-auto]:scrollbar-thumb-muted-foreground/20',
-          '[&_.overflow-x-auto]:scrollbar-track-transparent',
-          '[&_.overflow-x-auto:hover]:scrollbar-thumb-muted-foreground/40',
-          // Product card specific styles
-          '[&_.product-card]:bg-card [&_.product-card]:border-border',
-          '[&_.product-card:hover]:shadow-xl [&_.product-card:hover]:border-primary/30',
-          '[&_.product-card_img]:transition-transform [&_.product-card_img]:duration-500',
-          '[&_.product-card:hover_img]:scale-110',
-          '[&_.product-card_button]:transition-all [&_.product-card_button]:cursor-pointer'
-        )}
-        dangerouslySetInnerHTML={{ __html: cleanHtml }}
-      />
-    )
+  const handleViewProduct = (product: ProductData) => {
+    console.log('View product:', product)
+    window.open(`/products/${product.slug}`, '_blank')
   }
+
+  const extractProducts = (artifacts?: Artifact[]): ProductData[] => {
+    if (!artifacts || artifacts.length === 0) return []
+
+    return artifacts
+      .filter((artifact) => artifact.tool_name === 'search_products')
+      .flatMap((artifact) => artifact.data_mcp?.data || [])
+  }
+
+  const products = extractProducts(message.artifacts)
 
   return (
     <div
       className={cn(
-        'flex gap-3 mb-5 animate-in fade-in slide-in-from-bottom-2 duration-400',
-        isUser && 'flex-row-reverse'
+        'flex gap-3 px-4 py-3 group',
+        isUser && 'flex-row-reverse',
+        !showAvatar && (isUser ? 'pr-14' : 'pl-14')
       )}
     >
       {showAvatar && (
-        <Avatar className='w-9 h-9 shrink-0 ring-2 ring-background shadow-sm'>
+        <Avatar className='w-8 h-8 shrink-0'>
           {isUser ? (
             <>
               <AvatarImage
@@ -147,44 +94,56 @@ export const ChatMessage = ({
           !showAvatar && (isUser ? 'mr-11' : 'ml-11')
         )}
       >
+        {/* Message Bubble */}
         <div
           className={cn(
-            'relative px-4 py-3 rounded-2xl',
-            'transition-shadow duration-200',
-            isUser &&
-              cn(
-                'bg-primary text-primary-foreground',
-                'rounded-tr-md shadow-sm',
-                'hover:shadow-md'
-              ),
-            isAI &&
-              cn(
-                'bg-background border border-border',
-                'rounded-tl-md shadow-sm',
-                'hover:shadow-md',
-                'overflow-hidden'
-              )
+            'rounded-2xl px-4 py-2.5 text-sm wrap-break-word',
+            isUser
+              ? 'bg-primary text-primary-foreground rounded-tr-sm'
+              : 'bg-muted text-foreground rounded-tl-sm'
           )}
         >
-          {renderContent()}
+          <div
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(message.content || '', {
+                ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'br', 'p'],
+                ALLOWED_ATTR: ['href', 'target'],
+              }),
+            }}
+          />
         </div>
 
+        {/* Product Carousel for AI messages with artifacts */}
+        {isAI && products.length > 0 && (
+          <ProductCarousel
+            products={products}
+            onAddToCart={handleAddToCart}
+            onViewProduct={handleViewProduct}
+          />
+        )}
+
+        {/* Message Info */}
         <div
           className={cn(
-            'flex items-center gap-1.5 px-2',
+            'flex items-center gap-2 px-2',
             isUser && 'flex-row-reverse'
           )}
         >
-          <span className='text-[10px] text-muted-foreground/70 font-medium'>
-            {formatTime(message.timestamp)}
-          </span>
+          {showTimestamp && (
+            <span className='text-xs text-muted-foreground'>
+              {new Date(message.timestamp).toLocaleTimeString('vi-VN', {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </span>
+          )}
 
           {isUser && message.status && (
             <div className='text-muted-foreground'>
-              {message.status === 'sending' && <Check className='w-3 h-3' />}
-              {message.status === 'sent' && <CheckCheck className='w-3 h-3' />}
-              {message.status === 'read' && (
-                <CheckCheck className='w-3 h-3 text-primary' />
+              {message.status === 'read' && <CheckCheck className='w-3 h-3' />}
+              {message.status === 'sent' && <Check className='w-3 h-3' />}
+              {message.status === 'sending' && (
+                <div className='w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin' />
               )}
             </div>
           )}
@@ -194,43 +153,41 @@ export const ChatMessage = ({
   )
 }
 
-interface TimestampSeparatorProps {
+export const TimestampSeparator = ({
+  timestamp,
+}: {
   timestamp: Date | string
-}
+}) => {
+  const date = new Date(timestamp)
+  const today = new Date()
+  const isToday = date.toDateString() === today.toDateString()
 
-export const TimestampSeparator = ({ timestamp }: TimestampSeparatorProps) => {
-  const formatDate = (dateInput: Date | string) => {
-    try {
-      const date = new Date(dateInput)
-      const today = new Date()
-      const yesterday = new Date(today)
-      yesterday.setDate(yesterday.getDate() - 1)
+  const yesterday = new Date(today)
+  yesterday.setDate(yesterday.getDate() - 1)
+  const isYesterday = date.toDateString() === yesterday.toDateString()
 
-      const isToday = date.toDateString() === today.toDateString()
-      const isYesterday = date.toDateString() === yesterday.toDateString()
-
-      if (isToday) {
-        return 'Hôm nay'
-      } else if (isYesterday) {
-        return 'Hôm qua'
-      } else {
-        return new Intl.DateTimeFormat('vi-VN', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-        }).format(date)
-      }
-    } catch (e) {
-      return ''
-    }
+  let displayText = ''
+  if (isToday) {
+    displayText = 'Today'
+  } else if (isYesterday) {
+    displayText = 'Yesterday'
+  } else {
+    displayText = date.toLocaleDateString('vi-VN', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
   }
 
   return (
-    <div className='flex items-center justify-center my-8 animate-in fade-in duration-500'>
-      <div className='bg-muted/60 border border-border/50 rounded-full px-5 py-2 shadow-sm'>
-        <span className='text-xs font-semibold text-muted-foreground/80'>
-          {formatDate(timestamp)}
+    <div className='flex items-center justify-center my-4'>
+      <div className='flex items-center gap-3'>
+        <div className='h-px w-12 bg-border' />
+        <span className='text-xs text-muted-foreground font-medium'>
+          {displayText}
         </span>
+        <div className='h-px w-12 bg-border' />
       </div>
     </div>
   )

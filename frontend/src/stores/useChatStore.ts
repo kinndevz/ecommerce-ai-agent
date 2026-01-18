@@ -4,11 +4,11 @@ import {
   type ConversationDetail,
   type ConversationSummary,
   type MessageResponse,
+  type Artifact,
 } from '@/api/chat.api'
 import { toast } from 'sonner'
 import { StreamingClient } from '@/api/services/streaming'
 
-// ===== TYPES =====
 interface ChatState {
   conversations: ConversationSummary[]
   currentConversation: ConversationDetail | null
@@ -16,6 +16,7 @@ interface ChatState {
   isInitializing: boolean
   isOpen: boolean
   streamingStatus: string | null
+  currentToolCall: string | null
   setIsOpen: (open: boolean) => void
   initChat: () => Promise<void>
   sendMessage: (message: string) => Promise<void>
@@ -25,7 +26,6 @@ interface ChatState {
   reset: () => void
 }
 
-// ===== HELPERS =====
 const sortMessagesByDate = (messages: MessageResponse[]) => {
   return messages.sort(
     (a, b) =>
@@ -40,6 +40,8 @@ const createTempMessage = (
   id: `${role}-${Date.now()}`,
   role,
   content,
+  artifacts: [],
+  message_metadata: {},
   created_at: new Date().toISOString(),
 })
 
@@ -55,20 +57,18 @@ const createEmptyConversation = (
   title: 'New Chat',
   messages,
   created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
+  updated_at: null,
 })
 
-// ===== STORE =====
 export const useChatStore = create<ChatState>((set, get) => ({
-  // State
   conversations: [],
   currentConversation: null,
   isLoading: false,
   isInitializing: false,
   isOpen: false,
   streamingStatus: null,
+  currentToolCall: null,
 
-  // Actions
   setIsOpen: (open) => set({ isOpen: open }),
 
   initChat: async () => {
@@ -107,10 +107,13 @@ export const useChatStore = create<ChatState>((set, get) => ({
   },
 
   startNewConversation: () => {
-    set({ currentConversation: null })
+    set({
+      currentConversation: null,
+      streamingStatus: null,
+      currentToolCall: null,
+    })
   },
 
-  // Legacy method (for backward compatibility)
   sendMessage: async (message: string) => {
     const { currentConversation } = get()
     const userMsg = createTempMessage('user', message)
@@ -144,14 +147,12 @@ export const useChatStore = create<ChatState>((set, get) => ({
     }
   },
 
-  // ✅ CLEAN: Streaming method
   sendMessageStreaming: async (message: string) => {
     const { currentConversation } = get()
 
     const userMsg = createTempMessage('user', message)
     const aiMsg = createTempMessage('assistant')
 
-    // Optimistic update
     set((state) => ({
       currentConversation: {
         ...(state.currentConversation || createEmptyConversation([])),
@@ -175,8 +176,39 @@ export const useChatStore = create<ChatState>((set, get) => ({
           set({ streamingStatus: statusMessage })
         },
 
+        onToolCall: (toolName) => {
+          set({ currentToolCall: `Calling tool: ${toolName}` })
+        },
+
+        onArtifact: (artifact: Artifact) => {
+          set((state) => ({
+            currentConversation: state.currentConversation
+              ? {
+                  ...state.currentConversation,
+                  messages: state.currentConversation.messages.map((msg) =>
+                    msg.id === aiMsg.id
+                      ? {
+                          ...msg,
+                          artifacts: [...(msg.artifacts || []), artifact],
+                          message_metadata: {
+                            ...msg.message_metadata,
+                            has_artifacts: true,
+                          },
+                        }
+                      : msg
+                  ),
+                }
+              : null,
+
+            currentToolCall: `Used tool: ${artifact.tool_name}`,
+            streamingStatus: null,
+          }))
+        },
+
         onContent: (chunk) => {
           set((state) => ({
+            currentToolCall: null,
+            streamingStatus: 'Typing...',
             currentConversation: {
               ...state.currentConversation!,
               messages: state.currentConversation!.messages.map((msg) =>
@@ -188,14 +220,14 @@ export const useChatStore = create<ChatState>((set, get) => ({
           }))
         },
 
-        // ✅ CLEAN: Backend provides all IDs
         onDone: (messageId, conversationId, threadId) => {
           set((state) => ({
             streamingStatus: null,
+            currentToolCall: null,
             currentConversation: {
               ...state.currentConversation!,
-              id: conversationId || state.currentConversation!.id, // ✅ Update from backend
-              thread_id: threadId || state.currentConversation!.thread_id, // ✅ Update from backend
+              id: conversationId || state.currentConversation!.id,
+              thread_id: threadId || state.currentConversation!.thread_id,
               messages: state.currentConversation!.messages.map((msg) =>
                 msg.id === aiMsg.id ? { ...msg, id: messageId } : msg
               ),
@@ -208,6 +240,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
           set((state) => ({
             streamingStatus: null,
+            currentToolCall: null,
             currentConversation: {
               ...state.currentConversation!,
               messages: state.currentConversation!.messages.filter(
@@ -222,6 +255,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
       set((state) => ({
         streamingStatus: null,
+        currentToolCall: null,
         currentConversation: {
           ...state.currentConversation!,
           messages: state.currentConversation!.messages.filter(
@@ -240,6 +274,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
       isInitializing: false,
       isOpen: false,
       streamingStatus: null,
+      currentToolCall: null,
     })
   },
 }))

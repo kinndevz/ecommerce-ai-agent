@@ -87,7 +87,7 @@ class StreamingService:
                         {
                             "tool_name": artifact.get("tool_name", "unknown"),
                             "tool_call_id": artifact.get("tool_call_id", ""),
-                            "data": artifact.get("data", {}),
+                            "data": artifact.get("data_mcp", {}),
                             "success": artifact.get("success", True)
                         }
                     )

@@ -39,7 +39,7 @@ export const FloatingChatButton = ({
             </Badge>
           )}
 
-          <span className='absolute inset-0 rounded-full bg-primary opacity-60 animate-ping [animation-duration:2s]' />
+          <span className='absolute inset-0 rounded-full bg-primary opacity-60 animate-ping animation-duration-[2s]' />
         </Button>
       )}
     </>
