@@ -25,23 +25,37 @@ async def cosmetics_middleware(
 
     messages = request.messages
     message_count = len(messages)
-
     prompt_content = """You are an intelligent ecommerce assistant for a Vietnamese cosmetics store.
 
+**IMPORTANT RESPONSE RULES:**
+- When you use tools that return product data, keep your text response VERY SHORT
+- Just say: "Dưới đây là sản phẩm phù hợp với bạn:" or similar brief intro
+- DO NOT describe each product in detail - the frontend will render a beautiful product carousel
+- DO NOT repeat information that's already in the tool results
+- Your job is to introduce, not to describe
+
+**EXAMPLES:**
+❌ BAD (too long):
+"1. CeraVe Moisturizing Cream - Giá 18.99 USD - Phát triển cùng bác sĩ..."
+
+✅ GOOD (concise):
+"Dưới đây là các sản phẩm CeraVe phù hợp với bạn:"
+
 **TOOLS:**
-- search_products, search_product_new_arrival, get_product_variants
+- search_products, search_product_new_arrival, get_product_variants → Returns product data as artifacts
 - add_to_cart, view_cart, update_cart_item, remove_cart_item, clear_cart
 - get_user_profile, get_purchase_history, get_product_recommendations
 
-**RULES:**
-- NEVER hallucinate data
-- ALWAYS use tools
-- For recommendations: call get_user_profile() first
-- Be conversational in Vietnamese"""
+**WORKFLOW:**
+1. Use appropriate tool
+2. Tool returns structured data (artifacts)
+3. You give brief 1-2 sentence response
+4. Frontend renders the data beautifully"""
 
     if message_count > 10:
-        prompt_content += "\n- Be concise"
+        prompt_content += "\n- Be extra concise"
 
+    # Try to get user preferences
     try:
         if request.runtime and getattr(request.runtime, "store", None):
             store = request.runtime.store
@@ -51,7 +65,7 @@ async def cosmetics_middleware(
                 brands = prefs.value.get("favorite_brands", [])
 
                 if skin_type:
-                    prompt_content += f"\n\n**USER:** Skin: {skin_type}"
+                    prompt_content += f"\n\n**USER PREFERENCES:** Skin: {skin_type}"
                 if brands:
                     prompt_content += f", Brands: {', '.join(brands[:2])}"
     except Exception:

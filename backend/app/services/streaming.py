@@ -1,6 +1,6 @@
 import json
 import asyncio
-from typing import AsyncGenerator, Dict, Any, Optional
+from typing import AsyncGenerator, Dict, Any, Optional, List
 from sqlalchemy.orm import Session
 from enum import Enum
 
@@ -9,6 +9,7 @@ class StreamEvent(str, Enum):
     """Stream event types"""
     STATUS = "status"
     CONTENT = "content"
+    ARTIFACT = "artifact"
     DONE = "done"
     ERROR = "error"
 
@@ -54,7 +55,7 @@ class StreamingService:
         auth_token: Optional[str] = None
     ) -> AsyncGenerator[str, None]:
         """
-        Stream agent response as Server-Sent Events
+        Stream agent response as Server-Sent Events with artifacts support
         """
         try:
             # Initial status
@@ -75,32 +76,42 @@ class StreamingService:
                 auth_token=auth_token
             )
 
-            # Extract content
+            # Extract artifacts and content
+            artifacts = self._extract_artifacts(response)
             content = self._extract_content(response)
 
-            if not content:
+            if artifacts:
+                for artifact in artifacts:
+                    yield self._create_event(
+                        StreamEvent.ARTIFACT,
+                        {
+                            "tool_name": artifact.get("tool_name", "unknown"),
+                            "tool_call_id": artifact.get("tool_call_id", ""),
+                            "data": artifact.get("data", {}),
+                            "success": artifact.get("success", True)
+                        }
+                    )
+                    await asyncio.sleep(0.1)  # Small delay between artifacts
+
+            # STEP 2: Stream text content (if exists)
+            if content:
+                # Generating status
                 yield self._create_event(
-                    StreamEvent.ERROR,
-                    {"message": "No response generated"}
-                )
-                return
-
-            # Generating status
-            yield self._create_event(
-                StreamEvent.STATUS,
-                {
-                    "message": StreamConfig.STATUS_GENERATING,
-                    "stage": "streaming"
-                }
-            )
-
-            # Stream content
-            async for chunk in self._chunk_content(content):
-                yield self._create_event(
-                    StreamEvent.CONTENT,
-                    {"chunk": chunk}
+                    StreamEvent.STATUS,
+                    {
+                        "message": StreamConfig.STATUS_GENERATING,
+                        "stage": "streaming"
+                    }
                 )
 
+                # Stream content chunks
+                async for chunk in self._chunk_content(content):
+                    yield self._create_event(
+                        StreamEvent.CONTENT,
+                        {"chunk": chunk}
+                    )
+
+            # STEP 3: Done event
             yield self._create_event(
                 StreamEvent.DONE,
                 {
@@ -108,11 +119,16 @@ class StreamingService:
                     "message_id": self._extract_message_id(response),
                     "conversation_id": self._extract_conversation_id(response),
                     "thread_id": self._extract_thread_id(response),
-                    "total_length": len(content)
+                    "total_length": len(content) if content else 0,
+                    "total_artifacts": len(artifacts)
                 }
             )
 
         except Exception as e:
+            print(f"[StreamingService Error] {e}")
+            import traceback
+            traceback.print_exc()
+
             yield self._create_event(
                 StreamEvent.ERROR,
                 {"message": str(e)}
@@ -146,6 +162,26 @@ class StreamingService:
                 return i + 1
 
         return start
+
+    def _extract_artifacts(self, response: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Extract artifacts from response
+
+        Artifacts contain structured data from tool executions
+        that frontend can render as interactive components
+        """
+        try:
+            message = response.get("data", {}).get("message", {})
+            artifacts = message.get("artifacts", [])
+
+            # Also check message_metadata for backward compatibility
+            if not artifacts:
+                metadata = message.get("message_metadata", {})
+                artifacts = metadata.get("artifacts", [])
+
+            return artifacts if isinstance(artifacts, list) else []
+        except (AttributeError, TypeError):
+            return []
 
     def _extract_content(self, response: Dict[str, Any]) -> str:
         """Extract content from response"""
@@ -181,7 +217,8 @@ class StreamingService:
             "type": event_type.value,
             **data
         }
-        return f"data: {json.dumps(event_data)}\n\n"
+        # Use ensure_ascii=False to properly handle Vietnamese characters
+        return f"data: {json.dumps(event_data, ensure_ascii=False)}\n\n"
 
 
 # Singleton

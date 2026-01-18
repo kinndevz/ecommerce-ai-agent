@@ -1,7 +1,6 @@
 import uuid
 from datetime import datetime, timezone
 from sqlalchemy.orm import Session, joinedload
-
 from app.models.conversation import Conversation, Message
 from app.utils.responses import ResponseHandler
 from app.agent.agent import get_unified_agent
@@ -16,6 +15,7 @@ class ChatService:
         conversation_id: str = None,
         auth_token: str = None
     ):
+        # Create or get conversation
         if conversation_id:
             conversation = db.query(Conversation).filter(
                 Conversation.id == conversation_id,
@@ -35,6 +35,7 @@ class ChatService:
             db.add(conversation)
             db.flush()
 
+        # Save user message
         user_message = Message(
             id=str(uuid.uuid4()),
             conversation_id=conversation.id,
@@ -45,6 +46,7 @@ class ChatService:
         db.add(user_message)
         db.commit()
 
+        # Get agent response
         agent = await get_unified_agent()
         result = await agent.chat(
             user_id=user_id,
@@ -53,18 +55,24 @@ class ChatService:
             auth_token=auth_token or ""
         )
 
+        artifacts = result.get("artifacts", [])
+
         ai_message = Message(
             id=str(uuid.uuid4()),
             conversation_id=conversation.id,
             role="assistant",
             content=result["content"],
-            message_metadata=result.get("metadata", {}),
+            message_metadata={
+                **result.get("metadata", {}),
+                "artifacts": artifacts
+            },
             created_at=datetime.now(timezone.utc)
         )
         db.add(ai_message)
         db.commit()
         db.refresh(ai_message)
 
+        # Return response with artifacts
         return ResponseHandler.success(
             message="Message sent",
             data={
@@ -74,6 +82,7 @@ class ChatService:
                     "id": ai_message.id,
                     "role": ai_message.role,
                     "content": ai_message.content,
+                    "artifacts": artifacts,
                     "message_metadata": ai_message.message_metadata,
                     "created_at": ai_message.created_at
                 }
@@ -149,6 +158,7 @@ class ChatService:
                     "id": msg.id,
                     "role": msg.role,
                     "content": msg.content,
+                    "artifacts": msg.message_metadata.get("artifacts", []) if msg.message_metadata else [],
                     "message_metadata": msg.message_metadata,
                     "created_at": msg.created_at
                 }
@@ -165,6 +175,7 @@ class ChatService:
 
     @staticmethod
     def delete_conversation(db: Session, user_id: str, conversation_id: str):
+        """Delete a conversation"""
         conversation = db.query(Conversation).filter(
             Conversation.id == conversation_id,
             Conversation.user_id == user_id
@@ -173,10 +184,12 @@ class ChatService:
         if not conversation:
             return ResponseHandler.not_found_error("Conversation", conversation_id)
 
+        # Delete all messages first
         db.query(Message).filter(
             Message.conversation_id == conversation_id
         ).delete()
 
+        # Delete conversation
         db.delete(conversation)
         db.commit()
 
