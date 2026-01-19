@@ -3,28 +3,17 @@ import {
   Send,
   Menu,
   X,
-  Loader2,
-  Bot,
   User,
   LogOut,
-  RefreshCcw,
   Sparkles,
   Search,
   ShoppingCart,
-  ChevronDown,
   ArrowLeftToLine,
 } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import { ScrollArea } from '@/shared/components/ui/scroll-area'
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/shared/components/ui/alert-dialog'
 import { Card, CardContent } from '@/shared/components/ui/card'
@@ -34,12 +23,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/shared/components/ui/tooltip'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/shared/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
 import { ChatMessage, type Message } from '../components/chatbot/ChatMessage'
 import { TypingIndicator } from '../components/chatbot/TypingIndicator'
@@ -284,7 +267,12 @@ export default function ChatPage() {
               ) : !currentConversation || visibleMessages.length === 0 ? (
                 <div className='flex flex-col items-center justify-center min-h-[60vh] space-y-8 animate-in fade-in zoom-in-95 duration-500'>
                   <div className='w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center'>
-                    <Sparkles className='w-8 h-8 text-primary' />
+                    <Avatar>
+                      <AvatarImage
+                        src={'src/assets/company-logo.svg'}
+                        className='w-full'
+                      />
+                    </Avatar>
                   </div>
                   <h2 className='text-2xl font-bold tracking-tight text-foreground text-center'>
                     What can I help you with?
@@ -321,7 +309,7 @@ export default function ChatPage() {
                   ))}
 
                   {shouldShowTypingIndicator && (
-                    <div className='pl-11 animate-in fade-in'>
+                    <div className='animate-in fade-in'>
                       <TypingIndicator />
                       {(currentToolCall || streamingStatus) && (
                         <span className='text-xs text-muted-foreground ml-2 animate-pulse'>

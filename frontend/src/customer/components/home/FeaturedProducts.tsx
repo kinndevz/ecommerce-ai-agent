@@ -98,14 +98,14 @@ export const FeaturedProducts = () => {
       <div className='relative max-w-7xl mx-auto px-6'>
         {/* Section Header - Enhanced */}
         <div className='text-center mb-16 space-y-4 animate-in fade-in slide-in-from-bottom duration-1000'>
-          <div className='inline-flex items-center gap-2.5 px-5 py-2.5 bg-gradient-to-r from-primary/15 to-primary/10 text-primary rounded-full border-2 border-primary/30 shadow-md'>
+          <div className='inline-flex items-center gap-2.5 px-5 py-2.5 bg-linear-to-r from-primary/15 to-primary/10 text-primary rounded-full border-2 border-primary/30 shadow-md'>
             <Sparkles className='w-4 h-4 animate-pulse' />
             <span className='text-sm font-extrabold uppercase tracking-wider'>
               Hand-picked Favorites
             </span>
           </div>
 
-          <h2 className='text-4xl md:text-5xl font-serif font-bold bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent leading-tight'>
+          <h2 className='text-4xl md:text-5xl font-serif font-bold bg-linear-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent leading-tight'>
             Featured Products
           </h2>
 
@@ -182,7 +182,7 @@ const ProductCard = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Image Container - Full Image */}
-      <div className='relative overflow-hidden aspect-[4/5] bg-muted/30 dark:bg-muted/10'>
+      <div className='relative overflow-hidden aspect-4/5 bg-muted/30 dark:bg-muted/10'>
         <img
           src={product.image}
           alt={product.name}
@@ -193,7 +193,7 @@ const ProductCard = ({
         />
 
         {/* Subtle Gradient Overlay */}
-        <div className='absolute inset-0 bg-gradient-to-t from-black/30 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
+        <div className='absolute inset-0 bg-linear-to-t from-black/30 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
 
         {/* Badges - Refined */}
         <div className='absolute top-3 left-3 flex flex-col gap-2'>
@@ -267,7 +267,7 @@ const ProductCard = ({
         </Badge>
 
         {/* Name */}
-        <h3 className='font-semibold text-base leading-snug line-clamp-2 min-h-[2.5rem] group-hover:text-primary transition-colors dark:text-foreground'>
+        <h3 className='font-semibold text-base leading-snug line-clamp-2 min-h-10 group-hover:text-primary transition-colors dark:text-foreground'>
           {product.name}
         </h3>
 

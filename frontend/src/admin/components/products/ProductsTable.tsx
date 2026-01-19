@@ -126,10 +126,8 @@ export function ProductsTable({
   }
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(price)
+    const formattedNumber = new Intl.NumberFormat('vi-VN').format(price)
+    return `${formattedNumber} đ`
   }
 
   const allSelected =
@@ -279,9 +277,9 @@ export function ProductsTable({
                     <TableCell>
                       <div className='flex items-center gap-3'>
                         <div className='w-12 h-12 rounded-lg bg-muted overflow-hidden shrink-0'>
-                          {product.primary_image ? (
+                          {product.product_image ? (
                             <img
-                              src={product.primary_image}
+                              src={product.product_image}
                               alt={product.name}
                               className='w-full h-full object-cover'
                             />
@@ -305,12 +303,18 @@ export function ProductsTable({
                   {visibleColumns.price && (
                     <TableCell>
                       <div>
-                        <p className='font-semibold'>
-                          {formatPrice(product.price)}
-                        </p>
-                        {product.sale_price && (
-                          <p className='text-sm text-muted-foreground line-through'>
-                            {formatPrice(product.sale_price)}
+                        {product.sale_price ? (
+                          <>
+                            <p className='font-semibold'>
+                              {formatPrice(product.sale_price)}
+                            </p>
+                            <p className='text-xs text-muted-foreground line-through'>
+                              {formatPrice(product.price)}
+                            </p>
+                          </>
+                        ) : (
+                          <p className='font-semibold'>
+                            {formatPrice(product.price)}
                           </p>
                         )}
                       </div>

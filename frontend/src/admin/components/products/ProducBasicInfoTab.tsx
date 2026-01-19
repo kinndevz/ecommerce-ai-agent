@@ -101,7 +101,12 @@ export function ProductBasicInfoTab({ product }: ProductBasicInfoTabProps) {
   }, [product, form, loadingBrands, loadingCategories, brands, categories])
 
   const onSubmit = (data: any) => {
+    console.log('>>> update')
     updateProduct.mutate({ id: product.id, data })
+  }
+
+  const onError = (errors: any) => {
+    console.log('Form Validation Errors:', errors)
   }
 
   const price = form.watch('price') || 0
@@ -127,7 +132,10 @@ export function ProductBasicInfoTab({ product }: ProductBasicInfoTabProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
+      <form
+        onSubmit={form.handleSubmit(onSubmit, onError)}
+        className='space-y-6'
+      >
         {/* Submit Button */}
         <div className='flex justify-end gap-3 pt-6 border-t'>
           <Button

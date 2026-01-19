@@ -1,15 +1,14 @@
-import { Bot } from 'lucide-react'
-import { Avatar, AvatarFallback } from '@/shared/components/ui/avatar'
-import { AiFillTwitch } from 'react-icons/ai'
+import { Avatar, AvatarImage } from '@/shared/components/ui/avatar'
 
 export const TypingIndicator = () => {
   return (
     <div className='flex gap-3 mb-5 animate-in fade-in slide-in-from-bottom-2 duration-400'>
       {/* AI Avatar */}
       <Avatar className='w-9 h-9 shrink-0 ring-2 ring-background shadow-sm'>
-        <AvatarFallback className='bg-accent text-accent-foreground'>
-          <AiFillTwitch className='w-4 h-4' />
-        </AvatarFallback>
+        <AvatarImage
+          src={'src/assets/company-logo.svg'}
+          className='object-cover'
+        />
       </Avatar>
 
       {/* Typing Bubble */}

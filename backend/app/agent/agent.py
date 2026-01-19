@@ -16,7 +16,6 @@ class RuntimeContext(TypedDict):
 
 
 class ToolArtifact(TypedDict):
-    """Structured artifact from tool execution"""
     tool_name: str
     tool_call_id: str
     data: Dict[str, Any]
@@ -66,13 +65,7 @@ class UnifiedAgent:
 
     def _extract_tool_artifacts(self, messages: List) -> List[ToolArtifact]:
         artifacts = []
-        start_index = 0
-        for i in range(len(messages) - 1, -1, -1):
-            if isinstance(messages[i], HumanMessage):
-                start_index = i + 1
-                break
-
-        for msg in messages[start_index:]:
+        for msg in messages:
             if isinstance(msg, ToolMessage):
                 raw_artifact = getattr(msg, 'artifact', None)
 
@@ -103,22 +96,11 @@ class UnifiedAgent:
 
         input_payload = {
             "messages": [HumanMessage(content=message)],
-            "user_context": {
-                "user_id": user_id,
-                "auth_token": auth_token
-            }
+            "user_context": {"user_id": user_id, "auth_token": auth_token}
         }
 
-        runtime_context = {
-            "user_id": user_id,
-            "auth_token": auth_token
-        }
-
-        config = {
-            "configurable": {
-                "thread_id": conversation_id
-            }
-        }
+        config = {"configurable": {"thread_id": conversation_id}}
+        runtime_context = {"user_id": user_id, "auth_token": auth_token}
 
         try:
             result = await agent.ainvoke(
@@ -127,19 +109,42 @@ class UnifiedAgent:
                 context=runtime_context
             )
 
-            # Extract AI response
-            ai_message = result["messages"][-1]
+            all_messages = result["messages"]
+
+            last_human_index = -1
+            for i in range(len(all_messages) - 1, -1, -1):
+                if isinstance(all_messages[i], HumanMessage):
+                    last_human_index = i
+                    break
+
+            start_index = last_human_index + 1 if last_human_index != -1 else 0
+            current_turn_messages = all_messages[start_index:]
+
+            called_tools = []
+            for msg in current_turn_messages:
+                if isinstance(msg, AIMessage) and hasattr(msg, 'tool_calls') and msg.tool_calls:
+                    for tool_call in msg.tool_calls:
+                        called_tools.append(tool_call['name'])
+                elif isinstance(msg, ToolMessage):
+                    called_tools.append(msg.name)  # msg.name là tên tool
+
+            if called_tools:
+                print(
+                    f"⚙️ [{user_id}] Tools called in this turn: {', '.join(called_tools)}")
+            else:
+                print(f"💬 [{user_id}] No tools called in this turn.")
+
+            artifacts = self._extract_tool_artifacts(current_turn_messages)
+
+            tool_calls_count = sum(
+                len(m.tool_calls)
+                for m in current_turn_messages
+                if isinstance(m, AIMessage) and hasattr(m, "tool_calls") and m.tool_calls
+            )
+
+            ai_message = all_messages[-1]
             ai_content = ai_message.content if hasattr(
                 ai_message, 'content') else ""
-
-            # Extract tool artifacts
-            artifacts = self._extract_tool_artifacts(result["messages"])
-
-            # Count tool calls
-            tool_calls_count = sum(
-                1 for m in result["messages"]
-                if hasattr(m, "tool_calls") and m.tool_calls
-            )
 
             return {
                 "content": ai_content,

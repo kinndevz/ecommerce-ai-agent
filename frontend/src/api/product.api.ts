@@ -154,7 +154,7 @@ interface ProductListItem {
   views_count: number
   brand: BrandSimple
   category: CategorySimple
-  primary_image?: string | null
+  product_image?: string | null
   tags: TagSimple[]
 }
 

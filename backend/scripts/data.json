@@ -1,0 +1,1043 @@
+{
+  "brands": [
+    {
+      "name": "CeraVe",
+      "slug": "cerave",
+      "country": "USA",
+      "description": "Dermatologist-developed skincare.",
+      "website_url": "https://cerave.com"
+    },
+    {
+      "name": "The Ordinary",
+      "slug": "the-ordinary",
+      "country": "Canada",
+      "description": "Clinical formulations with integrity.",
+      "website_url": "https://theordinary.com"
+    },
+    {
+      "name": "La Roche-Posay",
+      "slug": "la-roche-posay",
+      "country": "France",
+      "description": "Life-changing dermatological skincare.",
+      "website_url": "https://laroche-posay.com"
+    },
+    {
+      "name": "Paula's Choice",
+      "slug": "paulas-choice",
+      "country": "USA",
+      "description": "Smart, safe, effective skincare.",
+      "website_url": "https://paulaschoice.com"
+    },
+    {
+      "name": "COSRX",
+      "slug": "cosrx",
+      "country": "South Korea",
+      "description": "Expecting Tomorrow.",
+      "website_url": "https://cosrx.com"
+    },
+    {
+      "name": "Skin1004",
+      "slug": "skin1004",
+      "country": "South Korea",
+      "description": "Untouched Nature.",
+      "website_url": "https://skin1004.com"
+    },
+    {
+      "name": "Klairs",
+      "slug": "klairs",
+      "country": "South Korea",
+      "description": "Simple but enough.",
+      "website_url": "https://klairscosmetics.com"
+    },
+    {
+      "name": "Bioderma",
+      "slug": "bioderma",
+      "country": "France",
+      "description": "Biology at the service of dermatology.",
+      "website_url": "https://bioderma.com"
+    },
+    {
+      "name": "Obagi",
+      "slug": "obagi",
+      "country": "USA",
+      "description": "Medical-grade skincare.",
+      "website_url": "https://obagi.com"
+    },
+    {
+      "name": "Vichy",
+      "slug": "vichy",
+      "country": "France",
+      "description": "Health is vital. Start with your skin.",
+      "website_url": "https://vichy.com"
+    },
+    {
+      "name": "Estée Lauder",
+      "slug": "estee-lauder",
+      "country": "USA",
+      "description": "Prestige beauty.",
+      "website_url": "https://esteelauder.com"
+    },
+    {
+      "name": "Kiehl's",
+      "slug": "kiehls",
+      "country": "USA",
+      "description": "Finest apothecary skincare.",
+      "website_url": "https://kiehls.com"
+    },
+    {
+      "name": "Neutrogena",
+      "slug": "neutrogena",
+      "country": "USA",
+      "description": "#1 Dermatologist Recommended.",
+      "website_url": "https://neutrogena.com"
+    },
+    {
+      "name": "EltaMD",
+      "slug": "eltamd",
+      "country": "USA",
+      "description": "Sun care & skin care.",
+      "website_url": "https://eltamd.com"
+    },
+    {
+      "name": "Laneige",
+      "slug": "laneige",
+      "country": "South Korea",
+      "description": "Hydration experts.",
+      "website_url": "https://laneige.com"
+    },
+    {
+      "name": "Dr.Jart+",
+      "slug": "dr-jart",
+      "country": "South Korea",
+      "description": "Art & Science of Skincare.",
+      "website_url": "https://us.drjart.com"
+    },
+    {
+      "name": "The Inkey List",
+      "slug": "the-inkey-list",
+      "country": "UK",
+      "description": "Knowledge powers change.",
+      "website_url": "https://theinkeylist.com"
+    },
+    {
+      "name": "Anua",
+      "slug": "anua",
+      "country": "South Korea",
+      "description": "Keep things simple.",
+      "website_url": "https://anua.kr"
+    },
+    {
+      "name": "Beauty of Joseon",
+      "slug": "beauty-of-joseon",
+      "country": "South Korea",
+      "description": "Hanbang skincare.",
+      "website_url": "https://beautyofjoseon.com"
+    },
+    {
+      "name": "Eucerin",
+      "slug": "eucerin",
+      "country": "Germany",
+      "description": "Medical skin science.",
+      "website_url": "https://eucerin.com"
+    }
+  ],
+  "categories": {
+    "parents": [
+      { "name": "Skincare", "slug": "skincare" },
+      { "name": "Body Care", "slug": "body-care" }
+    ],
+    "children": [
+      { "name": "Cleansers", "slug": "cleansers", "parent": "skincare" },
+      { "name": "Toners", "slug": "toners", "parent": "skincare" },
+      { "name": "Serums", "slug": "serums", "parent": "skincare" },
+      { "name": "Moisturizers", "slug": "moisturizers", "parent": "skincare" },
+      { "name": "Sunscreens", "slug": "sunscreens", "parent": "skincare" },
+      { "name": "Exfoliators", "slug": "exfoliators", "parent": "skincare" },
+      { "name": "Masks", "slug": "masks", "parent": "skincare" },
+      { "name": "Eye Care", "slug": "eye-care", "parent": "skincare" }
+    ]
+  },
+  "tags": [
+    { "name": "Vegan", "slug": "vegan" },
+    { "name": "Cruelty-Free", "slug": "cruelty-free" },
+    { "name": "Alcohol-Free", "slug": "alcohol-free" },
+    { "name": "Fragrance-Free", "slug": "fragrance-free" },
+    { "name": "Paraben-Free", "slug": "paraben-free" },
+    { "name": "Best Seller", "slug": "best-seller" },
+    { "name": "New Arrival", "slug": "new-arrival" },
+    { "name": "Oil-Free", "slug": "oil-free" },
+    { "name": "Non-Comedogenic", "slug": "non-comedogenic" },
+    { "name": "Hypoallergenic", "slug": "hypoallergenic" },
+    { "name": "Organic", "slug": "organic" }
+  ],
+  "products": [
+    {
+      "brand": "cerave",
+      "category": "cleansers",
+      "name": "CeraVe Hydrating Facial Cleanser",
+      "slug": "cerave-hydrating-cleanser",
+      "sku": "CERAVE-HC-001",
+      "price": "16.99",
+      "stock": 100,
+      "desc": "A gentle face wash with ceramides and hyaluronic acid that cleanses without disrupting the skin barrier.",
+      "skin_types": ["normal", "dry", "sensitive"],
+      "concerns": ["dryness", "sensitivity"],
+      "benefits": ["moisturizing", "gentle cleansing", "barrier repair"],
+      "tags": ["fragrance-free", "best-seller", "non-comedogenic"],
+      "ingredients": {
+        "key": ["Ceramides", "Hyaluronic Acid"],
+        "full": ["Water", "Glycerin", "Cetearyl Alcohol"]
+      }
+    },
+    {
+      "brand": "cerave",
+      "category": "cleansers",
+      "name": "CeraVe Foaming Facial Cleanser",
+      "slug": "cerave-foaming-cleanser",
+      "sku": "CERAVE-FC-002",
+      "price": "16.99",
+      "stock": 120,
+      "desc": "Daily face wash for normal to oily skin. Cleanses and removes oil without disrupting the protective skin barrier.",
+      "skin_types": ["normal", "oily", "combination"],
+      "concerns": ["oiliness", "acne"],
+      "benefits": ["oil control", "cleansing"],
+      "tags": ["fragrance-free", "non-comedogenic"],
+      "ingredients": {
+        "key": ["Ceramides", "Niacinamide", "Hyaluronic Acid"],
+        "full": ["Aqua", "Cocamidopropyl Betaine"]
+      }
+    },
+    {
+      "brand": "paulas-choice",
+      "category": "exfoliators",
+      "name": "Skin Perfecting 2% BHA Liquid Exfoliant",
+      "slug": "paulas-choice-2-bha",
+      "sku": "PC-BHA-02",
+      "price": "34.00",
+      "stock": 50,
+      "desc": "The cult-favorite daily leave-on exfoliant with salicylic acid to unclog pores and smooth wrinkles.",
+      "skin_types": ["oily", "combination", "acne-prone"],
+      "concerns": ["acne", "blackheads", "large pores", "texture"],
+      "benefits": ["exfoliating", "pore clearing", "smoothing"],
+      "tags": ["cruelty-free", "best-seller", "fragrance-free"],
+      "ingredients": {
+        "key": ["Salicylic Acid 2%", "Green Tea"],
+        "full": ["Water", "Methylpropanediol", "Salicylic Acid"]
+      }
+    },
+    {
+      "brand": "la-roche-posay",
+      "category": "sunscreens",
+      "name": "Anthelios Melt-in Milk Sunscreen SPF 60",
+      "slug": "lrp-anthelios-spf60",
+      "sku": "LRP-SUN-60",
+      "price": "36.99",
+      "stock": 80,
+      "desc": "Broad spectrum SPF 60 protection. Oxybenzone-free and suitable for face and body.",
+      "skin_types": ["all", "sensitive"],
+      "concerns": ["sun damage", "aging"],
+      "benefits": ["sun protection", "water resistant"],
+      "tags": ["paraben-free", "fragrance-free", "oil-free"],
+      "ingredients": {
+        "key": ["Cell-Ox Shield", "Thermal Spring Water"],
+        "full": ["Water", "Styrene/Acrylates Copolymer"]
+      }
+    },
+    {
+      "brand": "the-ordinary",
+      "category": "serums",
+      "name": "Niacinamide 10% + Zinc 1%",
+      "slug": "to-niacinamide",
+      "sku": "TO-NIA-10",
+      "price": "6.00",
+      "stock": 200,
+      "desc": "A high-strength vitamin and mineral blemish formula to reduce skin congestion.",
+      "skin_types": ["oily", "combination"],
+      "concerns": ["acne", "oiliness", "enlarged pores"],
+      "benefits": ["oil control", "brightening"],
+      "tags": ["vegan", "alcohol-free", "best-seller", "oil-free"],
+      "ingredients": {
+        "key": ["Niacinamide", "Zinc PCA"],
+        "full": ["Aqua", "Niacinamide", "Zinc PCA"]
+      }
+    },
+    {
+      "brand": "skin1004",
+      "category": "serums",
+      "name": "Madagascar Centella Ampoule",
+      "slug": "skin1004-centella-ampoule",
+      "sku": "SKIN1004-CA",
+      "price": "18.00",
+      "stock": 120,
+      "desc": "Made with 100% Centella Asiatica Extract to calm and repair damaged skin.",
+      "skin_types": ["sensitive", "acne-prone", "all"],
+      "concerns": ["redness", "irritation", "sensitivity"],
+      "benefits": ["calming", "soothing", "hydrating"],
+      "tags": ["cruelty-free", "vegan", "fragrance-free"],
+      "ingredients": {
+        "key": ["Centella Asiatica Extract 100%"],
+        "full": ["Centella Asiatica Extract"]
+      }
+    },
+    {
+      "brand": "klairs",
+      "category": "toners",
+      "name": "Supple Preparation Unscented Toner",
+      "slug": "klairs-unscented-toner",
+      "sku": "KLAIRS-TONER-U",
+      "price": "22.00",
+      "stock": 90,
+      "desc": "A non-irritating toner that rejuvenates and restores hydration to the skin.",
+      "skin_types": ["sensitive", "normal", "dry"],
+      "concerns": ["dehydration", "sensitivity"],
+      "benefits": ["hydrating", "balancing"],
+      "tags": ["vegan", "alcohol-free", "fragrance-free"],
+      "ingredients": {
+        "key": ["Sodium Hyaluronate", "Centella Asiatica"],
+        "full": ["Water", "Butylene Glycol"]
+      }
+    },
+    {
+      "brand": "cosrx",
+      "category": "serums",
+      "name": "Advanced Snail 96 Mucin Power Essence",
+      "slug": "cosrx-snail-96",
+      "sku": "COSRX-SN-96",
+      "price": "25.00",
+      "stock": 150,
+      "desc": "Lightweight essence which absorbs into skin fast to give skin natural glow from inside.",
+      "skin_types": ["dry", "dehydrated", "aging"],
+      "concerns": ["dullness", "dehydration", "dark spots"],
+      "benefits": ["hydrating", "repairing", "glowing"],
+      "tags": ["cruelty-free", "paraben-free", "best-seller"],
+      "ingredients": {
+        "key": ["Snail Secretion Filtrate 96%"],
+        "full": ["Snail Secretion Filtrate", "Betaine"]
+      }
+    },
+    {
+      "brand": "bioderma",
+      "category": "cleansers",
+      "name": "Sensibio H2O Micellar Water",
+      "slug": "bioderma-sensibio-h2o",
+      "sku": "BIO-H2O-500",
+      "price": "18.99",
+      "stock": 100,
+      "desc": "A dermatological micellar water perfectly compatible with the skin.",
+      "skin_types": ["sensitive", "all"],
+      "concerns": ["sensitivity", "redness"],
+      "benefits": ["cleansing", "soothing", "makeup removal"],
+      "tags": ["fragrance-free", "alcohol-free", "best-seller"],
+      "ingredients": {
+        "key": ["Micelles", "Cucumber Extract"],
+        "full": ["Water", "PEG-6 Caprylic/Capric Glycerides"]
+      }
+    },
+    {
+      "brand": "obagi",
+      "category": "serums",
+      "name": "Obagi360 Retinol 1.0",
+      "slug": "obagi-retinol-1-0",
+      "sku": "OBAGI-RET-10",
+      "price": "75.00",
+      "stock": 30,
+      "desc": "High-concentration retinol formula minimizes the appearance of fine lines and wrinkles.",
+      "skin_types": ["aging", "combination"],
+      "concerns": ["aging", "wrinkles", "fine lines"],
+      "benefits": ["anti-aging", "smoothing"],
+      "tags": [],
+      "ingredients": {
+        "key": ["Retinol 1.0%", "Shea Butter"],
+        "full": ["Water", "Caprylic/Capric Triglyceride"]
+      }
+    },
+    {
+      "brand": "vichy",
+      "category": "serums",
+      "name": "LiftActiv Vitamin C Serum",
+      "slug": "vichy-vit-c",
+      "sku": "VICHY-VITC",
+      "price": "28.50",
+      "stock": 60,
+      "desc": "Pure Vitamin C serum to brighten skin and reduce fine lines.",
+      "skin_types": ["dull", "aging", "all"],
+      "concerns": ["dullness", "aging", "uneven skin tone"],
+      "benefits": ["brightening", "firming"],
+      "tags": ["paraben-free", "alcohol-free"],
+      "ingredients": {
+        "key": ["Vitamin C 15%", "Hyaluronic Acid"],
+        "full": ["Aqua", "Ascorbic Acid"]
+      }
+    },
+    {
+      "brand": "la-roche-posay",
+      "category": "moisturizers",
+      "name": "Cicaplast Baume B5",
+      "slug": "lrp-cicaplast-b5",
+      "sku": "LRP-CICA-B5",
+      "price": "15.99",
+      "stock": 100,
+      "desc": "Multi-purpose balm for dry skin irritations. Suitable for adults, children, and babies.",
+      "skin_types": ["dry", "irritated", "sensitive"],
+      "concerns": ["dryness", "irritation", "damaged barrier"],
+      "benefits": ["repairing", "soothing", "protecting"],
+      "tags": ["fragrance-free", "paraben-free", "best-seller"],
+      "ingredients": {
+        "key": ["Panthenol (Vitamin B5)", "Madecassoside"],
+        "full": ["Aqua", "Hydrogenated Polyisobutene"]
+      }
+    },
+    {
+      "brand": "cerave",
+      "category": "cleansers",
+      "name": "Renewing SA Cleanser",
+      "slug": "cerave-sa-cleanser",
+      "sku": "CERAVE-SA-CL",
+      "price": "14.99",
+      "stock": 85,
+      "desc": "Salicylic acid cleanser to exfoliate and smooth rough skin while removing oil and dirt.",
+      "skin_types": ["normal", "acne-prone", "rough"],
+      "concerns": ["rough texture", "acne"],
+      "benefits": ["exfoliating", "smoothing"],
+      "tags": ["fragrance-free", "non-comedogenic"],
+      "ingredients": {
+        "key": ["Salicylic Acid", "Ceramides", "Niacinamide"],
+        "full": ["Aqua", "Cocamidopropyl Hydroxysultaine"]
+      }
+    },
+    {
+      "brand": "cosrx",
+      "category": "cleansers",
+      "name": "Low pH Good Morning Gel Cleanser",
+      "slug": "cosrx-low-ph-cleanser",
+      "sku": "COSRX-LPH-01",
+      "price": "12.00",
+      "stock": 120,
+      "desc": "A super gentle cleanser that’s great for your morning wash, this low pH formula gel cleanser doesn’t strip your skin of its natural oils.",
+      "skin_types": ["sensitive", "oily", "combination"],
+      "concerns": ["oiliness", "sensitivity"],
+      "benefits": ["gentle cleansing", "balancing"],
+      "tags": ["vegan", "cruelty-free"],
+      "ingredients": {
+        "key": ["Tea Tree Oil", "BHA"],
+        "full": [
+          "Water",
+          "Cocamidopropyl Betaine",
+          "Sodium Lauroyl Methyl Isethionate"
+        ]
+      }
+    },
+    {
+      "brand": "la-roche-posay",
+      "category": "cleansers",
+      "name": "Toleriane Hydrating Gentle Cleanser",
+      "slug": "lrp-toleriane-cleanser",
+      "sku": "LRP-TOL-01",
+      "price": "15.99",
+      "stock": 90,
+      "desc": "A daily face wash for normal to dry, sensitive skin that cleanses without drying.",
+      "skin_types": ["normal", "dry", "sensitive"],
+      "concerns": ["sensitivity", "dryness"],
+      "benefits": ["hydrating", "gentle"],
+      "tags": ["fragrance-free", "paraben-free", "oil-free"],
+      "ingredients": {
+        "key": ["Prebiotic Thermal Water", "Ceramide-3", "Niacinamide"],
+        "full": ["Aqua", "Glycerin"]
+      }
+    },
+    {
+      "brand": "the-ordinary",
+      "category": "toners",
+      "name": "Glycolic Acid 7% Toning Solution",
+      "slug": "to-glycolic-acid",
+      "sku": "TO-GLY-07",
+      "price": "10.00",
+      "stock": 150,
+      "desc": "An exfoliating toning solution with 7% glycolic acid, amino acids, aloe vera, ginseng, and tasmanian pepperberry.",
+      "skin_types": ["all", "dull"],
+      "concerns": ["texture", "dullness"],
+      "benefits": ["exfoliating", "brightening"],
+      "tags": ["vegan", "alcohol-free", "best-seller"],
+      "ingredients": {
+        "key": ["Glycolic Acid", "Aloe Vera"],
+        "full": ["Aqua", "Glycolic Acid"]
+      }
+    },
+    {
+      "brand": "cosrx",
+      "category": "toners",
+      "name": "AHA/BHA Clarifying Treatment Toner",
+      "slug": "cosrx-aha-bha-toner",
+      "sku": "COSRX-AHA-BHA",
+      "price": "17.00",
+      "stock": 80,
+      "desc": "Formulated with AHA, BHA, and purifying botanical ingredients, the AHA/BHA Clarifying Treatment Toner works to soothe, refresh, and soften the skin.",
+      "skin_types": ["oily", "acne-prone"],
+      "concerns": ["whiteheads", "blackheads", "pores"],
+      "benefits": ["exfoliating", "clearing"],
+      "tags": ["cruelty-free", "vegan"],
+      "ingredients": {
+        "key": ["Willow Bark Water", "Pyrus Malus Fruit Water"],
+        "full": ["Water", "Salix Alba Bark Water"]
+      }
+    },
+    {
+      "brand": "paulas-choice",
+      "category": "toners",
+      "name": "Skin Balancing Pore-Reducing Toner",
+      "slug": "paulas-choice-pore-toner",
+      "sku": "PC-TONER-PORE",
+      "price": "22.00",
+      "stock": 60,
+      "desc": "A daily facial toner that balances oily skin, minimizes enlarged pores, and provides light hydration.",
+      "skin_types": ["oily", "combination"],
+      "concerns": ["large pores", "oiliness"],
+      "benefits": ["pore minimizing", "balancing"],
+      "tags": ["cruelty-free", "fragrance-free"],
+      "ingredients": {
+        "key": ["Niacinamide", "Antioxidants"],
+        "full": ["Water", "Glycerin"]
+      }
+    },
+    {
+      "brand": "estee-lauder",
+      "category": "serums",
+      "name": "Advanced Night Repair Synchronized Multi-Recovery Complex",
+      "slug": "estee-lauder-anr",
+      "sku": "EL-ANR-01",
+      "price": "75.00",
+      "stock": 40,
+      "desc": "The #1 Serum in the US. Fights key signs of aging. The power of 7 serums in 1.",
+      "skin_types": ["all", "aging"],
+      "concerns": ["aging", "wrinkles", "dryness"],
+      "benefits": ["anti-aging", "repairing", "hydrating"],
+      "tags": ["oil-free", "non-comedogenic", "best-seller"],
+      "ingredients": {
+        "key": ["Hyaluronic Acid", "Tripeptide-32"],
+        "full": ["Water", "Bifida Ferment Lysate"]
+      }
+    },
+    {
+      "brand": "kiehls",
+      "category": "moisturizers",
+      "name": "Ultra Facial Cream",
+      "slug": "kiehls-ultra-facial-cream",
+      "sku": "KIEHLS-UFC",
+      "price": "34.00",
+      "stock": 110,
+      "desc": "A unique lightweight textured moisturizer that provides 24-hour lasting hydration.",
+      "skin_types": ["all", "dry"],
+      "concerns": ["dryness"],
+      "benefits": ["hydrating", "softening"],
+      "tags": ["paraben-free", "best-seller"],
+      "ingredients": {
+        "key": ["Glacial Glycoprotein", "Squalane"],
+        "full": ["Water", "Glycerin"]
+      }
+    },
+    {
+      "brand": "cerave",
+      "category": "moisturizers",
+      "name": "CeraVe Moisturizing Cream",
+      "slug": "cerave-moisturizing-cream",
+      "sku": "CERAVE-CREAM-16",
+      "price": "18.99",
+      "stock": 150,
+      "desc": "A rich, non-greasy, fast-absorbing moisturizer for normal to dry skin on the face and body.",
+      "skin_types": ["dry", "very dry"],
+      "concerns": ["dryness", "eczema"],
+      "benefits": ["hydrating", "barrier repair"],
+      "tags": ["fragrance-free", "best-seller", "non-comedogenic"],
+      "ingredients": {
+        "key": ["Ceramides", "Hyaluronic Acid"],
+        "full": ["Water", "Glycerin"]
+      }
+    },
+    {
+      "brand": "neutrogena",
+      "category": "moisturizers",
+      "name": "Hydro Boost Water Gel",
+      "slug": "neutrogena-hydro-boost",
+      "sku": "NEUT-HB-GEL",
+      "price": "24.99",
+      "stock": 130,
+      "desc": "A lightweight water gel moisturizer that instantly quenches dry skin.",
+      "skin_types": ["dry", "normal", "oily"],
+      "concerns": ["dehydration"],
+      "benefits": ["hydrating", "lightweight"],
+      "tags": ["oil-free", "alcohol-free"],
+      "ingredients": {
+        "key": ["Hyaluronic Acid"],
+        "full": ["Water", "Dimethicone"]
+      }
+    },
+    {
+      "brand": "the-ordinary",
+      "category": "moisturizers",
+      "name": "Natural Moisturizing Factors + HA",
+      "slug": "to-nmf-ha",
+      "sku": "TO-NMF-100",
+      "price": "10.50",
+      "stock": 180,
+      "desc": "Surface hydration formula with amino acids, dermal lipids, and hyaluronic acid.",
+      "skin_types": ["all"],
+      "concerns": ["dryness"],
+      "benefits": ["hydrating", "barrier support"],
+      "tags": ["vegan", "cruelty-free", "oil-free"],
+      "ingredients": {
+        "key": ["Amino Acids", "Ceramides"],
+        "full": ["Aqua", "Caprylic/Capric Triglyceride"]
+      }
+    },
+    {
+      "brand": "skin1004",
+      "category": "moisturizers",
+      "name": "Madagascar Centella Soothing Cream",
+      "slug": "skin1004-soothing-cream",
+      "sku": "SKIN1004-SC",
+      "price": "16.00",
+      "stock": 70,
+      "desc": "A soothing cream that strengthens the skin barrier and calms irritated skin.",
+      "skin_types": ["sensitive", "acne-prone"],
+      "concerns": ["redness", "weak barrier"],
+      "benefits": ["soothing", "barrier repair"],
+      "tags": ["cruelty-free"],
+      "ingredients": {
+        "key": ["Centella Asiatica", "Ceramides"],
+        "full": ["Centella Asiatica Extract"]
+      }
+    },
+    {
+      "brand": "skin1004",
+      "category": "sunscreens",
+      "name": "Hyalu-Cica Water-Fit Sun Serum SPF50+ PA++++",
+      "slug": "skin1004-sun-serum",
+      "sku": "SKIN1004-SUN",
+      "price": "19.00",
+      "stock": 200,
+      "desc": "A non-nano chemical sunscreen that blocks UV rays, while simultaneously hydrating the skin.",
+      "skin_types": ["all", "dry"],
+      "concerns": ["sun damage", "dehydration"],
+      "benefits": ["sun protection", "hydrating", "no white cast"],
+      "tags": ["cruelty-free", "best-seller", "new-arrival"],
+      "ingredients": {
+        "key": ["Hyaluronic Acid", "Centella Asiatica"],
+        "full": ["Water", "Dibutyl Adipate"]
+      }
+    },
+    {
+      "brand": "eltamd",
+      "category": "sunscreens",
+      "name": "UV Clear Broad-Spectrum SPF 46",
+      "slug": "eltamd-uv-clear",
+      "sku": "ELTA-UV-46",
+      "price": "39.00",
+      "stock": 65,
+      "desc": "Oil-free sunscreen recommended by dermatologists for acne-prone skin.",
+      "skin_types": ["acne-prone", "sensitive"],
+      "concerns": ["sun damage", "acne", "rosacea"],
+      "benefits": ["sun protection", "calming"],
+      "tags": ["fragrance-free", "oil-free", "paraben-free", "best-seller"],
+      "ingredients": {
+        "key": ["Zinc Oxide", "Niacinamide"],
+        "full": ["Water", "Cyclopentasiloxane"]
+      }
+    },
+    {
+      "brand": "vichy",
+      "category": "sunscreens",
+      "name": "Capital Soleil Daily Anti-Aging Face Sunscreen SPF 50",
+      "slug": "vichy-capital-soleil",
+      "sku": "VICHY-SUN-50",
+      "price": "32.00",
+      "stock": 55,
+      "desc": "Daily anti-aging face sunscreen lotion with broad spectrum SPF 50 UVA/UVB protection.",
+      "skin_types": ["all"],
+      "concerns": ["sun damage", "aging"],
+      "benefits": ["sun protection", "anti-aging"],
+      "tags": ["oil-free", "non-comedogenic"],
+      "ingredients": {
+        "key": ["Peptides", "Vichy Volcanic Water"],
+        "full": ["Water", "Homosalate"]
+      }
+    },
+    {
+      "brand": "the-ordinary",
+      "category": "exfoliators",
+      "name": "AHA 30% + BHA 2% Peeling Solution",
+      "slug": "to-peeling-solution",
+      "sku": "TO-PEEL-30",
+      "price": "8.00",
+      "stock": 95,
+      "desc": "10-minute exfoliating facial. Fights visible blemishes and improves the look of skin texture.",
+      "skin_types": ["experienced users", "normal", "oily"],
+      "concerns": ["texture", "dullness", "blemishes"],
+      "benefits": ["exfoliating", "brightening"],
+      "tags": ["vegan", "alcohol-free", "best-seller"],
+      "ingredients": {
+        "key": ["Glycolic Acid", "Salicylic Acid"],
+        "full": ["Glycolic Acid", "Aqua"]
+      }
+    },
+    {
+      "brand": "kiehls",
+      "category": "masks",
+      "name": "Rare Earth Deep Pore Cleansing Mask",
+      "slug": "kiehls-rare-earth-mask",
+      "sku": "KIEHLS-MASK-RE",
+      "price": "40.00",
+      "stock": 45,
+      "desc": "A clay mask that helps purify and detoxify skin while minimizing the appearance of pores.",
+      "skin_types": ["normal", "oily"],
+      "concerns": ["large pores", "oiliness"],
+      "benefits": ["detoxifying", "pore minimizing"],
+      "tags": [],
+      "ingredients": {
+        "key": ["Amazonian White Clay", "Aloe Barbadensis"],
+        "full": ["Water", "Kaolin"]
+      }
+    },
+    {
+      "brand": "laneige",
+      "category": "masks",
+      "name": "Lip Sleeping Mask",
+      "slug": "laneige-lip-mask",
+      "sku": "LANEIGE-LIP-B",
+      "price": "24.00",
+      "stock": 200,
+      "desc": "A leave-on lip mask that soothes and moisturizes for smoother, more supple lips overnight.",
+      "skin_types": ["all"],
+      "concerns": ["dry lips"],
+      "benefits": ["hydrating", "soothing"],
+      "tags": ["best-seller"],
+      "ingredients": {
+        "key": ["Berry Mix Complex", "Vitamin C"],
+        "full": ["Diisostearyl Malate"]
+      }
+    },
+    {
+      "brand": "the-ordinary",
+      "category": "serums",
+      "name": "Hyaluronic Acid 2% + B5",
+      "slug": "to-ha-b5",
+      "sku": "TO-HA-B5",
+      "price": "7.50",
+      "stock": 160,
+      "desc": "A hydrating formula with ultra-pure, vegan hyaluronic acid.",
+      "skin_types": ["all", "dry"],
+      "concerns": ["dehydration"],
+      "benefits": ["hydrating", "plumping"],
+      "tags": ["vegan", "alcohol-free"],
+      "ingredients": {
+        "key": ["Hyaluronic Acid", "Vitamin B5"],
+        "full": ["Aqua", "Sodium Hyaluronate"]
+      }
+    },
+    {
+      "brand": "la-roche-posay",
+      "category": "serums",
+      "name": "Hyalu B5 Pure Hyaluronic Acid Serum",
+      "slug": "lrp-hyalu-b5",
+      "sku": "LRP-HYALU-B5",
+      "price": "33.50",
+      "stock": 75,
+      "desc": "Anti-aging serum concentrated with two types of pure hyaluronic acid and vitamin B5.",
+      "skin_types": ["all", "sensitive"],
+      "concerns": ["dehydration", "fine lines"],
+      "benefits": ["hydrating", "plumping", "repairing"],
+      "tags": ["paraben-free"],
+      "ingredients": {
+        "key": ["Hyaluronic Acid", "Madecassoside"],
+        "full": ["Aqua", "Glycerin"]
+      }
+    },
+    {
+      "brand": "cosrx",
+      "category": "masks",
+      "name": "Master Patch Original Fit",
+      "slug": "cosrx-pimple-patch",
+      "sku": "COSRX-PATCH",
+      "price": "6.00",
+      "stock": 300,
+      "desc": "Hydrocolloid patches that protect wounded or troubled area from getting worse.",
+      "skin_types": ["acne-prone", "all"],
+      "concerns": ["acne", "blemishes"],
+      "benefits": ["healing", "protecting"],
+      "tags": ["cruelty-free", "best-seller"],
+      "ingredients": {
+        "key": ["Hydrocolloid"],
+        "full": ["Cellulose Gum", "Styrene Isoprene Styrene Block Copolymer"]
+      }
+    },
+    {
+      "brand": "dr-jart",
+      "category": "moisturizers",
+      "name": "Ceramidin Skin Barrier Moisturizing Cream",
+      "slug": "dr-jart-ceramidin",
+      "sku": "DRJ-CERA-01",
+      "price": "48.00",
+      "stock": 55,
+      "desc": "A deeply moisturizing cream supercharged with 5-Cera Complex to strengthen the skin barrier.",
+      "skin_types": ["dry", "very dry"],
+      "concerns": ["dryness", "roughness"],
+      "benefits": ["barrier repair", "intense hydration"],
+      "tags": ["paraben-free", "sulfate-free"],
+      "ingredients": {
+        "key": ["5-Cera Complex", "Bifida Ferment Lysate"],
+        "full": ["Water", "Glycerin"]
+      }
+    },
+    {
+      "brand": "anua",
+      "category": "toners",
+      "name": "Heartleaf 77% Soothing Toner",
+      "slug": "anua-heartleaf-toner",
+      "sku": "ANUA-TONER-77",
+      "price": "23.00",
+      "stock": 140,
+      "desc": "A viral toner with 77% Heartleaf extract to soothe sensitive and acne-prone skin.",
+      "skin_types": ["acne-prone", "sensitive"],
+      "concerns": ["redness", "acne"],
+      "benefits": ["soothing", "calming"],
+      "tags": ["vegan", "cruelty-free", "best-seller", "new-arrival"],
+      "ingredients": {
+        "key": ["Houttuynia Cordata Extract"],
+        "full": ["Houttuynia Cordata Extract", "Water"]
+      }
+    },
+    {
+      "brand": "beauty-of-joseon",
+      "category": "sunscreens",
+      "name": "Relief Sun: Rice + Probiotics (SPF50+ PA++++)",
+      "slug": "boj-relief-sun",
+      "sku": "BOJ-SUN-01",
+      "price": "18.00",
+      "stock": 250,
+      "desc": "Organic sunscreen that applies gently on the skin and also contains skin calming ingredients.",
+      "skin_types": ["all", "sensitive"],
+      "concerns": ["sun damage"],
+      "benefits": ["sun protection", "soothing"],
+      "tags": ["cruelty-free", "best-seller"],
+      "ingredients": {
+        "key": ["Rice Extract", "Grain Ferment Extracts"],
+        "full": ["Water", "Oryza Sativa Extract"]
+      }
+    },
+    {
+      "brand": "the-inkey-list",
+      "category": "cleansers",
+      "name": "Salicylic Acid Cleanser",
+      "slug": "inkey-sa-cleanser",
+      "sku": "INKEY-SA-CL",
+      "price": "12.00",
+      "stock": 110,
+      "desc": "A lightly foaming cleanser that removes makeup and dirt while penetrating pores to reduce blackheads and breakouts.",
+      "skin_types": ["oily", "acne-prone"],
+      "concerns": ["acne", "pores", "oiliness"],
+      "benefits": ["exfoliating", "oil control"],
+      "tags": ["vegan", "cruelty-free"],
+      "ingredients": {
+        "key": ["Salicylic Acid", "Zinc Compound"],
+        "full": ["Water", "Glycerin"]
+      }
+    },
+    {
+      "brand": "eucerin",
+      "category": "body-care",
+      "name": "Advanced Repair Cream",
+      "slug": "eucerin-adv-repair",
+      "sku": "EUC-BODY-01",
+      "price": "14.00",
+      "stock": 65,
+      "desc": "A breakthrough formula for very dry skin that repairs and moisturizes.",
+      "skin_types": ["dry", "very dry"],
+      "concerns": ["dryness", "flakiness"],
+      "benefits": ["moisturizing", "repairing"],
+      "tags": ["fragrance-free", "paraben-free"],
+      "ingredients": {
+        "key": ["Ceramide-3", "Natural Moisturizing Factors"],
+        "full": ["Water", "Glycerin"]
+      }
+    },
+    {
+      "brand": "laneige",
+      "category": "moisturizers",
+      "name": "Water Bank Blue Hyaluronic Cream Moisturizer",
+      "slug": "laneige-water-bank",
+      "sku": "LAN-WB-CR",
+      "price": "40.00",
+      "stock": 90,
+      "desc": "A lush cream with Blue Hyaluronic Acid to hydrate and strengthen the skin's moisture barrier.",
+      "skin_types": ["dry", "normal"],
+      "concerns": ["dryness", "dullness"],
+      "benefits": ["hydrating", "barrier support"],
+      "tags": [],
+      "ingredients": {
+        "key": ["Blue Hyaluronic Acid", "Squalane"],
+        "full": ["Water", "Glycerin"]
+      }
+    },
+    {
+      "brand": "kiehls",
+      "category": "serums",
+      "name": "Clearly Corrective Dark Spot Solution",
+      "slug": "kiehls-dark-spot",
+      "sku": "KIEHLS-DS-01",
+      "price": "85.00",
+      "stock": 35,
+      "desc": "A targeted dark spot corrector that helps boost radiance and improve skin clarity.",
+      "skin_types": ["all"],
+      "concerns": ["dark spots", "dullness"],
+      "benefits": ["brightening", "even tone"],
+      "tags": ["paraben-free"],
+      "ingredients": {
+        "key": ["Activated C", "White Birch Extract"],
+        "full": ["Aqua", "Propylene Glycol"]
+      }
+    },
+    {
+      "brand": "beauty-of-joseon",
+      "category": "serums",
+      "name": "Glow Serum: Propolis + Niacinamide",
+      "slug": "boj-glow-serum",
+      "sku": "BOJ-GLOW-SERUM",
+      "price": "17.00",
+      "stock": 130,
+      "desc": "Designed for those dealing with enlarged pores and skin inflammation.",
+      "skin_types": ["acne-prone", "sensitive"],
+      "concerns": ["acne", "pores", "redness"],
+      "benefits": ["soothing", "glowing", "pore care"],
+      "tags": ["cruelty-free"],
+      "ingredients": {
+        "key": ["Propolis Extract", "Niacinamide"],
+        "full": ["Propolis Extract", "Dipropylene Glycol"]
+      }
+    },
+    {
+      "brand": "cerave",
+      "category": "body-care",
+      "name": "SA Lotion for Rough & Bumpy Skin",
+      "slug": "cerave-sa-lotion",
+      "sku": "CERAVE-SA-LOT",
+      "price": "19.00",
+      "stock": 80,
+      "desc": "Exfoliates and moisturizes while helping to restore the protective skin barrier.",
+      "skin_types": ["rough", "bumpy"],
+      "concerns": ["texture", "dryness"],
+      "benefits": ["exfoliating", "smoothing"],
+      "tags": ["fragrance-free", "non-comedogenic"],
+      "ingredients": {
+        "key": ["Salicylic Acid", "Lactic Acid", "Ceramides"],
+        "full": ["Aqua", "Glycerin"]
+      }
+    },
+    {
+      "brand": "neutrogena",
+      "category": "cleansers",
+      "name": "Oil-Free Acne Wash",
+      "slug": "neutrogena-acne-wash",
+      "sku": "NEUT-ACNE-WASH",
+      "price": "10.00",
+      "stock": 200,
+      "desc": "The #1 dermatologist recommended acne-fighting facial cleanser.",
+      "skin_types": ["oily", "acne-prone"],
+      "concerns": ["acne", "oiliness"],
+      "benefits": ["acne treatment", "cleansing"],
+      "tags": ["oil-free"],
+      "ingredients": {
+        "key": ["Salicylic Acid 2%"],
+        "full": ["Active: Salicylic Acid 2%"]
+      }
+    },
+    {
+      "brand": "la-roche-posay",
+      "category": "serums",
+      "name": "Vitamin C 10 Pure Vitamin C Serum",
+      "slug": "lrp-vit-c-serum",
+      "sku": "LRP-VITC-10",
+      "price": "44.99",
+      "stock": 50,
+      "desc": "Anti-aging serum with 10% pure vitamin c, salicylic acid, and neurosensine.",
+      "skin_types": ["all", "sensitive"],
+      "concerns": ["wrinkles", "lack of radiance"],
+      "benefits": ["brightening", "anti-aging"],
+      "tags": ["paraben-free", "oil-free"],
+      "ingredients": {
+        "key": ["Pure Vitamin C", "Salicylic Acid"],
+        "full": ["Aqua", "Ascorbic Acid"]
+      }
+    },
+    {
+      "brand": "bioderma",
+      "category": "moisturizers",
+      "name": "Atoderm Intensive Baume",
+      "slug": "bioderma-atoderm",
+      "sku": "BIO-ATODERM",
+      "price": "25.00",
+      "stock": 70,
+      "desc": "Ultra-soothing balm that repairs and restores lipids to act on dryness.",
+      "skin_types": ["very dry", "atopic", "sensitive"],
+      "concerns": ["eczema", "itching"],
+      "benefits": ["soothing", "anti-itching"],
+      "tags": ["fragrance-free", "paraben-free"],
+      "ingredients": {
+        "key": ["PEA", "Beta-Sitosterol"],
+        "full": ["Aqua", "Glycerin"]
+      }
+    },
+    {
+      "brand": "skin1004",
+      "category": "cleansers",
+      "name": "Madagascar Centella Light Cleansing Oil",
+      "slug": "skin1004-cleansing-oil",
+      "sku": "SKIN1004-OIL",
+      "price": "21.00",
+      "stock": 100,
+      "desc": "A lightweight, oil-based cleanser that gently melts away makeup, dirt, oils and sunscreen.",
+      "skin_types": ["all", "sensitive"],
+      "concerns": ["makeup removal", "pores"],
+      "benefits": ["cleansing", "soothing"],
+      "tags": ["cruelty-free", "vegan"],
+      "ingredients": {
+        "key": ["Centella Asiatica", "Botanical Oils"],
+        "full": ["Ethylhexyl Stearate"]
+      }
+    },
+    {
+      "brand": "paulas-choice",
+      "category": "moisturizers",
+      "name": "C5 Super Boost Moisturizer",
+      "slug": "paulas-choice-c5",
+      "sku": "PC-C5-MOIST",
+      "price": "45.00",
+      "stock": 40,
+      "desc": "Multi-active vitamin C moisturizer that hydrates and brightens dull skin.",
+      "skin_types": ["all"],
+      "concerns": ["dullness", "aging"],
+      "benefits": ["brightening", "firming"],
+      "tags": ["cruelty-free"],
+      "ingredients": {
+        "key": ["Vitamin C (5%)", "Hexapeptide-5"],
+        "full": ["Water", "Dicaprylyl Carbonate"]
+      }
+    },
+    {
+      "brand": "cerave",
+      "category": "eye-care",
+      "name": "Eye Repair Cream",
+      "slug": "cerave-eye-cream",
+      "sku": "CERAVE-EYE-01",
+      "price": "14.99",
+      "stock": 90,
+      "desc": "Reduces the look of dark circles and puffiness while restoring the delicate skin barrier around your eyes.",
+      "skin_types": ["all"],
+      "concerns": ["dark circles", "puffiness"],
+      "benefits": ["hydrating", "brightening"],
+      "tags": ["fragrance-free", "ophthalmologist-tested"],
+      "ingredients": {
+        "key": ["Ceramides", "Hyaluronic Acid", "Niacinamide"],
+        "full": ["Water", "Niacinamide"]
+      }
+    }
+  ]
+}

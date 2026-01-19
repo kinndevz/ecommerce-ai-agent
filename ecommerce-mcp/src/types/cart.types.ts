@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { AuthTokenParam } from "./common.types";
+import { success } from "zod/v4";
 
 // CART DATA STRUCTURES
 
@@ -94,28 +95,33 @@ export type ClearCartInput = z.infer<typeof ClearCartInputSchema> &
 
 // Cart API Response (unified for all cart operations)
 export const CartAPIResponseSchema = z.object({
-  id: z.string(),
-  user_id: z.string(),
-  items: z.array(
-    z.object({
-      id: z.string(),
-      product_id: z.string(),
-      variant_id: z.string().nullable(),
-      quantity: z.number(),
-      price: z.coerce.number(),
-      product_name: z.string(),
-      product_slug: z.string(),
-      product_image: z.string().nullable(),
-      variant_name: z.string().nullable(),
-      subtotal: z.coerce.number(),
-      created_at: z.string(),
-      updated_at: z.string(),
-    })
-  ),
-  total_items: z.number(),
-  subtotal: z.coerce.number(),
-  created_at: z.string(),
-  updated_at: z.string(),
+  success: z.boolean().optional(),
+  message: z.string().optional(),
+  data: z.object({
+    id: z.string(),
+    user_id: z.string(),
+    items: z.array(
+      z.object({
+        id: z.string(),
+        product_id: z.string(),
+        variant_id: z.string().nullable(),
+        quantity: z.number(),
+        price: z.coerce.number(),
+        product_name: z.string(),
+        product_slug: z.string(),
+        product_image: z.string().nullable(),
+        variant_name: z.string().nullable(),
+        subtotal: z.coerce.number(),
+        created_at: z.string(),
+        updated_at: z.string(),
+      })
+    ),
+    total_items: z.number(),
+    subtotal: z.coerce.number(),
+    created_at: z.string(),
+    updated_at: z.string(),
+  }),
+  meta: z.any().nullable().optional(),
 });
 
 export type CartAPIResponse = z.infer<typeof CartAPIResponseSchema>;

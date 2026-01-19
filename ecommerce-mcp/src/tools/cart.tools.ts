@@ -70,8 +70,10 @@ function registerViewCart(server: McpServer) {
           throw new Error("Failed to fetch cart");
         }
 
+        console.log(">>> response", response);
+
         // Parse response
-        const cartData = CartAPIResponseSchema.parse(response.data);
+        const cartData = CartAPIResponseSchema.parse(response);
 
         return formatSuccessResponse(cartData);
       } catch (error: any) {
@@ -124,7 +126,7 @@ function registerAddToCart(server: McpServer) {
         }
 
         // Parse response
-        const cartData = CartAPIResponseSchema.parse(response.data);
+        const cartData = CartAPIResponseSchema.parse(response);
 
         return formatSuccessResponse(cartData);
       } catch (error: any) {
@@ -177,7 +179,7 @@ function registerUpdateCartItem(server: McpServer) {
         }
 
         // Parse response
-        const cartData = CartAPIResponseSchema.parse(response.data);
+        const cartData = CartAPIResponseSchema.parse(response);
 
         return formatSuccessResponse(cartData);
       } catch (error: any) {
@@ -225,7 +227,7 @@ function registerRemoveCartItem(server: McpServer) {
         }
 
         // Parse response
-        const cartData = CartAPIResponseSchema.parse(response.data);
+        const cartData = CartAPIResponseSchema.parse(response);
 
         return formatSuccessResponse(cartData);
       } catch (error: any) {
@@ -270,7 +272,7 @@ function registerClearCart(server: McpServer) {
         }
 
         // Parse response
-        const cartData = CartAPIResponseSchema.parse(response.data);
+        const cartData = CartAPIResponseSchema.parse(response);
 
         return formatSuccessResponse(cartData);
       } catch (error: any) {
