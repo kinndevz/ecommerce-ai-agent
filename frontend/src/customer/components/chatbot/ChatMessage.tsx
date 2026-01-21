@@ -7,7 +7,9 @@ import {
 import { Button } from '@/shared/components/ui/button'
 import { cn } from '@/lib/utils'
 import DOMPurify from 'dompurify'
+import { useState } from 'react'
 import { ProductCarousel } from './ProductCarousel'
+import { ProductDetailSheet } from './ProductDetailSheet'
 import { CartView } from './CartView'
 import type { Artifact, ProductData } from '@/api/chat.api'
 import { toast } from 'sonner'
@@ -54,6 +56,10 @@ interface ChatMessageProps {
 export const ChatMessage = ({ message, userAvatar }: ChatMessageProps) => {
   const isUser = message.sender === 'user'
   const isAI = message.sender === 'ai'
+  const [selectedProduct, setSelectedProduct] = useState<ProductData | null>(
+    null
+  )
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
 
   // Extract products from search_products artifacts
   const extractProducts = (artifacts?: Artifact[]): ProductData[] => {
@@ -89,9 +95,8 @@ export const ChatMessage = ({ message, userAvatar }: ChatMessageProps) => {
   const cartData = extractCart(message.artifacts)
 
   const handleViewProduct = (product: ProductData) => {
-    console.log('View product:', product)
-    // Navigate to product detail
-    window.open(`/products/${product.slug}`, '_blank')
+    setSelectedProduct(product)
+    setIsSheetOpen(true)
   }
 
   const handleCopy = () => {
@@ -182,6 +187,13 @@ export const ChatMessage = ({ message, userAvatar }: ChatMessageProps) => {
                 <CartView cartData={cartData} />
               </div>
             )}
+
+            <ProductDetailSheet
+              open={isSheetOpen}
+              onOpenChange={setIsSheetOpen}
+              productId={selectedProduct?.id || null}
+              previewProduct={selectedProduct}
+            />
 
             {/* Action Buttons */}
             <div className='flex items-center gap-2 mt-4 pt-2'>

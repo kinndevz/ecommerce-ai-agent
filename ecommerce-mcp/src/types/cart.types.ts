@@ -51,13 +51,7 @@ export type ViewCartInput = z.infer<typeof ViewCartInputSchema> &
 export const AddToCartInputSchema = z.object({
   product_id: z.string().describe("Product ID"),
   variant_id: z.string().optional().describe("Variant ID (if applicable)"),
-  quantity: z
-    .number()
-    .int()
-    .min(1)
-    .max(100)
-    .default(1)
-    .describe("Quantity to add"),
+  quantity: z.number().int().min(1).default(1).describe("Quantity to add"),
   __auth_token: z.string().optional().describe("Internal Auth Token"),
 });
 

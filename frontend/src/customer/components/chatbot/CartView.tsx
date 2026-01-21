@@ -5,6 +5,7 @@ import {
   Minus,
   ArrowRight,
   ShieldCheck,
+  PackageCheck,
 } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import {
@@ -84,7 +85,7 @@ export const CartView = ({ cartData }: CartViewProps) => {
           <div>
             <h3 className='font-semibold text-lg'>Your cart is empty</h3>
             <p className='text-sm text-muted-foreground mt-1'>
-              Looks like you haven't added anything yet.
+              Add items to see them here.
             </p>
           </div>
           <Button variant='outline' className='mt-2'>
@@ -97,15 +98,21 @@ export const CartView = ({ cartData }: CartViewProps) => {
 
   return (
     <div className='w-full max-w-4xl mx-auto my-6 animate-in fade-in slide-in-from-bottom-4 duration-500'>
-      <div className='flex items-center gap-2 mb-6'>
-        <div className='p-2 bg-primary/10 rounded-lg'>
-          <ShoppingCart className='w-5 h-5 text-primary' />
+      <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6'>
+        <div className='flex items-center gap-3'>
+          <div className='p-2.5 bg-primary/10 rounded-xl'>
+            <ShoppingCart className='w-5 h-5 text-primary' />
+          </div>
+          <div>
+            <h2 className='text-xl font-bold tracking-tight'>Your cart</h2>
+            <p className='text-xs text-muted-foreground'>
+              {cartData.total_items} items • {formatPrice(cartData.subtotal)}
+            </p>
+          </div>
         </div>
-        <div>
-          <h2 className='text-xl font-bold tracking-tight'>Shopping Cart</h2>
-          <p className='text-xs text-muted-foreground'>
-            {cartData.total_items} items in your bag
-          </p>
+        <div className='flex items-center gap-2 text-[11px] text-muted-foreground bg-muted/50 px-3 py-2 rounded-full w-fit'>
+          <PackageCheck className='w-3.5 h-3.5 text-primary' />
+          Secure checkout available
         </div>
       </div>
 
@@ -116,10 +123,9 @@ export const CartView = ({ cartData }: CartViewProps) => {
               {cartData.items.map((item) => (
                 <div
                   key={item.id}
-                  className='group flex gap-4 p-4 rounded-xl border bg-card hover:shadow-md transition-all duration-300'
+                  className='group flex flex-col sm:flex-row gap-4 p-4 rounded-2xl border bg-card/80 hover:bg-card transition-all duration-300 shadow-sm hover:shadow-md'
                 >
-                  {/* Product Image */}
-                  <div className='w-24 h-24 shrink-0 rounded-lg overflow-hidden bg-muted border border-border/50 relative'>
+                  <div className='w-full sm:w-28 sm:h-28 aspect-4/3 sm:aspect-square shrink-0 rounded-xl overflow-hidden bg-muted border border-border/60 relative'>
                     {item.product_image ? (
                       <img
                         src={item.product_image}
@@ -133,69 +139,71 @@ export const CartView = ({ cartData }: CartViewProps) => {
                     )}
                   </div>
 
-                  {/* Details */}
-                  <div className='flex-1 flex flex-col justify-between py-0.5'>
-                    <div className='space-y-1'>
-                      <div className='flex justify-between items-start gap-2'>
-                        <h4 className='font-semibold text-sm line-clamp-2 leading-tight group-hover:text-primary transition-colors'>
+                  <div className='flex-1 flex flex-col justify-between gap-4'>
+                    <div className='flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3'>
+                      <div className='space-y-2'>
+                        <h4 className='font-semibold text-sm sm:text-base leading-tight line-clamp-2 group-hover:text-primary transition-colors'>
                           {item.product_name}
                         </h4>
+                        <div className='flex flex-wrap items-center gap-2 text-xs'>
+                          {item.variant_name && (
+                            <span className='bg-muted/70 text-muted-foreground px-2.5 py-1 rounded-full'>
+                              {item.variant_name}
+                            </span>
+                          )}
+                          <span className='text-muted-foreground'>
+                            {formatPrice(item.price)} each
+                          </span>
+                        </div>
+                      </div>
+                      <div className='flex items-center gap-2 sm:justify-end'>
                         <button
                           onClick={() =>
                             handleRemoveItem(item.id, item.product_name)
                           }
                           disabled={isRemoving}
-                          className='text-muted-foreground hover:text-destructive transition-colors p-1 -mr-2 -mt-1'
+                          className='text-muted-foreground hover:text-destructive transition-colors p-2 rounded-full hover:bg-destructive/10'
                           title='Remove item'
                         >
                           <Trash2 className='w-4 h-4' />
                         </button>
                       </div>
-                      {item.variant_name && (
-                        <p className='text-xs text-muted-foreground bg-muted/50 px-2 py-0.5 rounded w-fit'>
-                          {item.variant_name}
-                        </p>
-                      )}
                     </div>
 
-                    <div className='flex items-end justify-between mt-2'>
-                      {/* Quantity Control */}
+                    <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3'>
                       <div className='flex items-center gap-3'>
-                        <div className='flex items-center border rounded-lg h-8 bg-background'>
+                        <div className='flex items-center border rounded-lg h-9 bg-background'>
                           <button
-                            className='px-2.5 hover:bg-muted text-muted-foreground hover:text-foreground disabled:opacity-50 transition-colors h-full flex items-center'
+                            className='px-3 hover:bg-muted text-muted-foreground hover:text-foreground disabled:opacity-50 transition-colors h-full flex items-center'
                             onClick={() =>
                               handleQuantityChange(item.id, item.quantity - 1)
                             }
                             disabled={isUpdating || item.quantity <= 1}
                           >
-                            <Minus className='w-3 h-3' />
+                            <Minus className='w-3.5 h-3.5' />
                           </button>
-                          <span className='w-8 text-center text-sm font-semibold select-none'>
+                          <span className='w-10 text-center text-sm font-semibold select-none'>
                             {item.quantity}
                           </span>
                           <button
-                            className='px-2.5 hover:bg-muted text-muted-foreground hover:text-foreground disabled:opacity-50 transition-colors h-full flex items-center'
+                            className='px-3 hover:bg-muted text-muted-foreground hover:text-foreground disabled:opacity-50 transition-colors h-full flex items-center'
                             onClick={() =>
                               handleQuantityChange(item.id, item.quantity + 1)
                             }
                             disabled={isUpdating}
                           >
-                            <Plus className='w-3 h-3' />
+                            <Plus className='w-3.5 h-3.5' />
                           </button>
                         </div>
                       </div>
 
-                      {/* Price */}
                       <div className='text-right'>
-                        <p className='text-base font-bold text-primary'>
+                        <p className='text-xs text-muted-foreground uppercase tracking-wide'>
+                          Item total
+                        </p>
+                        <p className='text-lg font-bold text-primary'>
                           {formatPrice(item.subtotal)}
                         </p>
-                        {item.quantity > 1 && (
-                          <p className='text-[10px] text-muted-foreground'>
-                            {formatPrice(item.price)} each
-                          </p>
-                        )}
                       </div>
                     </div>
                   </div>
@@ -208,7 +216,7 @@ export const CartView = ({ cartData }: CartViewProps) => {
         <div className='lg:col-span-4'>
           <Card className='sticky top-4 shadow-sm border-border/60 bg-muted/10'>
             <CardHeader className='pb-4'>
-              <CardTitle className='text-lg'>Order Summary</CardTitle>
+              <CardTitle className='text-lg'>Order summary</CardTitle>
             </CardHeader>
             <CardContent className='space-y-4'>
               <div className='space-y-2 text-sm'>
@@ -219,11 +227,11 @@ export const CartView = ({ cartData }: CartViewProps) => {
                   </span>
                 </div>
                 <div className='flex justify-between text-muted-foreground'>
-                  <span>Shipping estimate</span>
+                  <span>Shipping</span>
                   <span className='text-green-600 font-medium'>Free</span>
                 </div>
                 <div className='flex justify-between text-muted-foreground'>
-                  <span>Tax estimate</span>
+                  <span>Tax</span>
                   <span className='text-foreground'>
                     Calculated at checkout
                   </span>
@@ -233,7 +241,7 @@ export const CartView = ({ cartData }: CartViewProps) => {
               <Separator />
 
               <div className='flex justify-between items-end'>
-                <span className='text-base font-semibold'>Order Total</span>
+                <span className='text-base font-semibold'>Total</span>
                 <span className='text-xl font-bold text-primary'>
                   {formatPrice(cartData.subtotal)}
                 </span>
@@ -251,7 +259,7 @@ export const CartView = ({ cartData }: CartViewProps) => {
 
               <div className='flex items-center justify-center gap-2 text-[10px] text-muted-foreground'>
                 <ShieldCheck className='w-3 h-3' />
-                <span>Secure Checkout</span>
+                <span>Secure checkout</span>
               </div>
             </CardFooter>
           </Card>

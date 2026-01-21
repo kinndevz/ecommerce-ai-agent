@@ -46,3 +46,13 @@ def create_product_index():
                 }
             }
         )
+
+
+def reset_product_index():
+    """Delete index if exists and recreate it (Clean slate)"""
+    if es_client.indices.exists(index=PRODUCT_INDEX):
+        es_client.indices.delete(index=PRODUCT_INDEX)
+        print(f"[Elastic] Deleted old index: {PRODUCT_INDEX}")
+
+    create_product_index()
+    print(f"[Elastic] Created new index: {PRODUCT_INDEX}")

@@ -26,7 +26,7 @@ export default function ProductsPage() {
   const { data, isLoading, isFetching } = useProducts(filters)
 
   const handleFilterChange = (newFilters: ProductQueryParams) => {
-    setFilters({ ...newFilters, page: 1 }) //
+    setFilters({ ...newFilters, page: 1 })
   }
 
   const handleClearFilters = () => {
