@@ -135,3 +135,19 @@ class SkinConcern(str, Enum):
     def values(cls):
         """Get all valid concern values"""
         return [concern.value for concern in cls]
+
+
+class ProductBenefit(str, Enum):
+    """Product benefits"""
+    MOISTURIZING = "moisturizing"
+    BRIGHTENING = "brightening"
+    ANTI_AGING = "anti_aging"
+    HYDRATING = "hydrating"
+    SOOTHING = "soothing"
+    EXFOLIATING = "exfoliating"
+    FIRMING = "firming"
+    PORE_MINIMIZING = "pore_minimizing"
+    OIL_CONTROL = "oil_control"
+    ANTI_ACNE = "anti_acne"
+    NOURISHING = "nourishing"
+    PROTECTIVE = "protective"

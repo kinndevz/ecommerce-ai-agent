@@ -97,6 +97,34 @@ export class BackendAPI {
   }
 
   /**
+   * PATCH request
+   */
+  async patch<T>(
+    endpoint: string,
+    data?: any,
+    config?: AxiosRequestConfig
+  ): Promise<APIResponse<T>> {
+    try {
+      const response = await axios.patch<APIResponse<T>>(
+        `${this.baseURL}${endpoint}`,
+        data,
+        {
+          timeout: this.defaultTimeout,
+          headers: {
+            "Content-Type": "application/json",
+            ...config?.headers,
+          },
+          ...config,
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  /**
    * DELETE request
    */
   async delete<T>(

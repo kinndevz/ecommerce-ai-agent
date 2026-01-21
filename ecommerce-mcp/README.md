@@ -17,6 +17,28 @@ npm create cloudflare@latest -- my-mcp-server --template=cloudflare/ai/demos/rem
 
 To add your own [tools](https://developers.cloudflare.com/agents/model-context-protocol/tools/) to the MCP server, define each tool inside the `init()` method of `src/index.ts` using `this.server.tool(...)`. 
 
+## Available tools (current)
+
+Product:
+- `search_products` - Search products with keyword, price range, pagination.
+- `search_product_new_arrival` - Get newly added products.
+- `get_product_variants` - List variants for a product.
+
+Cart (auth required):
+- `view_cart` - View current cart.
+- `add_to_cart` - Add product to cart.
+- `update_cart_item` - Update cart item quantity.
+- `remove_cart_item` - Remove item from cart.
+- `clear_cart` - Clear the cart.
+
+Order (auth required):
+- `create_order` - Create order from cart with shipping address.
+- `get_my_orders` - List user orders with pagination.
+- `get_order_detail` - Get full order detail.
+- `cancel_order` - Cancel order if allowed.
+
+Auth-required tools expect an injected `__auth_token` (Authorization: Bearer).
+
 ## Connect to Cloudflare AI Playground
 
 You can connect to your MCP server from the Cloudflare AI Playground, which is a remote MCP client:

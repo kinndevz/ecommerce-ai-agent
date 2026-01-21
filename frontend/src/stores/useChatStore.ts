@@ -20,7 +20,10 @@ interface ChatState {
   setIsOpen: (open: boolean) => void
   initChat: () => Promise<void>
   sendMessage: (message: string) => Promise<void>
-  sendMessageStreaming: (message: string) => Promise<void>
+  sendMessageStreaming: (
+    message: string,
+    options?: { suppressUserMessage?: boolean }
+  ) => Promise<void>
   startNewConversation: () => void
   fetchConversationDetail: (id: string) => Promise<void>
   reset: () => void
@@ -147,10 +150,13 @@ export const useChatStore = create<ChatState>((set, get) => ({
     }
   },
 
-  sendMessageStreaming: async (message: string) => {
+  sendMessageStreaming: async (message: string, options) => {
     const { currentConversation } = get()
 
-    const userMsg = createTempMessage('user', message)
+    const shouldShowUserMessage = !options?.suppressUserMessage
+    const userMsg = shouldShowUserMessage
+      ? createTempMessage('user', message)
+      : null
     const aiMsg = createTempMessage('assistant')
 
     set((state) => ({
@@ -158,7 +164,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
         ...(state.currentConversation || createEmptyConversation([])),
         messages: [
           ...(state.currentConversation?.messages || []),
-          userMsg,
+          ...(userMsg ? [userMsg] : []),
           aiMsg,
         ],
       },

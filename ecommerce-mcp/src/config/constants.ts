@@ -23,6 +23,11 @@ export const TOOL_METADATA = {
     category: "cart",
     requires_auth: true,
   },
+  ORDER_MANAGEMENT: {
+    agent: "order",
+    category: "order",
+    requires_auth: true,
+  },
 } as const;
 
 export const HTTP_HEADERS = {

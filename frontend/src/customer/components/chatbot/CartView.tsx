@@ -17,8 +17,32 @@ import {
 } from '@/shared/components/ui/card'
 import { Separator } from '@/shared/components/ui/separator'
 import { ScrollArea } from '@/shared/components/ui/scroll-area'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/shared/components/ui/dialog'
+import { Input } from '@/shared/components/ui/input'
+import { Label } from '@/shared/components/ui/label'
+import { Textarea } from '@/shared/components/ui/textarea'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/components/ui/select'
 import { useUpdateCartItem, useRemoveCartItem } from '@/hooks/useCarts'
+import { useChatStore } from '@/stores/useChatStore'
+import {
+  PAYMENT_METHOD,
+  PAYMENT_METHOD_CONFIG,
+} from '@/api/services/order.constants'
 import { toast } from 'sonner'
+import { useState } from 'react'
 
 interface CartItemData {
   id: string
@@ -49,9 +73,34 @@ interface CartViewProps {
   cartData: CartData
 }
 
+interface OrderFormState {
+  name: string
+  phone: string
+  address: string
+  city: string
+  district: string
+  ward: string
+  country: string
+  paymentMethod: string
+  notes: string
+}
+
 export const CartView = ({ cartData }: CartViewProps) => {
   const { mutate: updateItem, isPending: isUpdating } = useUpdateCartItem()
   const { mutate: removeItem, isPending: isRemoving } = useRemoveCartItem()
+  const { sendMessageStreaming } = useChatStore()
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false)
+  const [orderForm, setOrderForm] = useState<OrderFormState>({
+    name: '',
+    phone: '',
+    address: '',
+    city: '',
+    district: '',
+    ward: '',
+    country: 'Vietnam',
+    paymentMethod: PAYMENT_METHOD.COD,
+    notes: '',
+  })
 
   const handleQuantityChange = (itemId: string, newQuantity: number) => {
     if (newQuantity < 1) return
@@ -72,7 +121,51 @@ export const CartView = ({ cartData }: CartViewProps) => {
   }
 
   const handleCheckout = () => {
-    toast.info('Redirecting to checkout...')
+    setIsCheckoutOpen(true)
+  }
+
+  const handleOrderFieldChange = (
+    key: keyof OrderFormState,
+    value: string
+  ) => {
+    setOrderForm((prev) => ({ ...prev, [key]: value }))
+  }
+
+  const handleSubmitOrder = async () => {
+    const requiredFields = [
+      orderForm.name,
+      orderForm.phone,
+      orderForm.address,
+      orderForm.city,
+      orderForm.paymentMethod,
+    ]
+
+    if (requiredFields.some((value) => !value.trim())) {
+      toast.error('Vui lòng nhập đầy đủ thông tin bắt buộc')
+      return
+    }
+
+    const payload = {
+      shipping_address: {
+        name: orderForm.name.trim(),
+        phone: orderForm.phone.trim(),
+        address: orderForm.address.trim(),
+        city: orderForm.city.trim(),
+        district: orderForm.district.trim() || null,
+        ward: orderForm.ward.trim() || null,
+        country: orderForm.country.trim() || 'Vietnam',
+      },
+      payment_method: orderForm.paymentMethod,
+      notes: orderForm.notes.trim() || null,
+    }
+
+    const orderPrompt = `Please create_order from the current cart with the following payload:
+\`\`\`json
+${JSON.stringify(payload, null, 2)}
+\`\`\``
+
+    setIsCheckoutOpen(false)
+    await sendMessageStreaming(orderPrompt, { suppressUserMessage: true })
   }
 
   if (!cartData || cartData.items.length === 0) {
@@ -265,6 +358,203 @@ export const CartView = ({ cartData }: CartViewProps) => {
           </Card>
         </div>
       </div>
+
+      <Dialog open={isCheckoutOpen} onOpenChange={setIsCheckoutOpen}>
+        <DialogContent className='sm:max-w-3xl'>
+          <DialogHeader>
+            <DialogTitle>Checkout information</DialogTitle>
+            <DialogDescription>
+              Fill in shipping details to place your order.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className='grid gap-6 md:grid-cols-[minmax(0,1fr)_260px]'>
+            <div className='space-y-5'>
+              <div className='space-y-3'>
+                <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>
+                  Contact
+                </p>
+                <div className='grid gap-4 sm:grid-cols-2'>
+                  <div className='grid gap-2'>
+                    <Label htmlFor='checkout-name'>Full name</Label>
+                    <Input
+                      id='checkout-name'
+                      value={orderForm.name}
+                      onChange={(e) =>
+                        handleOrderFieldChange('name', e.target.value)
+                      }
+                      placeholder='Nguyen Van A'
+                    />
+                  </div>
+                  <div className='grid gap-2'>
+                    <Label htmlFor='checkout-phone'>Phone</Label>
+                    <Input
+                      id='checkout-phone'
+                      value={orderForm.phone}
+                      onChange={(e) =>
+                        handleOrderFieldChange('phone', e.target.value)
+                      }
+                      placeholder='0901234567'
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className='space-y-3'>
+                <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>
+                  Shipping address
+                </p>
+                <div className='grid gap-4'>
+                  <div className='grid gap-2'>
+                    <Label htmlFor='checkout-address'>Address</Label>
+                    <Input
+                      id='checkout-address'
+                      value={orderForm.address}
+                      onChange={(e) =>
+                        handleOrderFieldChange('address', e.target.value)
+                      }
+                      placeholder='12 Nguyen Trai'
+                    />
+                  </div>
+
+                  <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                    <div className='grid gap-2'>
+                      <Label htmlFor='checkout-city'>City</Label>
+                      <Input
+                        id='checkout-city'
+                        value={orderForm.city}
+                        onChange={(e) =>
+                          handleOrderFieldChange('city', e.target.value)
+                        }
+                        placeholder='Ho Chi Minh'
+                      />
+                    </div>
+                    <div className='grid gap-2'>
+                      <Label htmlFor='checkout-district'>District</Label>
+                      <Input
+                        id='checkout-district'
+                        value={orderForm.district}
+                        onChange={(e) =>
+                          handleOrderFieldChange('district', e.target.value)
+                        }
+                        placeholder='District 1'
+                      />
+                    </div>
+                  </div>
+
+                  <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                    <div className='grid gap-2'>
+                      <Label htmlFor='checkout-ward'>Ward</Label>
+                      <Input
+                        id='checkout-ward'
+                        value={orderForm.ward}
+                        onChange={(e) =>
+                          handleOrderFieldChange('ward', e.target.value)
+                        }
+                        placeholder='Ward 5'
+                      />
+                    </div>
+                    <div className='grid gap-2'>
+                      <Label htmlFor='checkout-country'>Country</Label>
+                      <Input
+                        id='checkout-country'
+                        value={orderForm.country}
+                        onChange={(e) =>
+                          handleOrderFieldChange('country', e.target.value)
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className='space-y-3'>
+                <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>
+                  Payment
+                </p>
+                <div className='grid gap-2'>
+                  <Label>Payment method</Label>
+                  <Select
+                    value={orderForm.paymentMethod}
+                    onValueChange={(value) =>
+                      handleOrderFieldChange('paymentMethod', value)
+                    }
+                  >
+                    <SelectTrigger className='w-full'>
+                      <SelectValue placeholder='Select payment method' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(PAYMENT_METHOD_CONFIG).map(
+                        ([method, config]) => (
+                          <SelectItem key={method} value={method}>
+                            {config.label}
+                          </SelectItem>
+                        )
+                      )}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className='grid gap-2'>
+                  <Label htmlFor='checkout-notes'>Notes (optional)</Label>
+                  <Textarea
+                    id='checkout-notes'
+                    value={orderForm.notes}
+                    onChange={(e) =>
+                      handleOrderFieldChange('notes', e.target.value)
+                    }
+                    placeholder='Giao giờ hành chính'
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className='rounded-xl border border-border/60 bg-muted/10 p-4 space-y-4'>
+              <div className='space-y-1'>
+                <p className='text-sm font-semibold text-foreground'>
+                  Order summary
+                </p>
+                <p className='text-xs text-muted-foreground'>
+                  {cartData.total_items} items in cart
+                </p>
+              </div>
+
+              <div className='space-y-2 text-sm'>
+                <div className='flex justify-between text-muted-foreground'>
+                  <span>Subtotal</span>
+                  <span className='text-foreground'>
+                    {formatPrice(cartData.subtotal)}
+                  </span>
+                </div>
+                <div className='flex justify-between text-muted-foreground'>
+                  <span>Shipping</span>
+                  <span className='text-foreground'>Free</span>
+                </div>
+                <div className='flex justify-between text-muted-foreground'>
+                  <span>Tax</span>
+                  <span className='text-foreground'>Calculated at checkout</span>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className='flex justify-between items-end'>
+                <span className='text-base font-semibold'>Total</span>
+                <span className='text-xl font-bold text-primary'>
+                  {formatPrice(cartData.subtotal)}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant='outline' onClick={() => setIsCheckoutOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSubmitOrder}>Place order</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -5,3 +5,6 @@ export * from "./product.types";
 
 // Cart Types
 export * from "./cart.types";
+
+// Order Types
+export * from "./order.types";

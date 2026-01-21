@@ -15,6 +15,11 @@ class OrderService:
 
     # ========== HELPER METHODS ==========
     @staticmethod
+    def _safe_datetime(value: datetime | None) -> datetime:
+        """Ensure a non-null datetime for response serialization."""
+        return value or datetime.now(timezone.utc)
+
+    @staticmethod
     def _calculate_shipping_fee(subtotal: Decimal) -> Decimal:
         """Calculate shipping fee based on subtotal"""
         if subtotal >= OrderConstants.FREE_SHIPPING_THRESHOLD:
@@ -43,7 +48,7 @@ class OrderService:
             "payment_status": order.payment_status,
             "total": float(order.total),
             "total_items": len(order.items),
-            "created_at": order.created_at
+            "created_at": OrderService._safe_datetime(order.created_at)
         }
 
     @staticmethod
@@ -78,8 +83,8 @@ class OrderService:
             "shipping_address": order.shipping_address,
             "notes": order.notes,
             "items": items_data,
-            "created_at": order.created_at,
-            "updated_at": order.updated_at
+            "created_at": OrderService._safe_datetime(order.created_at),
+            "updated_at": OrderService._safe_datetime(order.updated_at)
         }
 
     # ========== CUSTOMER ENDPOINTS ==========

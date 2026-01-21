@@ -11,7 +11,10 @@ import { useState } from 'react'
 import { ProductCarousel } from './ProductCarousel'
 import { ProductDetailSheet } from './ProductDetailSheet'
 import { CartView } from './CartView'
+import { OrderListView } from './OrderListView'
+import { OrderSummaryView } from './OrderSummaryView'
 import type { Artifact, ProductData } from '@/api/chat.api'
+import type { OrderDetail, OrderListItem } from '@/api/order.api'
 import { toast } from 'sonner'
 
 export interface Message {
@@ -91,8 +94,63 @@ export const ChatMessage = ({ message, userAvatar }: ChatMessageProps) => {
     return Array.isArray(data) ? null : (data as CartData)
   }
 
+  const getArtifactData = (artifact: Artifact): unknown => {
+    return artifact.data_mcp?.data as unknown
+  }
+
+  const isOrderListItem = (value: unknown): value is OrderListItem => {
+    if (!value || typeof value !== 'object') return false
+    const order = value as OrderListItem
+    return Boolean(
+      order.id &&
+        order.order_number &&
+        order.status &&
+        order.payment_status &&
+        typeof order.total === 'number' &&
+        typeof order.total_items === 'number' &&
+        order.created_at
+    )
+  }
+
+  const isOrderDetail = (value: unknown): value is OrderDetail => {
+    if (!value || typeof value !== 'object') return false
+    const order = value as OrderDetail
+    return Boolean(
+      order.id &&
+        order.order_number &&
+        order.status &&
+        order.payment_status &&
+        order.total &&
+        order.items &&
+        order.shipping_address
+    )
+  }
+
+  const extractOrders = (artifacts?: Artifact[]): OrderListItem[] => {
+    if (!artifacts || artifacts.length === 0) return []
+    return artifacts
+      .filter((artifact) => artifact.tool_name === 'get_my_orders')
+      .flatMap((artifact) => {
+        const data = getArtifactData(artifact)
+        return Array.isArray(data) ? data : []
+      })
+      .filter(isOrderListItem)
+  }
+
+  const extractCreatedOrder = (artifacts?: Artifact[]): OrderDetail | null => {
+    if (!artifacts || artifacts.length === 0) return null
+    const artifact = artifacts.find(
+      (item) => item.tool_name === 'create_order'
+    )
+    if (!artifact) return null
+    const data = getArtifactData(artifact)
+    return isOrderDetail(data) ? data : null
+  }
+
   const products = extractProducts(message.artifacts)
   const cartData = extractCart(message.artifacts)
+  const orders = extractOrders(message.artifacts)
+  const createdOrder = extractCreatedOrder(message.artifacts)
 
   const handleViewProduct = (product: ProductData) => {
     setSelectedProduct(product)
@@ -185,6 +243,18 @@ export const ChatMessage = ({ message, userAvatar }: ChatMessageProps) => {
             {cartData && (
               <div className='mt-4'>
                 <CartView cartData={cartData} />
+              </div>
+            )}
+
+            {createdOrder && (
+              <div className='mt-4'>
+                <OrderSummaryView order={createdOrder} />
+              </div>
+            )}
+
+            {orders.length > 0 && (
+              <div className='mt-4'>
+                <OrderListView orders={orders} />
               </div>
             )}
 

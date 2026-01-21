@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, model_validator
 from typing import Optional, List
 from decimal import Decimal
 from fastapi import Query
-from app.enums import SkinType, SkinConcern, ProductBenefit
+from app.core.enums import SkinType, SkinConcern, ProductBenefit
 
 
 class BaseConfig:

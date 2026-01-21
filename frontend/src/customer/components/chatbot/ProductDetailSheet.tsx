@@ -444,10 +444,6 @@ export const ProductDetailSheet = ({
     })
   }
 
-  const handleBuyNow = () => {
-    handleAddToCart()
-    toast.info('Đang chuyển đến thanh toán...')
-  }
 
   const effectivePrice =
     selectedVariant?.sale_price ??
@@ -536,24 +532,14 @@ export const ProductDetailSheet = ({
                   </div>
                 </div>
 
-                <div className='grid grid-cols-2 gap-3'>
-                  <Button
-                    variant='outline'
-                    className='h-11'
-                    onClick={handleAddToCart}
-                    disabled={!effectiveAvailability || isPending}
-                  >
-                    <ShoppingCart className='w-4 h-4 mr-2' />
-                    {isPending ? 'Adding...' : 'Add to cart'}
-                  </Button>
-                  <Button
-                    className='h-11'
-                    onClick={handleBuyNow}
-                    disabled={!effectiveAvailability || isPending}
-                  >
-                    Buy now
-                  </Button>
-                </div>
+                <Button
+                  className='h-11 w-full'
+                  onClick={handleAddToCart}
+                  disabled={!effectiveAvailability || isPending}
+                >
+                  <ShoppingCart className='w-4 h-4 mr-2' />
+                  {isPending ? 'Adding...' : 'Add to cart'}
+                </Button>
 
                 <Separator />
                 <p className='text-[11px] text-muted-foreground'>
