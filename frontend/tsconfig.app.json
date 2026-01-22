@@ -28,8 +28,8 @@
       "@/*": ["./src/*"],
       "@/shared/*": ["./src/shared/*"],
       "@/modules/*": ["./src/modules/*"],
-      "@/customer/*": ["./src/customer/*"],
-      "@/admin/*": ["./src/admin/*"]
+      "@/customer/*": ["src/domains/customer/*"],
+      "@/admin/*": ["src/domains/admin/*"]
     }
   },
   "include": ["src"]

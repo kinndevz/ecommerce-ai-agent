@@ -63,6 +63,29 @@ const createEmptyConversation = (
   updated_at: null,
 })
 
+const appendMessagesToConversation = (
+  conversation: ConversationDetail | null,
+  messages: MessageResponse[]
+): ConversationDetail => ({
+  ...(conversation || createEmptyConversation([])),
+  messages: [...(conversation?.messages || []), ...messages],
+})
+
+const updateConversationMessages = (
+  conversation: ConversationDetail | null,
+  updater: (messages: MessageResponse[]) => MessageResponse[]
+): ConversationDetail | null =>
+  conversation ? { ...conversation, messages: updater(conversation.messages) } : null
+
+const updateMessageById = (
+  messages: MessageResponse[],
+  messageId: string,
+  updater: (message: MessageResponse) => MessageResponse
+) => messages.map((msg) => (msg.id === messageId ? updater(msg) : msg))
+
+const removeMessageById = (messages: MessageResponse[], messageId: string) =>
+  messages.filter((msg) => msg.id !== messageId)
+
 export const useChatStore = create<ChatState>((set, get) => ({
   conversations: [],
   currentConversation: null,
@@ -122,10 +145,9 @@ export const useChatStore = create<ChatState>((set, get) => ({
     const userMsg = createTempMessage('user', message)
 
     set((state) => ({
-      currentConversation: {
-        ...(state.currentConversation || createEmptyConversation([])),
-        messages: [...(state.currentConversation?.messages || []), userMsg],
-      },
+      currentConversation: appendMessagesToConversation(state.currentConversation, [
+        userMsg,
+      ]),
     }))
 
     try {
@@ -136,13 +158,11 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
       set((state) => ({
         currentConversation: {
-          ...state.currentConversation!,
+          ...appendMessagesToConversation(state.currentConversation, [
+            response.message,
+          ]),
           id: response.conversation_id,
           thread_id: response.thread_id,
-          messages: [
-            ...(state.currentConversation?.messages || []),
-            response.message,
-          ],
         },
       }))
     } catch (error: any) {
@@ -160,15 +180,12 @@ export const useChatStore = create<ChatState>((set, get) => ({
     const aiMsg = createTempMessage('assistant')
 
     set((state) => ({
-      currentConversation: {
-        ...(state.currentConversation || createEmptyConversation([])),
-        messages: [
-          ...(state.currentConversation?.messages || []),
-          ...(userMsg ? [userMsg] : []),
-          aiMsg,
-        ],
-      },
+      currentConversation: appendMessagesToConversation(state.currentConversation, [
+        ...(userMsg ? [userMsg] : []),
+        aiMsg,
+      ]),
     }))
+    set({ streamingStatus: 'thinking', currentToolCall: null })
 
     const conversationId = hasRealConversationId(currentConversation?.id)
       ? currentConversation!.id
@@ -179,33 +196,29 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
       await client.streamMessage(message, conversationId, {
         onStatus: (statusMessage) => {
-          set({ streamingStatus: statusMessage })
+          set((state) => ({
+            streamingStatus: state.currentToolCall ? null : statusMessage,
+          }))
         },
 
         onToolCall: (toolName) => {
-          set({ currentToolCall: `Calling tool: ${toolName}` })
+          set({ currentToolCall: `Using tool: ${toolName}...` })
         },
 
         onArtifact: (artifact: Artifact) => {
           set((state) => ({
-            currentConversation: state.currentConversation
-              ? {
-                  ...state.currentConversation,
-                  messages: state.currentConversation.messages.map((msg) =>
-                    msg.id === aiMsg.id
-                      ? {
-                          ...msg,
-                          artifacts: [...(msg.artifacts || []), artifact],
-                          message_metadata: {
-                            ...msg.message_metadata,
-                            has_artifacts: true,
-                          },
-                        }
-                      : msg
-                  ),
-                }
-              : null,
-
+            currentConversation: updateConversationMessages(
+              state.currentConversation,
+              (messages) =>
+                updateMessageById(messages, aiMsg.id, (msg) => ({
+                  ...msg,
+                  artifacts: [...(msg.artifacts || []), artifact],
+                  message_metadata: {
+                    ...msg.message_metadata,
+                    has_artifacts: true,
+                  },
+                }))
+            ),
             currentToolCall: `Used tool: ${artifact.tool_name}`,
             streamingStatus: null,
           }))
@@ -213,14 +226,13 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
         onContent: (chunk) => {
           set((state) => ({
-            currentToolCall: null,
-            streamingStatus: 'Typing...',
+            streamingStatus: state.currentToolCall ? null : 'Typing...',
             currentConversation: {
               ...state.currentConversation!,
-              messages: state.currentConversation!.messages.map((msg) =>
-                msg.id === aiMsg.id
-                  ? { ...msg, content: msg.content + chunk }
-                  : msg
+              messages: updateMessageById(
+                state.currentConversation!.messages,
+                aiMsg.id,
+                (msg) => ({ ...msg, content: msg.content + chunk })
               ),
             },
           }))
@@ -234,8 +246,10 @@ export const useChatStore = create<ChatState>((set, get) => ({
               ...state.currentConversation!,
               id: conversationId || state.currentConversation!.id,
               thread_id: threadId || state.currentConversation!.thread_id,
-              messages: state.currentConversation!.messages.map((msg) =>
-                msg.id === aiMsg.id ? { ...msg, id: messageId } : msg
+              messages: updateMessageById(
+                state.currentConversation!.messages,
+                aiMsg.id,
+                (msg) => ({ ...msg, id: messageId })
               ),
             },
           }))
@@ -249,8 +263,9 @@ export const useChatStore = create<ChatState>((set, get) => ({
             currentToolCall: null,
             currentConversation: {
               ...state.currentConversation!,
-              messages: state.currentConversation!.messages.filter(
-                (msg) => msg.id !== aiMsg.id
+              messages: removeMessageById(
+                state.currentConversation!.messages,
+                aiMsg.id
               ),
             },
           }))
@@ -264,8 +279,9 @@ export const useChatStore = create<ChatState>((set, get) => ({
         currentToolCall: null,
         currentConversation: {
           ...state.currentConversation!,
-          messages: state.currentConversation!.messages.filter(
-            (msg) => msg.id !== aiMsg.id
+          messages: removeMessageById(
+            state.currentConversation!.messages,
+            aiMsg.id
           ),
         },
       }))
