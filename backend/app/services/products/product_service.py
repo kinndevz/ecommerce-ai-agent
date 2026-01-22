@@ -109,17 +109,13 @@ class ProductService:
         products = query.offset((page - 1) * limit).limit(limit).all()
 
         products_data = [format_product_list_item(p) for p in products]
-        total_pages = (total + limit - 1) // limit
 
-        return ResponseHandler.success(
-            message="Products retrieved successfully",
-            data={
-                "products": products_data,
-                "total": total,
-                "page": page,
-                "limit": limit,
-                "total_pages": total_pages
-            }
+        return ResponseHandler.get_list_success(
+            resource_name="Products",
+            data=products_data,
+            total=total,
+            limit=limit,
+            page=page
         )
 
     @staticmethod

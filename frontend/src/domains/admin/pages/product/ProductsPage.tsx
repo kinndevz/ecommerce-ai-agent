@@ -69,12 +69,12 @@ export default function ProductsPage() {
     }
   }
 
-  const products = data?.data.products || []
+  const products = data?.data || []
   const pagination = {
-    total: data?.data.total || 0,
-    page: data?.data.page || 1,
-    limit: data?.data.limit || 20,
-    totalPages: data?.data.total_pages || 1,
+    total: data?.meta?.total || 0,
+    page: data?.meta?.page || 1,
+    limit: data?.meta?.limit || 20,
+    totalPages: data?.meta?.total_pages || 1,
   }
 
   return (

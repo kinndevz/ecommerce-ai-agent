@@ -23,10 +23,15 @@ class ProductStockService:
         ).order_by(Product.stock_quantity.asc()).all()
 
         products_data = [format_product_list_item(p) for p in products]
+        total = len(products_data)
+        limit = total if total > 0 else 1
 
-        return ResponseHandler.success(
-            message="Low stock products retrieved successfully",
-            data={"products": products_data, "total": len(products_data)}
+        return ResponseHandler.get_list_success(
+            resource_name="Low stock products",
+            data=products_data,
+            total=total,
+            limit=limit,
+            page=1
         )
 
     @staticmethod
@@ -44,8 +49,13 @@ class ProductStockService:
         ).all()
 
         products_data = [format_product_list_item(p) for p in products]
+        total = len(products_data)
+        limit = total if total > 0 else 1
 
-        return ResponseHandler.success(
-            message="Out of stock products retrieved successfully",
-            data={"products": products_data, "total": len(products_data)}
+        return ResponseHandler.get_list_success(
+            resource_name="Out of stock products",
+            data=products_data,
+            total=total,
+            limit=limit,
+            page=1
         )

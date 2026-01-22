@@ -9,6 +9,7 @@ import {
   type CreateProductRequest,
   type UpdateProductRequest,
   type ProductQueryParams,
+  type SearchQueryParams,
 } from '@/api/product.api'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -19,9 +20,32 @@ export const productKeys = {
   lists: () => [...productKeys.all, 'list'] as const,
   list: (filters: ProductQueryParams) =>
     [...productKeys.lists(), filters] as const,
+  search: (filters: SearchQueryParams) =>
+    [...productKeys.all, 'search', filters] as const,
   details: () => [...productKeys.all, 'detail'] as const,
   detail: (id: string) => [...productKeys.details(), id] as const,
+  variants: (productId: string) =>
+    [...productKeys.detail(productId), 'variants'] as const,
   stats: () => [...productKeys.all, 'stats'] as const,
+  discovery: () => [...productKeys.all, 'discovery'] as const,
+  featured: (limit: number) =>
+    [...productKeys.discovery(), 'featured', limit] as const,
+  trending: (days: number, limit: number) =>
+    [...productKeys.discovery(), 'trending', { days, limit }] as const,
+  newArrivals: (days: number, limit: number) =>
+    [...productKeys.discovery(), 'new-arrivals', { days, limit }] as const,
+  onSale: (limit: number) =>
+    [...productKeys.discovery(), 'on-sale', limit] as const,
+  byBrand: (brandSlug: string, page: number, limit: number) =>
+    [...productKeys.discovery(), 'by-brand', brandSlug, page, limit] as const,
+  byCategory: (categorySlug: string, page: number, limit: number) =>
+    [...productKeys.discovery(), 'by-category', categorySlug, page, limit] as const,
+  related: (productId: string, limit: number) =>
+    [...productKeys.discovery(), 'related', productId, limit] as const,
+  inventory: () => [...productKeys.all, 'inventory'] as const,
+  lowStock: (threshold: number) =>
+    [...productKeys.inventory(), 'low-stock', threshold] as const,
+  outOfStock: () => [...productKeys.inventory(), 'out-of-stock'] as const,
 }
 
 export function useProducts(params?: ProductQueryParams) {
@@ -47,6 +71,115 @@ export function useProduct(id: string) {
     queryKey: productKeys.detail(id),
     queryFn: () => productAPI.getById(id),
     enabled: !!id,
+  })
+}
+
+export function useSearchProducts(params?: SearchQueryParams) {
+  return useQuery({
+    queryKey: productKeys.search(params || {}),
+    queryFn: () => productAPI.search(params),
+    placeholderData: keepPreviousData,
+    staleTime: 30 * 1000, // 30 seconds
+  })
+}
+
+export function useFeaturedProducts(limit: number = 10) {
+  return useQuery({
+    queryKey: productKeys.featured(limit),
+    queryFn: () => productAPI.getFeatured(limit),
+    placeholderData: keepPreviousData,
+    staleTime: 60 * 1000, // 1 minute
+  })
+}
+
+export function useTrendingProducts(days: number = 7, limit: number = 10) {
+  return useQuery({
+    queryKey: productKeys.trending(days, limit),
+    queryFn: () => productAPI.getTrending(days, limit),
+    placeholderData: keepPreviousData,
+    staleTime: 60 * 1000, // 1 minute
+  })
+}
+
+export function useNewArrivalsProducts(days: number = 30, limit: number = 10) {
+  return useQuery({
+    queryKey: productKeys.newArrivals(days, limit),
+    queryFn: () => productAPI.getNewArrivals(days, limit),
+    placeholderData: keepPreviousData,
+    staleTime: 60 * 1000, // 1 minute
+  })
+}
+
+export function useOnSaleProducts(limit: number = 20) {
+  return useQuery({
+    queryKey: productKeys.onSale(limit),
+    queryFn: () => productAPI.getOnSale(limit),
+    placeholderData: keepPreviousData,
+    staleTime: 60 * 1000, // 1 minute
+  })
+}
+
+export function useProductsByBrand(
+  brandSlug: string,
+  page: number = 1,
+  limit: number = 20
+) {
+  return useQuery({
+    queryKey: productKeys.byBrand(brandSlug, page, limit),
+    queryFn: () => productAPI.getByBrand(brandSlug, page, limit),
+    placeholderData: keepPreviousData,
+    staleTime: 30 * 1000, // 30 seconds
+    enabled: !!brandSlug,
+  })
+}
+
+export function useProductsByCategory(
+  categorySlug: string,
+  page: number = 1,
+  limit: number = 20
+) {
+  return useQuery({
+    queryKey: productKeys.byCategory(categorySlug, page, limit),
+    queryFn: () => productAPI.getByCategory(categorySlug, page, limit),
+    placeholderData: keepPreviousData,
+    staleTime: 30 * 1000, // 30 seconds
+    enabled: !!categorySlug,
+  })
+}
+
+export function useRelatedProducts(productId: string, limit: number = 5) {
+  return useQuery({
+    queryKey: productKeys.related(productId, limit),
+    queryFn: () => productAPI.getRelated(productId, limit),
+    placeholderData: keepPreviousData,
+    staleTime: 60 * 1000, // 1 minute
+    enabled: !!productId,
+  })
+}
+
+export function useLowStockProducts(threshold: number = 10) {
+  return useQuery({
+    queryKey: productKeys.lowStock(threshold),
+    queryFn: () => productAPI.getLowStock(threshold),
+    placeholderData: keepPreviousData,
+    staleTime: 30 * 1000, // 30 seconds
+  })
+}
+
+export function useOutOfStockProducts() {
+  return useQuery({
+    queryKey: productKeys.outOfStock(),
+    queryFn: () => productAPI.getOutOfStock(),
+    placeholderData: keepPreviousData,
+    staleTime: 30 * 1000, // 30 seconds
+  })
+}
+
+export function useProductVariants(productId: string) {
+  return useQuery({
+    queryKey: productKeys.variants(productId),
+    queryFn: () => productAPI.getVariants(productId),
+    enabled: !!productId,
   })
 }
 

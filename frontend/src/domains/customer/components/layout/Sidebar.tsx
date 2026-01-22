@@ -9,6 +9,7 @@ import {
 import { Badge } from '@/shared/components/ui/badge'
 import { AspectRatio } from '@/shared/components/ui/aspect-ratio'
 import { Separator } from '@/shared/components/ui/separator'
+import { useNewArrivalsProducts } from '@/hooks/useProducts'
 
 const editorsPick = [
   {
@@ -34,18 +35,7 @@ const editorsPick = [
   },
 ]
 
-const newArrivals = [
-  {
-    id: '1',
-    name: 'Gentle Face Cleanser',
-    image: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=150',
-  },
-  {
-    id: '2',
-    name: 'Nourishing Hair Mask',
-    image: 'https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=150',
-  },
-]
+const fallbackProductImage = 'https://placehold.co/200x200/png?text=Product'
 
 const formatPrice = (price: number) => {
   return new Intl.NumberFormat('vi-VN', {
@@ -55,6 +45,10 @@ const formatPrice = (price: number) => {
 }
 
 export const Sidebar = () => {
+  const { data: newArrivalsData, isLoading: isNewArrivalsLoading } =
+    useNewArrivalsProducts(30, 2)
+  const newArrivals = newArrivalsData?.data ?? []
+
   return (
     <aside className='space-y-6'>
       {/* Editor's Pick - Enhanced */}
@@ -118,6 +112,16 @@ export const Sidebar = () => {
         </CardHeader>
         <CardContent className='p-4'>
           <div className='grid grid-cols-2 gap-3'>
+            {isNewArrivalsLoading && (
+              <div className='col-span-full text-center text-xs text-muted-foreground'>
+                Loading new arrivals...
+              </div>
+            )}
+            {!isNewArrivalsLoading && newArrivals.length === 0 && (
+              <div className='col-span-full text-center text-xs text-muted-foreground'>
+                No new arrivals yet.
+              </div>
+            )}
             {newArrivals.map((product) => (
               <Link
                 key={product.id}
@@ -127,7 +131,7 @@ export const Sidebar = () => {
                 <div className='relative rounded-lg overflow-hidden bg-muted/50 mb-2 border border-border/40'>
                   <AspectRatio ratio={1}>
                     <img
-                      src={product.image}
+                      src={product.product_image || fallbackProductImage}
                       alt={product.name}
                       className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-110'
                     />
@@ -141,36 +145,6 @@ export const Sidebar = () => {
                 </p>
               </Link>
             ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Quick Stats - Enhanced */}
-      <Card className='overflow-hidden border border-border/40 shadow-sm bg-linear-to-br from-primary/5 via-secondary/5 to-accent/5'>
-        <CardContent className='p-5'>
-          <div className='grid grid-cols-2 gap-4 text-center'>
-            <div className='space-y-1.5'>
-              <div className='flex items-center justify-center gap-1'>
-                <Star className='w-3.5 h-3.5 text-amber-500 fill-amber-500' />
-                <p className='text-2xl font-bold'>4.9</p>
-              </div>
-              <p className='text-[10px] text-muted-foreground uppercase tracking-wider'>
-                Rating
-              </p>
-            </div>
-            <div className='space-y-1.5'>
-              <p className='text-2xl font-bold'>10K+</p>
-              <p className='text-[10px] text-muted-foreground uppercase tracking-wider'>
-                Products
-              </p>
-            </div>
-          </div>
-          <Separator className='my-4' />
-          <div className='text-center'>
-            <p className='text-2xl font-bold'>500+</p>
-            <p className='text-[10px] text-muted-foreground uppercase tracking-wider'>
-              Brands
-            </p>
           </div>
         </CardContent>
       </Card>

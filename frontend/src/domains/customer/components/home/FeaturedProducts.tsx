@@ -2,86 +2,61 @@ import { useState } from 'react'
 import { ShoppingCart, Heart, Star, Eye, Sparkles } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import { Badge } from '@/shared/components/ui/badge'
-import { Card, CardContent, CardFooter } from '@/shared/components/ui/card'
+import { Card, CardFooter } from '@/shared/components/ui/card'
 import { cn } from '@/lib/utils'
+import { useFeaturedProducts } from '@/hooks/useProducts'
+import type { ProductListItem } from '@/api/product.api'
+import { formatCurrencyVnd } from '@/domains/customer/helpers/formatters'
 
-const products = [
-  {
-    id: '1',
-    name: 'Hydrating Hyaluronic Acid Serum',
-    brand: 'The Ordinary',
-    price: 320000,
-    originalPrice: 450000,
-    image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400',
-    rating: 4.8,
-    reviews: 1234,
-    badge: 'Best Seller',
-    badgeColor: 'bg-amber-500',
-  },
-  {
-    id: '2',
-    name: 'Retinol Night Treatment Cream',
-    brand: 'CeraVe',
-    price: 580000,
-    image: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400',
-    rating: 4.9,
-    reviews: 987,
-    badge: 'New',
-    badgeColor: 'bg-green-500',
-  },
-  {
-    id: '3',
-    name: 'Vitamin C Brightening Serum',
-    brand: 'La Roche-Posay',
-    price: 750000,
-    originalPrice: 890000,
-    image: 'https://images.unsplash.com/photo-1571875257727-256c39da42af?w=400',
-    rating: 4.7,
-    reviews: 756,
-    badge: 'Sale',
-    badgeColor: 'bg-red-500',
-  },
-  {
-    id: '4',
-    name: 'Advanced Night Repair Serum',
-    brand: 'Estée Lauder',
-    price: 1850000,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400',
-    rating: 5.0,
-    reviews: 2341,
-    badge: 'Premium',
-    badgeColor: 'bg-purple-500',
-  },
-  {
-    id: '5',
-    name: 'Gentle Foaming Cleanser',
-    brand: 'Cetaphil',
-    price: 285000,
-    image: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=400',
-    rating: 4.6,
-    reviews: 543,
-  },
-  {
-    id: '6',
-    name: 'Niacinamide 10% + Zinc 1%',
-    brand: 'The Ordinary',
-    price: 180000,
-    image: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?w=400',
-    rating: 4.8,
-    reviews: 1876,
-    badge: 'Best Value',
-    badgeColor: 'bg-blue-500',
-  },
-]
+const fallbackImageUrl = 'https://placehold.co/400x500/png?text=Product'
 
-const formatPrice = (price: number) => {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
-  }).format(price)
+interface FeaturedProduct {
+  id: string
+  name: string
+  brand: string
+  price: number
+  originalPrice?: number
+  image: string
+  rating: number
+  reviews: number
+  badge?: string
+  badgeColor?: string
+}
+
+const buildBadge = (product: ProductListItem) => {
+  const hasSale = product.sale_price !== null && product.sale_price !== undefined
+  if (hasSale) {
+    return { label: 'Sale', color: 'bg-red-500' }
+  }
+  if (product.rating_average >= 4.8) {
+    return { label: 'Top Rated', color: 'bg-amber-500' }
+  }
+  if (product.is_featured) {
+    return { label: 'Featured', color: 'bg-primary' }
+  }
+  return null
+}
+
+const normalizeFeaturedProduct = (product: ProductListItem): FeaturedProduct => {
+  const hasSale = product.sale_price !== null && product.sale_price !== undefined
+  const badge = buildBadge(product)
+  return {
+    id: product.id,
+    name: product.name,
+    brand: product.brand?.name || 'Unknown',
+    price: hasSale ? product.sale_price! : product.price,
+    originalPrice: hasSale ? product.price : undefined,
+    image: product.product_image || fallbackImageUrl,
+    rating: product.rating_average || 0,
+    reviews: product.review_count || 0,
+    badge: badge?.label,
+    badgeColor: badge?.color,
+  }
 }
 
 export const FeaturedProducts = () => {
+  const { data, isLoading } = useFeaturedProducts(6)
+  const featuredProducts = data?.data?.map(normalizeFeaturedProduct) ?? []
   const [favorites, setFavorites] = useState<string[]>([])
 
   const toggleFavorite = (id: string) => {
@@ -116,7 +91,17 @@ export const FeaturedProducts = () => {
 
         {/* Products Grid */}
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
-          {products.map((product, index) => (
+          {isLoading && (
+            <div className='col-span-full text-center text-muted-foreground'>
+              Loading featured products...
+            </div>
+          )}
+          {!isLoading && featuredProducts.length === 0 && (
+            <div className='col-span-full text-center text-muted-foreground'>
+              No featured products available.
+            </div>
+          )}
+          {featuredProducts.map((product, index) => (
             <ProductCard
               key={product.id}
               product={product}
@@ -148,7 +133,7 @@ export const FeaturedProducts = () => {
 
 // Product Card Component
 interface ProductCardProps {
-  product: (typeof products)[0]
+  product: FeaturedProduct
   index: number
   isFavorite: boolean
   onToggleFavorite: () => void
@@ -285,11 +270,11 @@ const ProductCard = ({
         {/* Price */}
         <div className='flex items-baseline gap-2 w-full'>
           <span className='text-lg font-bold text-primary'>
-            {formatPrice(product.price)}
+            {formatCurrencyVnd(product.price)}
           </span>
           {product.originalPrice && (
             <span className='text-sm text-muted-foreground line-through'>
-              {formatPrice(product.originalPrice)}
+              {formatCurrencyVnd(product.originalPrice)}
             </span>
           )}
         </div>

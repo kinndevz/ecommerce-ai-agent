@@ -112,7 +112,7 @@ def get_out_of_stock_products(
 
 
 # ========== Product Discovery ==========
-@router.get("/featured", response_model=ProductListResponse)
+@router.get("/featured", response_model=APIResponse[List[ProductListItem]])
 def get_featured_products(
     limit: int = Query(10, ge=1, le=50),
     db: Session = Depends(get_db)
@@ -121,7 +121,7 @@ def get_featured_products(
     return ProductDiscoveryService.get_featured(db, limit)
 
 
-@router.get("/trending", response_model=ProductListResponse)
+@router.get("/trending", response_model=APIResponse[List[ProductListItem]])
 def get_trending_products(
     days: int = Query(7, ge=1, le=90),
     limit: int = Query(10, ge=1, le=50),
@@ -142,7 +142,7 @@ def get_new_arrivals(
     return ProductDiscoveryService.get_new_arrivals(db, days, limit, page)
 
 
-@router.get("/on-sale", response_model=APIResponse[ProductListItem])
+@router.get("/on-sale", response_model=APIResponse[List[ProductListItem]])
 def get_products_on_sale(
     limit: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db)
@@ -151,7 +151,7 @@ def get_products_on_sale(
     return ProductDiscoveryService.get_on_sale(db, limit)
 
 
-@router.get("/by-brand/{brand_slug}", response_model=ProductListResponse)
+@router.get("/by-brand/{brand_slug}", response_model=APIResponse[List[ProductListItem]])
 def get_products_by_brand(
     brand_slug: str,
     page: int = Query(1, ge=1),
@@ -162,7 +162,7 @@ def get_products_by_brand(
     return ProductDiscoveryService.get_by_brand(db, brand_slug, page, limit)
 
 
-@router.get("/by-category/{category_slug}", response_model=ProductListResponse)
+@router.get("/by-category/{category_slug}", response_model=APIResponse[List[ProductListItem]])
 def get_products_by_category(
     category_slug: str,
     page: int = Query(1, ge=1),
@@ -173,7 +173,7 @@ def get_products_by_category(
     return ProductDiscoveryService.get_by_category(db, category_slug, page, limit)
 
 
-@router.get("/{product_id}/related", response_model=ProductListResponse)
+@router.get("/{product_id}/related", response_model=APIResponse[List[ProductListItem]])
 def get_related_products(
     product_id: str,
     limit: int = Query(5, ge=1, le=20),

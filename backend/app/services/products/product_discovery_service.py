@@ -14,7 +14,7 @@ class ProductDiscoveryService:
     def get_featured(db: Session, limit: int = 10):
         """Get featured products"""
 
-        products = db.query(Product).options(
+        query = db.query(Product).options(
             joinedload(Product.brand),
             joinedload(Product.category),
             joinedload(Product.images),
@@ -23,16 +23,22 @@ class ProductDiscoveryService:
             Product.deleted_at.is_(None),
             Product.is_featured == True,
             Product.is_available == True
-        ).order_by(
+        )
+
+        total = query.count()
+        products = query.order_by(
             desc(Product.rating_average),
             desc(Product.views_count)
         ).limit(limit).all()
 
         products_data = [format_product_list_item(p) for p in products]
 
-        return ResponseHandler.success(
-            message="Featured products retrieved successfully",
-            data={"products": products_data, "total": len(products_data)}
+        return ResponseHandler.get_list_success(
+            resource_name="Featured Products",
+            data=products_data,
+            total=total,
+            limit=limit,
+            page=1
         )
 
     @staticmethod
@@ -41,7 +47,7 @@ class ProductDiscoveryService:
 
         since = datetime.now(timezone.utc) - timedelta(days=days)
 
-        products = db.query(Product).options(
+        query = db.query(Product).options(
             joinedload(Product.brand),
             joinedload(Product.category),
             joinedload(Product.images),
@@ -50,15 +56,19 @@ class ProductDiscoveryService:
             Product.deleted_at.is_(None),
             Product.is_available == True,
             Product.updated_at >= since
-        ).order_by(
-            desc(Product.views_count)
-        ).limit(limit).all()
+        )
+
+        total = query.count()
+        products = query.order_by(desc(Product.views_count)).limit(limit).all()
 
         products_data = [format_product_list_item(p) for p in products]
 
-        return ResponseHandler.success(
-            message="Trending products retrieved successfully",
-            data={"products": products_data, "total": len(products_data)}
+        return ResponseHandler.get_list_success(
+            resource_name="Trending Products",
+            data=products_data,
+            total=total,
+            limit=limit,
+            page=1
         )
 
     @staticmethod
@@ -98,7 +108,7 @@ class ProductDiscoveryService:
     def get_on_sale(db: Session, limit: int = 20):
         """Get products on sale"""
 
-        products = db.query(Product).options(
+        query = db.query(Product).options(
             joinedload(Product.brand),
             joinedload(Product.category),
             joinedload(Product.images),
@@ -108,15 +118,21 @@ class ProductDiscoveryService:
             Product.is_available == True,
             Product.sale_price.isnot(None),
             Product.sale_price < Product.price
-        ).order_by(
+        )
+
+        total = query.count()
+        products = query.order_by(
             desc((Product.price - Product.sale_price) / Product.price)
         ).limit(limit).all()
 
         products_data = [format_product_list_item(p) for p in products]
 
-        return ResponseHandler.success(
-            message="Products on sale retrieved successfully",
-            data={"products": products_data, "total": len(products_data)}
+        return ResponseHandler.get_list_success(
+            resource_name="Products On Sale",
+            data=products_data,
+            total=total,
+            limit=limit,
+            page=1
         )
 
     @staticmethod
@@ -147,17 +163,13 @@ class ProductDiscoveryService:
             (page - 1) * limit).limit(limit).all()
 
         products_data = [format_product_list_item(p) for p in products]
-        total_pages = (total + limit - 1) // limit
 
-        return ResponseHandler.success(
-            message=f"Products by brand '{brand.name}' retrieved successfully",
-            data={
-                "products": products_data,
-                "total": total,
-                "page": page,
-                "limit": limit,
-                "total_pages": total_pages
-            }
+        return ResponseHandler.get_list_success(
+            resource_name=f"Products by brand '{brand.name}'",
+            data=products_data,
+            total=total,
+            limit=limit,
+            page=page
         )
 
     @staticmethod
@@ -188,17 +200,13 @@ class ProductDiscoveryService:
             (page - 1) * limit).limit(limit).all()
 
         products_data = [format_product_list_item(p) for p in products]
-        total_pages = (total + limit - 1) // limit
 
-        return ResponseHandler.success(
-            message=f"Products by category '{category.name}' retrieved successfully",
-            data={
-                "products": products_data,
-                "total": total,
-                "page": page,
-                "limit": limit,
-                "total_pages": total_pages
-            }
+        return ResponseHandler.get_list_success(
+            resource_name=f"Products by category '{category.name}'",
+            data=products_data,
+            total=total,
+            limit=limit,
+            page=page
         )
 
     @staticmethod
@@ -230,12 +238,16 @@ class ProductDiscoveryService:
                 Product.concerns.op('&&')(product.concerns)
             )
 
+        total = query.count()
         products = query.order_by(
             desc(Product.rating_average)).limit(limit).all()
 
         products_data = [format_product_list_item(p) for p in products]
 
-        return ResponseHandler.success(
-            message="Related products retrieved successfully",
-            data={"products": products_data, "total": len(products_data)}
+        return ResponseHandler.get_list_success(
+            resource_name="Related Products",
+            data=products_data,
+            total=total,
+            limit=limit,
+            page=1
         )

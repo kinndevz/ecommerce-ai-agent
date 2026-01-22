@@ -159,8 +159,8 @@ class ProductListResponse(BaseModel):
     """Product list response"""
     success: bool
     message: str
-    # {products: List[ProductListItem], total, page, limit, total_pages}
-    data: dict
+    data: List[ProductListItem]
+    meta: Optional[dict] = None
 
     class Config(BaseConfig):
         pass

@@ -47,11 +47,9 @@ export const DesktopNav = ({ categories, isLoading }: DesktopNavProps) => {
     if (!category.children || category.children.length === 0) {
       return (
         <NavigationMenuItem key={category.id}>
-          <Link to={`/categories/${category.slug}`}>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              {category.name}
-            </NavigationMenuLink>
-          </Link>
+          <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+            <Link to={`/categories/${category.slug}`}>{category.name}</Link>
+          </NavigationMenuLink>
         </NavigationMenuItem>
       )
     }

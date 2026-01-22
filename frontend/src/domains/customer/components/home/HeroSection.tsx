@@ -1,38 +1,24 @@
 import { useState, useEffect } from 'react'
 import { ArrowRight, Sparkles, Star } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
-import { Badge } from '@/shared/components/ui/badge'
 import { cn } from '@/lib/utils'
+import { useFeaturedProducts } from '@/hooks/useProducts'
+import { formatCurrencyVnd } from '@/domains/customer/helpers/formatters'
 
-const floatingProducts = [
-  {
-    id: 1,
-    image: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=300',
-    name: 'Hydrating Serum',
-    price: '320,000₫',
-    position: 'top-20 right-10',
-    delay: 0,
-  },
-  {
-    id: 2,
-    image: 'https://images.unsplash.com/photo-1571875257727-256c39da42af?w=300',
-    name: 'Vitamin C',
-    price: '450,000₫',
-    position: 'top-40 right-32',
-    delay: 0.2,
-  },
-  {
-    id: 3,
-    image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=300',
-    name: 'Night Cream',
-    price: '550,000₫',
-    position: 'bottom-32 right-20',
-    delay: 0.4,
-  },
+const floatingSlots = [
+  { position: 'top-20 right-10', delay: 0 },
+  { position: 'top-40 right-32', delay: 0.2 },
+  { position: 'bottom-32 right-20', delay: 0.4 },
 ]
+
+const fallbackImageUrl = 'https://placehold.co/400x500/png?text=Product'
 
 export const HeroSection = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const { data } = useFeaturedProducts(4)
+  const products = data?.data ?? []
+  const mainProduct = products[0]
+  const floatingProducts = products.slice(1, 1 + floatingSlots.length)
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -69,7 +55,7 @@ export const HeroSection = () => {
           {/* Left Content */}
           <div className='space-y-8 animate-in fade-in slide-in-from-left duration-1000'>
             {/* Premium Badge - Enhanced */}
-            <div className='inline-flex items-center gap-2.5 px-5 py-2.5 bg-gradient-to-r from-primary/15 to-primary/10 text-primary rounded-full shadow-md border-2 border-primary/30'>
+            <div className='inline-flex items-center gap-2.5 px-5 py-2.5 bg-linear-to-r from-primary/15 to-primary/10 text-primary rounded-full shadow-md border-2 border-primary/30'>
               <Sparkles className='w-4 h-4 animate-pulse' />
               <span className='text-sm font-extrabold uppercase tracking-wider'>
                 Premium Beauty Products
@@ -111,7 +97,7 @@ export const HeroSection = () => {
 
               <Button
                 size='lg'
-                variant='soft'
+                variant='default'
                 className='group h-12 px-8 rounded-full border-2 border-border/50 hover:border-primary/30 hover:bg-primary/5 transition-all duration-200'
               >
                 Explore Collections
@@ -156,8 +142,8 @@ export const HeroSection = () => {
                 {/* Main Image */}
                 <div className='relative w-full h-full bg-background/80 backdrop-blur-md rounded-3xl border border-border/50 shadow-2xl overflow-hidden'>
                   <img
-                    src='https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400'
-                    alt='Featured Product'
+                    src={mainProduct?.product_image || fallbackImageUrl}
+                    alt={mainProduct?.name || 'Featured Product'}
                     className='w-full h-full object-cover'
                   />
 
@@ -166,23 +152,33 @@ export const HeroSection = () => {
                     <p className='text-xs text-muted-foreground mb-1'>
                       Featured Product
                     </p>
-                    <p className='font-semibold mb-1'>Premium Moisturizer</p>
-                    <p className='text-lg font-bold text-primary'>₫450,000</p>
+                    <p className='font-semibold mb-1'>
+                      {mainProduct?.name || 'Premium Product'}
+                    </p>
+                    <p className='text-lg font-bold text-primary'>
+                      {mainProduct
+                        ? formatCurrencyVnd(
+                            mainProduct.sale_price ?? mainProduct.price
+                          )
+                        : 'Updating'}
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Floating Mini Products */}
-            {floatingProducts.map((product, index) => (
+            {floatingProducts.map((product, index) => {
+              const slot = floatingSlots[index]
+              return (
               <div
                 key={product.id}
                 className={cn(
                   'absolute w-32 h-32 animate-in fade-in zoom-in duration-1000',
-                  product.position
+                  slot?.position
                 )}
                 style={{
-                  animationDelay: `${product.delay}s`,
+                  animationDelay: `${slot?.delay ?? 0}s`,
                   transform: `translate(${mousePosition.x * -0.5}px, ${
                     mousePosition.y * -0.5
                   }px)`,
@@ -196,7 +192,7 @@ export const HeroSection = () => {
                   {/* Card */}
                   <div className='relative w-full h-full bg-background/80 backdrop-blur-md rounded-2xl border border-border/50 shadow-lg overflow-hidden group-hover:scale-110 transition-transform duration-300'>
                     <img
-                      src={product.image}
+                      src={product.product_image || fallbackImageUrl}
                       alt={product.name}
                       className='w-full h-full object-cover'
                     />
@@ -205,13 +201,18 @@ export const HeroSection = () => {
                     <div className='absolute inset-0 bg-linear-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3'>
                       <div className='text-white'>
                         <p className='text-xs font-medium'>{product.name}</p>
-                        <p className='text-xs opacity-90'>{product.price}</p>
+                        <p className='text-xs opacity-90'>
+                          {formatCurrencyVnd(
+                            product.sale_price ?? product.price
+                          )}
+                        </p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            ))}
+            )
+            })}
 
             {/* Decorative Elements */}
             <div className='absolute top-10 left-10 w-20 h-20 border-2 border-primary/30 rounded-full animate-spin-slow' />
