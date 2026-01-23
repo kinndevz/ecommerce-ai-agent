@@ -3,17 +3,17 @@ from decimal import Decimal
 from datetime import datetime, timezone
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func, desc
-
 from app.models.order import Order, OrderItem
 from app.models.cart import Cart, CartItem
 from app.utils.responses import ResponseHandler
-from app.core.enums import OrderStatus, PaymentStatus, PaymentMethod
+from app.core.enums import OrderStatus, PaymentStatus, PaymentMethod, NotificationType
 from app.core.constant import OrderConstants
+from app.services.notification_events import NotificationEventEmitter
 
 
 class OrderService:
 
-    # ========== HELPER METHODS ==========
+    # HELPER METHODS
     @staticmethod
     def _safe_datetime(value: datetime | None) -> datetime:
         """Ensure a non-null datetime for response serialization."""
@@ -87,7 +87,7 @@ class OrderService:
             "updated_at": OrderService._safe_datetime(order.updated_at)
         }
 
-    # ========== CUSTOMER ENDPOINTS ==========
+    # CUSTOMER ENDPOINTS
     @staticmethod
     def create_order(db: Session, user_id: str, shipping_address: dict, payment_method: str, notes: str = None):
         """Create order from cart"""
@@ -146,7 +146,9 @@ class OrderService:
             shipping_fee=shipping_fee,
             total=total,
             shipping_address=shipping_address,
-            notes=notes
+            notes=notes,
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc)
         )
 
         db.add(order)
@@ -163,7 +165,9 @@ class OrderService:
                 variant_name=cart_item.variant.name if cart_item.variant else None,
                 quantity=cart_item.quantity,
                 unit_price=cart_item.price,
-                subtotal=cart_item.price * cart_item.quantity
+                subtotal=cart_item.price * cart_item.quantity,
+                created_at=datetime.now(timezone.utc),
+                updated_at=datetime.now(timezone.utc)
             )
             db.add(order_item)
 
@@ -181,6 +185,12 @@ class OrderService:
 
         # Format response
         order_data = OrderService._format_order_detail(order)
+        NotificationEventEmitter.emit(
+            db,
+            notification_type=NotificationType.ORDER_CREATED,
+            model=order,
+            send_websocket=True
+        )
 
         return ResponseHandler.create_success("Order", order.id, order_data)
 
@@ -271,7 +281,7 @@ class OrderService:
             data=order_data
         )
 
-    # ========== ADMIN ENDPOINTS ==========
+    # ADMIN ENDPOINTS
 
     @staticmethod
     def get_all_orders(db: Session, status: str = None, page: int = 1, limit: int = 20):

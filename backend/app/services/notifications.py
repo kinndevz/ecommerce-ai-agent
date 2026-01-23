@@ -6,8 +6,13 @@ from sqlalchemy import desc, func
 from fastapi import WebSocket, status
 from jose import JWTError
 import logging
+import anyio
+from typing import Any, Dict, Tuple
 from app.models.notification import Notification, NotificationType
 from app.models.user import User
+from app.models.role import Role
+from app.core.constant import UserRole
+from app.core.enums import UserStatus
 from app.schemas.notifications import (
     NotificationCreateRequest,
     BroadcastNotificationRequest,
@@ -22,6 +27,182 @@ logger = logging.getLogger(__name__)
 
 
 class NotificationService:
+
+    @staticmethod
+    def _get_admin_users(db: Session):
+        return db.query(User).join(Role).filter(
+            Role.name == UserRole.ADMIN,
+            User.deleted_at.is_(None),
+            User.status == UserStatus.ACTIVE
+        ).all()
+
+    @staticmethod
+    def notify_admins(
+        db: Session,
+        notification_type: NotificationType,
+        title: str,
+        message: str,
+        data: dict = None,
+        action_url: str = None,
+        send_websocket: bool = True
+    ):
+        admins = NotificationService._get_admin_users(db)
+        if not admins:
+            return []
+
+        notifications = []
+        for admin in admins:
+            notification = NotificationService.create_notification_sync(
+                db,
+                user_id=admin.id,
+                notification_type=notification_type,
+                title=title,
+                message=message,
+                data=data,
+                action_url=action_url,
+                send_websocket=send_websocket
+            )
+            notifications.append(notification)
+
+        return notifications
+
+    @staticmethod
+    def _build_notification_payload(
+        notification_type: NotificationType,
+        context: Dict[str, Any]
+    ) -> Tuple[str, str, Dict[str, Any] | None, str | None]:
+        if notification_type == NotificationType.REVIEW_RECEIVED:
+            reviewer_name = context.get("reviewer_name", "A customer")
+            product_name = context.get("product_name", "a product")
+            product_id = context.get("product_id")
+            review_id = context.get("review_id")
+            user_id = context.get("user_id")
+            rating = context.get("rating")
+            return (
+                "New product review",
+                f"{reviewer_name} reviewed {product_name}",
+                {
+                    "review_id": review_id,
+                    "product_id": product_id,
+                    "user_id": user_id,
+                    "rating": rating
+                },
+                f"/admin/products/{product_id}/reviews" if product_id else None
+            )
+
+        if notification_type == NotificationType.ORDER_CREATED:
+            order_number = context.get("order_number")
+            order_id = context.get("order_id")
+            user_id = context.get("user_id")
+            total = context.get("total")
+            return (
+                "New order created",
+                f"Order {order_number} was created",
+                {
+                    "order_id": order_id,
+                    "order_number": order_number,
+                    "user_id": user_id,
+                    "total": total
+                },
+                f"/admin/orders/{order_id}" if order_id else None
+            )
+
+        return (
+            "Notification",
+            "You have a new notification",
+            context,
+            None
+        )
+
+    @staticmethod
+    def notify_admins_event(
+        db: Session,
+        notification_type: NotificationType,
+        context: Dict[str, Any],
+        send_websocket: bool = True
+    ):
+        title, message, data, action_url = NotificationService._build_notification_payload(
+            notification_type, context)
+        return NotificationService.notify_admins(
+            db,
+            notification_type=notification_type,
+            title=title,
+            message=message,
+            data=data,
+            action_url=action_url,
+            send_websocket=send_websocket
+        )
+
+    @staticmethod
+    def review_received_context(
+        review_id: str,
+        product_id: str,
+        user_id: str,
+        rating: int,
+        reviewer_name: str,
+        product_name: str
+    ) -> Dict[str, Any]:
+        return {
+            "review_id": review_id,
+            "product_id": product_id,
+            "user_id": user_id,
+            "rating": rating,
+            "reviewer_name": reviewer_name,
+            "product_name": product_name
+        }
+
+    @staticmethod
+    def order_created_context(
+        order_id: str,
+        order_number: str,
+        user_id: str,
+        total: float
+    ) -> Dict[str, Any]:
+        return {
+            "order_id": order_id,
+            "order_number": order_number,
+            "user_id": user_id,
+            "total": total
+        }
+
+
+
+    @staticmethod
+    def create_notification_sync(
+        db: Session,
+        user_id: str,
+        notification_type: NotificationType,
+        title: str,
+        message: str,
+        data: dict = None,
+        action_url: str = None,
+        send_websocket: bool = True
+    ):
+        data_json = json.dumps(data) if data else None
+
+        notification = Notification(
+            id=str(uuid.uuid4()),
+            user_id=user_id,
+            type=notification_type,
+            title=title,
+            message=message,
+            data=data_json,
+            action_url=action_url,
+            is_read=False,
+            created_at=datetime.now(timezone.utc)
+        )
+
+        db.add(notification)
+        db.commit()
+        db.refresh(notification)
+
+        if send_websocket:
+            anyio.from_thread.run(
+                NotificationService._send_websocket_notification,
+                notification
+            )
+
+        return notification
 
     @staticmethod
     async def create_notification(db: Session, data: NotificationCreateRequest, send_websocket: bool = True):

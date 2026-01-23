@@ -6,7 +6,7 @@ import time
 from contextlib import asynccontextmanager
 from app.elastic.controller import init_elasticsearch
 from app.core.config import settings, close_checkpointer
-from app.routes import auth, account, users, role, brands, categories, products, tags, carts, orders, chat, media, chat_streaming, notifications
+from app.routes import auth, account, users, role, brands, categories, products, tags, carts, orders, chat, media, chat_streaming, notifications, wishlist, reviews, analytics
 from app.utils.exceptions import (
     http_exception_handler,
     validation_exception_handler,
@@ -91,6 +91,9 @@ app.include_router(chat.router)
 app.include_router(chat_streaming.router)
 app.include_router(media.router)
 app.include_router(notifications.router)
+app.include_router(wishlist.router)
+app.include_router(reviews.router)
+app.include_router(analytics.router)
 
 
 @app.get("/")
