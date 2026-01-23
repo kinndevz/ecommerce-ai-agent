@@ -20,6 +20,7 @@ import ViewCategoryPage from './pages/category/ViewCategoryPage'
 import EditCategoryPage from './pages/category/EditCategoryPage'
 import OrdersPage from './pages/order/OrdersPage'
 import ViewOrderPage from './pages/order/ViewOrderPage'
+import NotificationsPage from './pages/notification/NotificationsPage'
 
 export const adminRoutes = (
   <>
@@ -180,6 +181,14 @@ export const adminRoutes = (
       element={
         <ProtectedRoute>
           <ViewOrderPage />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path='/admin/notifications'
+      element={
+        <ProtectedRoute>
+          <NotificationsPage />
         </ProtectedRoute>
       }
     />

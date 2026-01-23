@@ -1,10 +1,9 @@
 import uuid
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from sqlalchemy.orm import Session
 from sqlalchemy import desc, func
 from fastapi import WebSocket, status
-from jose import JWTError
 import logging
 import anyio
 from typing import Any, Dict, Tuple
@@ -20,13 +19,16 @@ from app.schemas.notifications import (
 )
 from app.utils.responses import ResponseHandler
 from app.websocket.manager import notification_manager
-from app.core.security import verify_access_token
 from app.db.database import get_db
+from app.core.config import settings
+from app.core.redis_rate_limiter import redis_rate_limiter
 
 logger = logging.getLogger(__name__)
 
 
 class NotificationService:
+    _WS_TICKET_TTL_SECONDS = 60
+    _WS_TICKET_PREFIX = "ws_ticket"
 
     @staticmethod
     def _get_admin_users(db: Session):
@@ -425,18 +427,42 @@ class NotificationService:
         return ResponseHandler.success("Connection status retrieved", data)
 
     @staticmethod
+    def create_ws_ticket(db: Session, user_id: str):
+        ticket = str(uuid.uuid4())
+        key = f"{settings.REDIS_KEY_PREFIX}:{NotificationService._WS_TICKET_PREFIX}:{ticket}"
+        redis_rate_limiter.redis_client.setex(
+            key, NotificationService._WS_TICKET_TTL_SECONDS, user_id
+        )
+        expires_at = datetime.now(timezone.utc) + timedelta(
+            seconds=NotificationService._WS_TICKET_TTL_SECONDS
+        )
+        return ResponseHandler.success(
+            message="WebSocket ticket issued",
+            data={"ticket": ticket, "expires_at": expires_at}
+        )
+
+    @staticmethod
+    def consume_ws_ticket(ticket: str) -> str | None:
+        key = f"{settings.REDIS_KEY_PREFIX}:{NotificationService._WS_TICKET_PREFIX}:{ticket}"
+        user_id = redis_rate_limiter.redis_client.get(key)
+        if user_id:
+            redis_rate_limiter.redis_client.delete(key)
+            return user_id
+        return None
+
+    @staticmethod
     async def handle_websocket_connection(websocket: WebSocket):
-        token = websocket.query_params.get("token")
+        ticket = websocket.query_params.get("ticket")
 
         await websocket.accept()
 
-        if not token:
-            await websocket.send_json({"type": "error", "message": "Missing token"})
+        if not ticket:
+            await websocket.send_json({"type": "error", "message": "Missing ticket"})
             await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
             return
 
         try:
-            user_id = await NotificationService._authenticate_websocket(websocket, token)
+            user_id = await NotificationService._authenticate_websocket(websocket, ticket)
             if not user_id:
                 return
 
@@ -458,13 +484,11 @@ class NotificationService:
                 pass
 
     @staticmethod
-    async def _authenticate_websocket(websocket: WebSocket, token: str):
+    async def _authenticate_websocket(websocket: WebSocket, ticket: str):
         try:
-            payload = verify_access_token(token)
-            user_id = payload.get("user_id")
-
+            user_id = NotificationService.consume_ws_ticket(ticket)
             if not user_id:
-                await websocket.send_json({"type": "error", "message": "Invalid token"})
+                await websocket.send_json({"type": "error", "message": "Invalid or expired ticket"})
                 await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
                 return None
 
@@ -480,8 +504,9 @@ class NotificationService:
 
             return user_id
 
-        except JWTError:
-            await websocket.send_json({"type": "error", "message": "Token verification failed"})
+        except Exception as e:
+            logger.error(f"Ticket verification failed: {e}")
+            await websocket.send_json({"type": "error", "message": "Ticket verification failed"})
             await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
             return None
 

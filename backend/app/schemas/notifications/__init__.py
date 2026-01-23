@@ -1,6 +1,6 @@
 from .requests import NotificationCreateRequest,  BroadcastNotificationRequest, MarkAsReadRequest
 
-from .responses import NotificationResponse,  NotificationListResponse,  NotificationStatsResponse,  MessageResponse
+from .responses import NotificationResponse,  NotificationListResponse,  NotificationStatsResponse,  MessageResponse, WsTicketResponse
 
 __all__ = [
     # REQUESTS
@@ -12,5 +12,6 @@ __all__ = [
     "NotificationResponse",
     "NotificationListResponse",
     "NotificationStatsResponse",
-    "MessageResponse"
+    "MessageResponse",
+    "WsTicketResponse",
 ]

@@ -11,7 +11,8 @@ from app.schemas.notifications import (
     NotificationResponse,
     NotificationListResponse,
     NotificationStatsResponse,
-    MessageResponse
+    MessageResponse,
+    WsTicketResponse
 )
 
 router = APIRouter(prefix="/notifications", tags=["Notifications"])
@@ -34,6 +35,14 @@ def get_my_notification_stats(
     current_user: User = Depends(get_current_user)
 ):
     return NotificationService.get_notification_stats(db, current_user.id)
+
+
+@router.post("/ws-ticket", response_model=WsTicketResponse)
+def create_ws_ticket(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return NotificationService.create_ws_ticket(db, current_user.id)
 
 
 @router.post("/mark-read", response_model=MessageResponse)

@@ -8,6 +8,7 @@ import {
 import { Separator } from '@/shared/components/ui/separator'
 import { SidebarTrigger } from '@/shared/components/ui/sidebar'
 import { useEffect, useState } from 'react'
+import { NotificationPopover } from '../notifications/NotificationPopover'
 
 export function SiteHeader() {
   const { user } = useAuth()
@@ -31,6 +32,7 @@ export function SiteHeader() {
         <SidebarTrigger className='-ml-1' />
         <div className='ml-auto flex items-center gap-2 p-3'>
           <ModeToggle />
+          <NotificationPopover />
           <Separator
             orientation='vertical'
             className='mx-2 data-[orientation=vertical]:h-6'

@@ -239,6 +239,27 @@ class OrderService:
         )
 
     @staticmethod
+    def get_order_detail_admin(db: Session, order_id: str):
+        """Get order detail (Admin)"""
+
+        order = db.query(Order).options(
+            joinedload(Order.items).joinedload(OrderItem.product),
+            joinedload(Order.items).joinedload(OrderItem.variant)
+        ).filter(
+            Order.id == order_id
+        ).first()
+
+        if not order:
+            ResponseHandler.not_found_error("Order", order_id)
+
+        order_data = OrderService._format_order_detail(order)
+
+        return ResponseHandler.success(
+            message="Order retrieved successfully",
+            data=order_data
+        )
+
+    @staticmethod
     def cancel_order(db: Session, user_id: str, order_id: str):
         """Cancel order (only if pending/processing)"""
 

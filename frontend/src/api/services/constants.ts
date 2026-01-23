@@ -31,6 +31,7 @@ export const API_ENDPOINT = {
   GET_ALL_ORDERS_ADMIN: '/orders/all',
   GET_ORDER_STATS: '/orders/stats',
   GET_ORDER_DETAIL: (id: string) => `/orders/${id}`,
+  GET_ORDER_DETAIL_ADMIN: (id: string) => `/orders/admin/${id}`,
   CANCEL_ORDER: (id: string) => `/orders/${id}/cancel`,
   UPDATE_ORDER_STATUS: (id: string) => `/orders/${id}/status`,
 
@@ -136,6 +137,13 @@ export const API_ENDPOINT = {
   CHAT_STREAM: '/chat/messages/stream',
   CHAT_CONVERSATION_STREAM: (id: string) =>
     `/chat/conversations/${id}/messages/stream`,
+
+  // Notification Endpoints
+  NOTIFICATIONS: '/notifications',
+  NOTIFICATION_STATS: '/notifications/stats',
+  NOTIFICATION_MARK_READ: '/notifications/mark-read',
+  NOTIFICATION_MARK_ALL_READ: '/notifications/mark-all-read',
+  NOTIFICATION_WS_TICKET: '/notifications/ws-ticket',
 } as const
 
 export type HTTPMethod =

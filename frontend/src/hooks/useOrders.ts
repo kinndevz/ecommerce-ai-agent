@@ -68,6 +68,23 @@ export function useOrder(orderId: string) {
 }
 
 /**
+ * Get order detail (Admin)
+ */
+export function useAdminOrder(orderId: string) {
+  return useQuery({
+    queryKey: [...orderKeys.detail(orderId), 'admin'],
+    queryFn: async () => {
+      const response = await orderAPI.getDetailAdmin(orderId)
+      if (!response.success) {
+        throw new Error(response.message || 'Không thể lấy thông tin đơn hàng')
+      }
+      return response.data
+    },
+    enabled: !!orderId,
+  })
+}
+
+/**
  * Get order statistics (Admin)
  */
 export function useOrderStats() {

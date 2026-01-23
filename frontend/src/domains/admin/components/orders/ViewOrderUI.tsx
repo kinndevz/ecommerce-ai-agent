@@ -26,7 +26,7 @@ import {
 import { Badge } from '@/shared/components/ui/badge'
 import { Skeleton } from '@/shared/components/ui/skeleton'
 import { Separator } from '@/shared/components/ui/separator'
-import { useOrder } from '@/hooks/useOrders'
+import { useAdminOrder } from '@/hooks/useOrders'
 import { useUser } from '@/hooks/useUsers'
 import { useProduct } from '@/hooks/useProducts'
 import {
@@ -99,7 +99,7 @@ function OrderItemRow({ item }: { item: OrderItem }) {
 export default function ViewOrderUI() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { data: order, isLoading } = useOrder(id!)
+  const { data: order, isLoading } = useAdminOrder(id!)
   const { data: customerResponse } = useUser(order?.user_id || '')
 
   const [showStatusDialog, setShowStatusDialog] = useState(false)

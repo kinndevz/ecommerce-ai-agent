@@ -8,7 +8,12 @@ import {
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
-import { setAccessToken, clearAccessToken } from '@/api/services/token.service'
+import {
+  setAccessToken,
+  clearAccessToken,
+  hasAccessToken,
+} from '@/api/services/token.service'
+import { useNotificationStore } from '@/stores/useNotificationStore'
 import {
   authAPI,
   type ForgotPasswordRequest,
@@ -44,10 +49,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
 
+  const connectNotifications = () => {
+    useNotificationStore.getState().connect()
+  }
+
+  const resetNotifications = () => {
+    useNotificationStore.getState().reset()
+  }
+
   const fetchUser = useCallback(async () => {
     try {
       const userData = await authAPI.getProfile()
       setUser(userData)
+      if (hasAccessToken()) {
+        connectNotifications()
+      }
 
       if (import.meta.env.DEV) {
         console.log('[Auth] User fetched:', userData.email)
@@ -56,6 +72,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       console.error('[Auth] Failed to fetch user:', error)
       clearAccessToken()
       setUser(null)
+      resetNotifications()
     }
   }, [])
 
@@ -146,6 +163,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       clearAccessToken()
 
       setUser(null)
+      resetNotifications()
 
       navigate('/login')
 

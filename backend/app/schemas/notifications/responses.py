@@ -58,3 +58,20 @@ class MessageResponse(BaseModel):
 
     class Config(BaseConfig):
         pass
+
+
+class WsTicketData(BaseModel):
+    ticket: str
+    expires_at: datetime
+
+    class Config(BaseConfig):
+        pass
+
+
+class WsTicketResponse(BaseModel):
+    success: bool
+    message: str
+    data: WsTicketData
+
+    class Config(BaseConfig):
+        pass

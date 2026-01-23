@@ -95,6 +95,20 @@ def get_order_detail(
     return OrderService.get_order_detail(db, current_user.id, order_id)
 
 
+@router.get("/admin/{order_id}", response_model=APIResponse[OrderResponse])
+def get_order_detail_admin(
+    order_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permission())
+):
+    """
+    Get order detail (Admin)
+
+    Admin endpoint - Returns full order information
+    """
+    return OrderService.get_order_detail_admin(db, order_id)
+
+
 @router.patch("/{order_id}/cancel", response_model=APIResponse[OrderResponse])
 def cancel_order(
     order_id: str,

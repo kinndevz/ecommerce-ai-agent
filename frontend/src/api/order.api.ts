@@ -170,6 +170,19 @@ export const orderAPI = {
   },
 
   /**
+   * Get order detail (Admin)
+   * GET /orders/admin/{order_id}
+   */
+  getDetailAdmin: async (
+    orderId: string
+  ): Promise<ApiSuccessResponse<OrderDetail>> => {
+    const { data } = await api.get<ApiSuccessResponse<OrderDetail>>(
+      API_ENDPOINT.GET_ORDER_DETAIL_ADMIN(orderId)
+    )
+    return data
+  },
+
+  /**
    * Cancel order (Customer)
    * PATCH /orders/{order_id}/cancel
    */

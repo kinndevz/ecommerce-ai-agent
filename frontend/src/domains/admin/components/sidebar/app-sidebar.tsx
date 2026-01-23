@@ -4,6 +4,7 @@ import {
   IconHelp,
   IconLayoutDashboard,
   IconPackage,
+  IconBell,
   IconSearch,
   IconSettings,
   IconTruckDelivery,
@@ -51,6 +52,11 @@ const data = {
       title: 'Orders ',
       url: '/admin/orders',
       icon: IconTruckDelivery,
+    },
+    {
+      title: 'Notifications ',
+      url: '/admin/notifications',
+      icon: IconBell,
     },
     {
       title: 'Users ',
