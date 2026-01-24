@@ -4,15 +4,11 @@ import {
   Edit,
   Trash2,
   Package,
-  Image as ImageIcon,
   Layers,
-  ChevronLeft,
-  ChevronRight,
   ShoppingCart,
   Heart,
   Truck,
   DollarSign,
-  Home,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/shared/components/ui/button'
@@ -21,6 +17,16 @@ import { Card, CardContent } from '@/shared/components/ui/card'
 import { Separator } from '@/shared/components/ui/separator'
 import { cn } from '@/lib/utils'
 import { useProduct } from '@/hooks/useProducts'
+import {
+  formatProductDate,
+  getUniqueVariantColors,
+  getUniqueVariantSizes,
+  sortProductImages,
+} from '@/domains/admin/helpers/product.helpers'
+import { ProductPageHeader } from './ProductPageHeader'
+import { ProductDetailSkeleton } from './ProductDetailSkeleton'
+import { ProductNotFoundState } from './ProductNotFoundState'
+import { ProductImageGallery } from './ProductImageGallery'
 
 export function ViewProductUI() {
   const { id } = useParams<{ id: string }>()
@@ -31,32 +37,15 @@ export function ViewProductUI() {
   const { data: productData, isLoading } = useProduct(id!)
   const product = productData?.data
 
-  const images = useMemo(
-    () =>
-      product?.images?.sort((a, b) => a.display_order - b.display_order) || [],
+  const images = useMemo(() => sortProductImages(product?.images), [product])
+  const uniqueColors = useMemo(
+    () => getUniqueVariantColors(product?.variants),
     [product]
   )
-
-  const uniqueColors = useMemo(() => {
-    if (!product?.variants) return []
-    const map = new Map()
-    product.variants.forEach((v) => {
-      if (v.shade_name && !map.has(v.shade_name)) {
-        map.set(v.shade_name, v)
-      }
-    })
-    return Array.from(map.values())
-  }, [product])
-
-  const uniqueSizes = useMemo(() => {
-    if (!product?.variants) return []
-    const map = new Map()
-    product.variants.forEach((v) => {
-      const key = v.size && v.size_unit ? `${v.size}${v.size_unit}` : v.name
-      if (!map.has(key)) map.set(key, { ...v, label: key })
-    })
-    return Array.from(map.values())
-  }, [product])
+  const uniqueSizes = useMemo(
+    () => getUniqueVariantSizes(product?.variants),
+    [product]
+  )
 
   const handleVariantSelect = (variant: any) => {
     if (selectedVariant?.id === variant.id) {
@@ -76,13 +65,15 @@ export function ViewProductUI() {
     toast.error('Delete functionality not implemented yet')
   }
 
-  if (isLoading)
+  if (isLoading) return <ProductDetailSkeleton />
+  if (!product) {
     return (
-      <div className='flex items-center justify-center h-screen'>
-        <div className='w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin' />
-      </div>
+      <ProductNotFoundState
+        actionLabel='Back to Products'
+        onAction={() => navigate('/admin/products')}
+      />
     )
-  if (!product) return <div>Product not found</div>
+  }
 
   const currentPrice = selectedVariant?.price || product.price
   const currentStock = selectedVariant?.stock_quantity || product.stock_quantity
@@ -90,45 +81,33 @@ export function ViewProductUI() {
 
   return (
     <div className='min-h-screen p-6 font-sans'>
-      <div className='flex items-center justify-between mb-6'>
-        <div className='flex items-center gap-2 text-sm text-muted-foreground'>
-          <Button
-            variant='ghost'
-            size='icon'
-            className='h-8 w-8'
-            onClick={() => navigate('/admin')}
-          >
-            <Home className='w-4 h-4' />
-          </Button>
-          <ChevronRight className='w-4 h-4' />
-          <span
-            className='hover:text-foreground cursor-pointer transition-colors'
-            onClick={() => navigate('/admin/products')}
-          >
-            Products
-          </span>
-          <ChevronRight className='w-4 h-4' />
-          <span className='font-medium text-foreground'>Details</span>
-        </div>
-        <div className='flex items-center gap-2'>
-          <Button
-            variant='outline'
-            size='sm'
-            onClick={() => navigate(`/admin/products/${id}/edit`)}
-            className='bg-background'
-          >
-            <Edit className='w-4 h-4 mr-2' /> Edit
-          </Button>
-          <Button
-            variant='outline'
-            size='icon'
-            onClick={handleDelete}
-            className='bg-background text-destructive hover:bg-destructive/10 border-destructive/20'
-          >
-            <Trash2 className='w-4 h-4' />
-          </Button>
-        </div>
-      </div>
+      <ProductPageHeader
+        breadcrumbs={[
+          { label: 'Products', onClick: () => navigate('/admin/products') },
+          { label: 'Details' },
+        ]}
+        title={product.name}
+        actions={
+          <>
+            <Button
+              variant='outline'
+              size='sm'
+              onClick={() => navigate(`/admin/products/${id}/edit`)}
+              className='bg-background'
+            >
+              <Edit className='w-4 h-4 mr-2' /> Edit
+            </Button>
+            <Button
+              variant='outline'
+              size='icon'
+              onClick={handleDelete}
+              className='bg-background text-destructive hover:bg-destructive/10 border-destructive/20'
+            >
+              <Trash2 className='w-4 h-4' />
+            </Button>
+          </>
+        }
+      />
 
       <div className='mb-8'>
         <h1 className='text-3xl font-bold tracking-tight text-foreground mb-3'>
@@ -141,7 +120,7 @@ export function ViewProductUI() {
           </div>
           <div className='flex items-center gap-1.5'>
             <span className='font-semibold text-foreground'>Published:</span>
-            <span>{new Date(product.created_at).toLocaleDateString()}</span>
+            <span>{formatProductDate(product.created_at)}</span>
           </div>
           <div className='flex items-center gap-1.5'>
             <span className='font-semibold text-foreground'>SKU:</span>
@@ -156,59 +135,14 @@ export function ViewProductUI() {
       </div>
 
       <div className='grid grid-cols-12 gap-8 items-start'>
-        <div className='col-span-12 lg:col-span-5 sticky top-6 z-0'>
-          <div className='relative aspect-4/5 bg-background rounded-xl border border-border shadow-sm overflow-hidden group'>
-            {images.length > 0 ? (
-              <>
-                <img
-                  src={images[currentImageIndex]?.image_url}
-                  alt={product.name}
-                  className='w-full h-full object-cover'
-                />
-                {images.length > 1 && (
-                  <>
-                    <button
-                      onClick={handlePrevImage}
-                      className='absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-black p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity border'
-                    >
-                      <ChevronLeft className='w-5 h-5' />
-                    </button>
-                    <button
-                      onClick={handleNextImage}
-                      className='absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-black p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity border'
-                    >
-                      <ChevronRight className='w-5 h-5' />
-                    </button>
-                  </>
-                )}
-              </>
-            ) : (
-              <div className='flex items-center justify-center h-full text-muted-foreground'>
-                <ImageIcon className='w-16 h-16' />
-              </div>
-            )}
-          </div>
-          <div className='grid grid-cols-4 gap-4 mt-4'>
-            {images.map((image, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentImageIndex(index)}
-                className={cn(
-                  'aspect-square rounded-lg overflow-hidden border-2 bg-background transition-all',
-                  index === currentImageIndex
-                    ? 'border-primary ring-2 ring-primary/20'
-                    : 'border-transparent hover:border-border'
-                )}
-              >
-                <img
-                  src={image.image_url}
-                  alt='thumbnail'
-                  className='w-full h-full object-cover'
-                />
-              </button>
-            ))}
-          </div>
-        </div>
+        <ProductImageGallery
+          images={images}
+          currentIndex={currentImageIndex}
+          onSelect={setCurrentImageIndex}
+          onPrev={handlePrevImage}
+          onNext={handleNextImage}
+          productName={product.name}
+        />
 
         <div className='col-span-12 lg:col-span-7 space-y-8'>
           <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>

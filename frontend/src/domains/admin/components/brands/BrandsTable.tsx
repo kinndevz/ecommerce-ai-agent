@@ -1,15 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  Eye,
-  Edit,
-  Trash2,
-  MoreHorizontal,
   Globe,
   Package,
-  Plus,
-  XCircle,
-  CheckCircle,
 } from 'lucide-react'
 import {
   Table,
@@ -22,15 +15,11 @@ import {
 import { Button } from '@/shared/components/ui/button'
 import { Checkbox } from '@/shared/components/ui/checkbox'
 import { Badge } from '@/shared/components/ui/badge'
-import { Skeleton } from '@/shared/components/ui/skeleton'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/shared/components/ui/dropdown-menu'
 import type { Brand } from '@/api/brand.api'
+import { getBrandStatusBadgeClass } from '../../helpers/brand.helpers'
+import { BrandsTableSkeleton } from './BrandsTableSkeleton'
+import { BrandsEmptyState } from './BrandsEmptyState'
+import { BrandActionsMenu } from './BrandActionsMenu'
 
 interface BrandsTableProps {
   brands: Brand[]
@@ -67,29 +56,11 @@ export function BrandsTable({
   }
 
   if (isLoading) {
-    return (
-      <div className='space-y-3'>
-        {[...Array(5)].map((_, i) => (
-          <Skeleton key={i} className='h-16 w-full' />
-        ))}
-      </div>
-    )
+    return <BrandsTableSkeleton />
   }
 
   if (brands.length === 0) {
-    return (
-      <div className='text-center py-12 border border-dashed rounded-lg'>
-        <Package className='w-12 h-12 mx-auto text-muted-foreground mb-3' />
-        <h3 className='text-lg font-semibold mb-1'>No brands found</h3>
-        <p className='text-sm text-muted-foreground mb-4'>
-          Get started by creating your first brand
-        </p>
-        <Button onClick={() => navigate('/admin/brands/add')}>
-          <Plus className='w-4 h-4 mr-2' />
-          Add Brand
-        </Button>
-      </div>
-    )
+    return <BrandsEmptyState onCreate={() => navigate('/admin/brands/add')} />
   }
 
   return (
@@ -177,11 +148,7 @@ export function BrandsTable({
                 <TableCell>
                   <Badge
                     variant='outline'
-                    className={
-                      brand.is_active
-                        ? 'bg-green-500/10 text-green-600 border-green-500/20'
-                        : 'bg-gray-500/10 text-gray-600 border-gray-500/20'
-                    }
+                    className={getBrandStatusBadgeClass(brand.is_active)}
                   >
                     {brand.is_active ? 'Active' : 'Inactive'}
                   </Badge>
@@ -194,51 +161,11 @@ export function BrandsTable({
 
                 {/* Actions */}
                 <TableCell className='text-right'>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant='ghost' size='icon' className='h-8 w-8'>
-                        <MoreHorizontal className='h-4 w-4' />
-                        <span className='sr-only'>Open menu</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align='end'>
-                      <DropdownMenuItem
-                        onClick={() => navigate(`/admin/brands/${brand.id}`)}
-                      >
-                        <Eye className='w-4 h-4 mr-2' />
-                        View Details
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() =>
-                          navigate(`/admin/brands/${brand.id}/edit`)
-                        }
-                      >
-                        <Edit className='w-4 h-4 mr-2' />
-                        Edit Brand
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => onToggleStatus(brand)}>
-                        {brand.is_active ? (
-                          <>
-                            <XCircle className='w-4 h-4 mr-2' />
-                            Deactivate
-                          </>
-                        ) : (
-                          <>
-                            <CheckCircle className='w-4 h-4 mr-2' />
-                            Activate
-                          </>
-                        )}
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        className='text-destructive'
-                        onClick={() => onDelete(brand)}
-                      >
-                        <Trash2 className='w-4 h-4 mr-2' />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <BrandActionsMenu
+                    brand={brand}
+                    onToggleStatus={onToggleStatus}
+                    onDelete={onDelete}
+                  />
                 </TableCell>
               </TableRow>
             ))}

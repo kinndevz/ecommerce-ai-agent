@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { type UseFormReturn, useFieldArray } from 'react-hook-form'
 import {
   Plus,
@@ -44,6 +44,11 @@ import { ProfessionalEditor } from './RichTextEditor'
 import { ImageUploadSection } from './ImageUploadSection'
 import { ColorPicker } from './ColorPicker'
 import { useTags } from '@/hooks/useTags'
+import {
+  flattenCategoryOptions,
+  generateProductSlug,
+  generateProductSku,
+} from '@/domains/admin/helpers/product.helpers'
 
 interface ProductFormProps {
   form: UseFormReturn<any>
@@ -80,29 +85,10 @@ export function ProductForm({
   const nameValue = form.watch('name')
   useEffect(() => {
     if (mode === 'create' && nameValue && !form.getValues('slug')) {
-      const slug = generateSlug(nameValue)
+      const slug = generateProductSlug(nameValue)
       form.setValue('slug', slug, { shouldValidate: true })
     }
   }, [nameValue, form, mode])
-
-  // Generate slug helper
-  const generateSlug = (text: string) => {
-    return text
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/đ/g, 'd')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '')
-  }
-
-  // Generate SKU helper
-  const generateSKU = () => {
-    const prefix = 'PRD'
-    const timestamp = Date.now().toString().slice(-6)
-    const random = Math.random().toString(36).substring(2, 5).toUpperCase()
-    return `${prefix}-${timestamp}-${random}`
-  }
 
   // Manual slug generation
   const handleGenerateSlug = () => {
@@ -111,14 +97,14 @@ export function ProductForm({
       toast.error('Please enter product name first')
       return
     }
-    const slug = generateSlug(name)
+    const slug = generateProductSlug(name)
     form.setValue('slug', slug, { shouldValidate: true })
     toast.success('Slug generated!')
   }
 
   // Manual SKU generation
   const handleGenerateSKU = () => {
-    const sku = generateSKU()
+    const sku = generateProductSku()
     form.setValue('sku', sku, { shouldValidate: true })
     toast.success('SKU generated!')
   }
@@ -130,19 +116,10 @@ export function ProductForm({
       ? (((price - salePrice) / price) * 100).toFixed(1)
       : 0
 
-  // Flatten categories for select
-  const flattenCategories = (cats: any[], level = 0): any[] => {
-    let result: any[] = []
-    cats.forEach((cat) => {
-      result.push({ ...cat, level })
-      if (cat.children && cat.children.length > 0) {
-        result = [...result, ...flattenCategories(cat.children, level + 1)]
-      }
-    })
-    return result
-  }
-
-  const flatCategories = flattenCategories(categories)
+  const flatCategories = useMemo(
+    () => flattenCategoryOptions(categories),
+    [categories]
+  )
 
   return (
     <Form {...form}>
@@ -776,9 +753,7 @@ export function ProductForm({
                         <SelectContent>
                           {flatCategories.map((cat) => (
                             <SelectItem key={cat.id} value={cat.id}>
-                              <span
-                                style={{ paddingLeft: `${cat.level * 12}px` }}
-                              >
+                              <span style={{ paddingLeft: `${cat.level * 12}px` }}>
                                 {cat.level > 0 && '└─ '}
                                 {cat.name}
                               </span>

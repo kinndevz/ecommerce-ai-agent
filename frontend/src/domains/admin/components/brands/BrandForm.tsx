@@ -26,6 +26,7 @@ import {
 import { toast } from 'sonner'
 import { LogoUploadSection } from './LogoUploadSection'
 import type { Brand } from '@/api/brand.api'
+import { BRAND_COUNTRIES, generateBrandSlug } from '../../helpers/brand.helpers'
 
 // Validation Schema
 const brandFormSchema = z.object({
@@ -54,24 +55,6 @@ interface BrandFormProps {
   isSubmitting: boolean
 }
 
-// Popular countries for cosmetics brands
-const COUNTRIES = [
-  'France',
-  'USA',
-  'South Korea',
-  'Japan',
-  'Germany',
-  'UK',
-  'Italy',
-  'Canada',
-  'Australia',
-  'Sweden',
-  'Switzerland',
-  'Taiwan',
-  'Thailand',
-  'Vietnam',
-]
-
 export function BrandForm({
   initialData,
   onSubmit,
@@ -98,21 +81,10 @@ export function BrandForm({
   const nameValue = form.watch('name')
   useEffect(() => {
     if (nameValue && !initialData && !form.getValues('slug')) {
-      const slug = generateSlug(nameValue)
+      const slug = generateBrandSlug(nameValue)
       form.setValue('slug', slug, { shouldValidate: true })
     }
   }, [nameValue, form, initialData])
-
-  // Generate slug helper
-  const generateSlug = (text: string) => {
-    return text
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/đ/g, 'd')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '')
-  }
 
   // Manual slug generation
   const handleGenerateSlug = () => {
@@ -121,7 +93,7 @@ export function BrandForm({
       toast.error('Please enter brand name first')
       return
     }
-    const slug = generateSlug(name)
+    const slug = generateBrandSlug(name)
     form.setValue('slug', slug, { shouldValidate: true })
     toast.success('Slug generated!')
   }
@@ -227,7 +199,7 @@ export function BrandForm({
                 </FormControl>
                 <SelectContent>
                   <SelectItem value='none'>None</SelectItem>
-                  {COUNTRIES.map((country) => (
+                  {BRAND_COUNTRIES.map((country) => (
                     <SelectItem key={country} value={country}>
                       {country}
                     </SelectItem>

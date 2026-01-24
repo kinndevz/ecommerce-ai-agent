@@ -1,16 +1,8 @@
 import { useState } from 'react'
-import {
-  Lock,
-  MoreHorizontal,
-  Edit,
-  Trash2,
-  Columns,
-  Loader2,
-} from 'lucide-react'
+import { Columns, Loader2 } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import { Badge } from '@/shared/components/ui/badge'
 import { Checkbox } from '@/shared/components/ui/checkbox'
-import { Skeleton } from '@/shared/components/ui/skeleton'
 import {
   Table,
   TableBody,
@@ -22,19 +14,16 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
   DropdownMenuCheckboxItem,
 } from '@/shared/components/ui/dropdown-menu'
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-} from 'lucide-react'
 import type { PermissionData } from '@/api/permission.api'
 import { HTTP_METHOD_CONFIG } from '@/api/services/http-method.constants'
+import { PermissionsTableSkeleton } from './PermissionsTableSkeleton'
+import { PermissionsEmptyState } from './PermissionsEmptyState'
+import { PermissionsPaginationBar } from './PermissionsPaginationBar'
+import { PermissionsActionsMenu } from './PermissionsActionsMenu'
+import { formatRoleDate } from '@/domains/admin/helpers/role.helpers'
 
 interface PermissionsTableProps {
   permissions: PermissionData[]
@@ -105,13 +94,7 @@ export function PermissionsTable({
 
   // Initial loading - show skeletons
   if (isLoading && !isFetching) {
-    return (
-      <div className='space-y-3'>
-        {[...Array(10)].map((_, i) => (
-          <Skeleton key={i} className='h-16 w-full' />
-        ))}
-      </div>
-    )
+    return <PermissionsTableSkeleton />
   }
 
   return (
@@ -190,19 +173,7 @@ export function PermissionsTable({
           </TableHeader>
           <TableBody>
             {permissions.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={COLUMNS.length + 2}
-                  className='h-24 text-center'
-                >
-                  <div className='flex flex-col items-center justify-center py-8'>
-                    <Lock className='h-12 w-12 text-muted-foreground/50 mb-2' />
-                    <p className='text-muted-foreground'>
-                      No permissions found
-                    </p>
-                  </div>
-                </TableCell>
-              </TableRow>
+              <PermissionsEmptyState colSpan={COLUMNS.length + 2} />
             ) : (
               permissions.map((permission) => {
                 const isSelected = selectedRows.has(permission.id)
@@ -275,34 +246,12 @@ export function PermissionsTable({
 
                     {visibleColumns.created && (
                       <TableCell className='text-sm text-muted-foreground'>
-                        {new Date(permission.created_at).toLocaleDateString()}
+                        {formatRoleDate(permission.created_at)}
                       </TableCell>
                     )}
 
                     <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant='ghost'
-                            size='icon'
-                            className='h-8 w-8'
-                          >
-                            <MoreHorizontal className='h-4 w-4' />
-                            <span className='sr-only'>Open menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align='end'>
-                          <DropdownMenuItem>
-                            <Edit className='mr-2 h-4 w-4' />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem className='text-destructive'>
-                            <Trash2 className='mr-2 h-4 w-4' />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <PermissionsActionsMenu />
                     </TableCell>
                   </TableRow>
                 )
@@ -312,83 +261,11 @@ export function PermissionsTable({
         </Table>
       </div>
 
-      {/* Pagination */}
-      <div className='flex items-center justify-between'>
-        <p className='text-sm text-muted-foreground'>
-          Page {page} of {totalPages}
-        </p>
-
-        <div className='flex items-center gap-2'>
-          <Button
-            variant='outline'
-            size='icon'
-            className='h-8 w-8'
-            onClick={() => onPageChange(1)}
-            disabled={page === 1}
-          >
-            <ChevronsLeft className='h-4 w-4' />
-            <span className='sr-only'>First page</span>
-          </Button>
-          <Button
-            variant='outline'
-            size='icon'
-            className='h-8 w-8'
-            onClick={() => onPageChange(page - 1)}
-            disabled={page === 1}
-          >
-            <ChevronLeft className='h-4 w-4' />
-            <span className='sr-only'>Previous page</span>
-          </Button>
-
-          <div className='flex items-center gap-1'>
-            {[...Array(Math.min(5, totalPages))].map((_, i) => {
-              let pageNum: number
-              if (totalPages <= 5) {
-                pageNum = i + 1
-              } else if (page <= 3) {
-                pageNum = i + 1
-              } else if (page >= totalPages - 2) {
-                pageNum = totalPages - 4 + i
-              } else {
-                pageNum = page - 2 + i
-              }
-
-              return (
-                <Button
-                  key={i}
-                  variant={page === pageNum ? 'default' : 'outline'}
-                  size='icon'
-                  className='h-8 w-8'
-                  onClick={() => onPageChange(pageNum)}
-                >
-                  {pageNum}
-                </Button>
-              )
-            })}
-          </div>
-
-          <Button
-            variant='outline'
-            size='icon'
-            className='h-8 w-8'
-            onClick={() => onPageChange(page + 1)}
-            disabled={page === totalPages}
-          >
-            <ChevronRight className='h-4 w-4' />
-            <span className='sr-only'>Next page</span>
-          </Button>
-          <Button
-            variant='outline'
-            size='icon'
-            className='h-8 w-8'
-            onClick={() => onPageChange(totalPages)}
-            disabled={page === totalPages}
-          >
-            <ChevronsRight className='h-4 w-4' />
-            <span className='sr-only'>Last page</span>
-          </Button>
-        </div>
-      </div>
+      <PermissionsPaginationBar
+        page={page}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
+      />
     </div>
   )
 }

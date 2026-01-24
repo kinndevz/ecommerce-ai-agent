@@ -2,6 +2,7 @@ import { ShoppingCart, Package, CheckCircle, Landmark } from 'lucide-react'
 import { Card, CardContent } from '@/shared/components/ui/card'
 import { Skeleton } from '@/shared/components/ui/skeleton'
 import { useOrderStats } from '@/hooks/useOrders'
+import { formatVndCurrency } from '@/domains/admin/helpers/order.helpers'
 
 export function OrderStatsCards() {
   const { data: stats, isLoading } = useOrderStats()
@@ -26,17 +27,10 @@ export function OrderStatsCards() {
 
   if (!stats) return null
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-    }).format(amount)
-  }
-
   const cards = [
     {
       title: 'Total Revenue',
-      value: formatCurrency(stats.total_revenue),
+      value: formatVndCurrency(stats.total_revenue),
       description: 'Awaiting confirmation',
       icon: Landmark,
       color: 'text-orange-600',

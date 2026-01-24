@@ -2,7 +2,6 @@ import { useState, useRef } from 'react'
 import {
   Upload,
   Loader2,
-  Image as ImageIcon,
   Camera,
   Trash2,
 } from 'lucide-react'

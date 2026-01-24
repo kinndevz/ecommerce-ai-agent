@@ -24,6 +24,7 @@ import { useProductStats } from '@/hooks/useProducts'
 import { cn } from '@/lib/utils'
 import { Button } from '@/shared/components/ui/button'
 import { Badge } from '@/shared/components/ui/badge'
+import { formatUsdPrice } from '@/domains/admin/helpers/product.helpers'
 
 export function ProductsStats() {
   const { data, isLoading } = useProductStats()
@@ -53,15 +54,6 @@ export function ProductsStats() {
     return null
   }
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price)
-  }
-
   const statCards = [
     {
       title: 'Total Products',
@@ -81,7 +73,7 @@ export function ProductsStats() {
     },
     {
       title: 'Avg. Price',
-      value: formatPrice(stats.average_price),
+      value: formatUsdPrice(stats.average_price),
       change: '+3.1%',
       isPositive: true,
       icon: DollarSign,

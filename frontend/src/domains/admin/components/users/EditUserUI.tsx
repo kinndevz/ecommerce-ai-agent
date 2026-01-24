@@ -3,18 +3,15 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
-  Home,
-  ChevronRight,
   Loader2,
   Mail,
   User,
   Phone,
   Shield,
   CheckCircle2,
-  Ban,
-  AlertCircle,
   Save,
   X,
+  AlertCircle,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import * as z from 'zod'
@@ -37,18 +34,24 @@ import {
 } from '@/shared/components/ui/select'
 import { Card } from '@/shared/components/ui/card'
 import { Separator } from '@/shared/components/ui/separator'
-import { Skeleton } from '@/shared/components/ui/skeleton'
 import { useUser, useUpdateUser } from '@/hooks/useUsers'
 import { useActiveRoles } from '@/hooks/useRoles'
 import type { UpdateUserRequest } from '@/api/user.api'
 import { AvatarUploadSection } from '@/domains/admin/components/users/AvatarUploadSection'
-import { USER_STATUS, USER_STATUS_CONFIG } from '@/api/services/user.constants'
+import { UserPageHeader } from './UserPageHeader'
+import { UserFormSkeleton } from './UserFormSkeleton'
+import { UserNotFoundState } from './UserNotFoundState'
+import { UserInfoRow } from './UserInfoRow'
+import {
+  formatUserDate,
+  getUserStatusConfig,
+} from '@/domains/admin/helpers/user.helpers'
 
 // ===== VALIDATION SCHEMA =====
 const editUserFormSchema = z.object({
   full_name: z.string().min(2, 'Name must be at least 2 characters'),
   phone_number: z.string().optional().nullable(),
-  avatar: z.string().url().optional().nullable(),
+  avatar: z.url().optional().nullable(),
   role_id: z.string().optional(), // Optional - only send if changed
 })
 
@@ -131,24 +134,18 @@ export function EditUserUI() {
 
   // ===== LOADING STATE =====
   if (loadingUser || loadingRoles) {
-    return <LoadingSkeleton />
+    return <UserFormSkeleton />
   }
 
   // ===== NOT FOUND =====
   if (!user) {
     return (
-      <div className='flex items-center justify-center min-h-screen'>
-        <div className='text-center space-y-4'>
-          <AlertCircle className='w-16 h-16 text-muted-foreground mx-auto' />
-          <h2 className='text-2xl font-semibold'>User Not Found</h2>
-          <p className='text-muted-foreground'>
-            The user you're trying to edit doesn't exist.
-          </p>
-          <Button onClick={() => navigate('/admin/users')} variant='outline'>
-            Back to Users
-          </Button>
-        </div>
-      </div>
+      <UserNotFoundState
+        title='User Not Found'
+        description="The user you're trying to edit doesn't exist."
+        actionLabel='Back to Users'
+        onAction={() => navigate('/admin/users')}
+      />
     )
   }
 
@@ -157,74 +154,46 @@ export function EditUserUI() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='min-h-screen'>
         {/* ===== STICKY HEADER ===== */}
-        <div className='sticky top-0 z-20 bg-background/95 backdrop-blur border-b shadow-sm'>
-          <div className='max-w-7xl mx-auto px-6 py-4'>
-            {/* Breadcrumb */}
-            <div className='flex items-center gap-2 text-sm text-muted-foreground mb-3'>
-              <Home className='w-4 h-4' />
-              <ChevronRight className='w-4 h-4' />
-              <button
+        <UserPageHeader
+          breadcrumbs={[
+            { label: 'Users', onClick: () => navigate('/admin/users') },
+            { label: user.full_name, onClick: () => navigate(`/admin/users/${id}`) },
+            { label: 'Edit' },
+          ]}
+          title='Edit User'
+          subtitle='Update user information and permissions'
+          icon={<Shield className='w-6 h-6 text-primary' />}
+          actions={
+            <>
+              <Button
                 type='button'
-                onClick={() => navigate('/admin/users')}
-                className='hover:text-foreground transition-colors'
+                variant='outline'
+                onClick={handleCancel}
+                disabled={updateUser.isPending}
               >
-                Users
-              </button>
-              <ChevronRight className='w-4 h-4' />
-              <button
-                type='button'
-                onClick={() => navigate(`/admin/users/${id}`)}
-                className='hover:text-foreground transition-colors'
+                <X className='w-4 h-4 mr-2' />
+                Cancel
+              </Button>
+              <Button
+                type='submit'
+                disabled={updateUser.isPending || !form.formState.isDirty}
+                className='min-w-32'
               >
-                {user.full_name}
-              </button>
-              <ChevronRight className='w-4 h-4' />
-              <span className='text-foreground font-medium'>Edit</span>
-            </div>
-
-            {/* Header Actions */}
-            <div className='flex items-center justify-between'>
-              <div>
-                <h1 className='text-2xl font-bold tracking-tight flex items-center gap-2'>
-                  <Shield className='w-6 h-6 text-primary' />
-                  Edit User
-                </h1>
-                <p className='text-sm text-muted-foreground mt-1'>
-                  Update user information and permissions
-                </p>
-              </div>
-
-              <div className='flex items-center gap-2'>
-                <Button
-                  type='button'
-                  variant='outline'
-                  onClick={handleCancel}
-                  disabled={updateUser.isPending}
-                >
-                  <X className='w-4 h-4 mr-2' />
-                  Cancel
-                </Button>
-                <Button
-                  type='submit'
-                  disabled={updateUser.isPending || !form.formState.isDirty}
-                  className='min-w-32'
-                >
-                  {updateUser.isPending ? (
-                    <>
-                      <Loader2 className='w-4 h-4 animate-spin mr-2' />
-                      Saving...
-                    </>
-                  ) : (
-                    <>
-                      <Save className='w-4 h-4 mr-2' />
-                      Save Changes
-                    </>
-                  )}
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
+                {updateUser.isPending ? (
+                  <>
+                    <Loader2 className='w-4 h-4 animate-spin mr-2' />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className='w-4 h-4 mr-2' />
+                    Save Changes
+                  </>
+                )}
+              </Button>
+            </>
+          }
+        />
 
         {/* ===== FORM CONTENT ===== */}
         <div className='max-w-7xl mx-auto px-6 py-8'>
@@ -257,21 +226,19 @@ export function EditUserUI() {
                       Account Status
                     </h3>
                     <div className='space-y-2'>
-                      <InfoItem
+                      <UserInfoRow
                         label='Status'
                         value={
                           <span
                             className={`px-2 py-1 rounded text-xs font-medium ${
-                              USER_STATUS_CONFIG[user.status]?.className ||
-                              'bg-gray-100 text-gray-800'
+                              getUserStatusConfig(user.status).className
                             }`}
                           >
-                            {USER_STATUS_CONFIG[user.status]?.label ||
-                              user.status}
+                            {getUserStatusConfig(user.status).label}
                           </span>
                         }
                       />
-                      <InfoItem
+                      <UserInfoRow
                         label='2FA'
                         value={
                           user.is_2fa_enabled ? (
@@ -285,9 +252,9 @@ export function EditUserUI() {
                           )
                         }
                       />
-                      <InfoItem
+                      <UserInfoRow
                         label='Created'
-                        value={new Date(user.created_at).toLocaleDateString()}
+                        value={formatUserDate(user.created_at)}
                       />
                     </div>
                   </div>
@@ -443,61 +410,3 @@ export function EditUserUI() {
   )
 }
 
-// ===== HELPER COMPONENTS =====
-interface InfoItemProps {
-  label: string
-  value: React.ReactNode
-}
-
-function InfoItem({ label, value }: InfoItemProps) {
-  return (
-    <div className='flex justify-between items-center text-sm'>
-      <span className='text-muted-foreground'>{label}:</span>
-      <span className='font-medium'>{value}</span>
-    </div>
-  )
-}
-
-function LoadingSkeleton() {
-  return (
-    <div className='min-h-screen'>
-      <div className='sticky top-0 z-20 bg-background border-b'>
-        <div className='max-w-7xl mx-auto px-6 py-4'>
-          <Skeleton className='h-4 w-64 mb-3' />
-          <div className='flex items-center justify-between'>
-            <div className='space-y-2'>
-              <Skeleton className='h-8 w-48' />
-              <Skeleton className='h-4 w-72' />
-            </div>
-            <div className='flex gap-2'>
-              <Skeleton className='h-10 w-24' />
-              <Skeleton className='h-10 w-32' />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className='max-w-7xl mx-auto px-6 py-8'>
-        <Card className='overflow-hidden'>
-          <div className='grid grid-cols-1 md:grid-cols-12'>
-            <div className='md:col-span-4 border-r p-8'>
-              <div className='flex flex-col items-center gap-4'>
-                <Skeleton className='w-32 h-32 rounded-full' />
-                <Skeleton className='h-5 w-32' />
-                <Skeleton className='h-4 w-40' />
-              </div>
-            </div>
-            <div className='md:col-span-8 p-8 space-y-6'>
-              <Skeleton className='h-6 w-48' />
-              <div className='space-y-4'>
-                <Skeleton className='h-10 w-full' />
-                <Skeleton className='h-10 w-full' />
-                <Skeleton className='h-10 w-full' />
-              </div>
-            </div>
-          </div>
-        </Card>
-      </div>
-    </div>
-  )
-}

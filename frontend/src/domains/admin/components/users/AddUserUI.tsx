@@ -5,8 +5,6 @@ import { useNavigate } from 'react-router-dom'
 import {
   ArrowLeft,
   UserPlus,
-  Home,
-  ChevronRight,
   Loader2,
   Mail,
   User,
@@ -51,6 +49,7 @@ import {
 } from '@/api/services/user.constants'
 import type { UserStatus } from '@/api/services/constants'
 import { Badge } from '@/shared/components/ui/badge'
+import { UserPageHeader } from './UserPageHeader'
 
 const userFormSchema = z.object({
   email: z.email('Invalid email address'),
@@ -115,82 +114,59 @@ export default function AddUserUI() {
           onSubmit={form.handleSubmit(onSubmit)}
           className='min-h-screen pb-20'
         >
-          <div className='sticky top-0 z-20 bg-background/95 backdrop-blur border-b shadow-sm'>
-            <div className='max-w-7xl mx-auto px-6 py-4'>
-              <div className='flex items-center gap-2 text-sm text-muted-foreground mb-3'>
-                <Home className='w-4 h-4' />
-                <ChevronRight className='w-4 h-4' />
-                <button
+          <UserPageHeader
+            breadcrumbs={[
+              { label: 'Users', onClick: () => navigate('/admin/users') },
+              { label: 'Add New User' },
+            ]}
+            title='Create New User'
+            subtitle='Onboard a new member to the platform'
+            meta={
+              <Badge variant='secondary' className='ml-2'>
+                <UserPlus className='w-3 h-3 mr-1' />
+                New
+              </Badge>
+            }
+            actions={
+              <>
+                <Button
+                  variant='ghost'
+                  size='icon'
                   type='button'
                   onClick={() => navigate('/admin/users')}
-                  className='hover:text-foreground transition-colors'
+                  className='rounded-full'
                 >
-                  Users
-                </button>
-                <ChevronRight className='w-4 h-4' />
-                <span className='text-foreground font-medium'>
-                  Add New User
-                </span>
-              </div>
-
-              <div className='flex items-center justify-between'>
-                <div className='flex items-center gap-4'>
-                  <Button
-                    variant='ghost'
-                    size='icon'
-                    type='button'
-                    onClick={() => navigate('/admin/users')}
-                    className='rounded-full'
-                  >
-                    <ArrowLeft className='w-5 h-5' />
-                  </Button>
-                  <div>
-                    <h1 className='text-2xl font-bold tracking-tight'>
-                      Create New User
-                    </h1>
-                    <div className='flex items-center gap-2 mt-1'>
-                      <p className='text-sm text-muted-foreground'>
-                        Onboard a new member to the platform
-                      </p>
-                      <Badge variant='secondary' className='ml-2'>
-                        <UserPlus className='w-3 h-3 mr-1' />
-                        New
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-
-                <div className='flex items-center gap-3'>
-                  <Button
-                    variant='outline'
-                    type='button'
-                    onClick={() => navigate('/admin/users')}
-                    className='gap-2'
-                  >
-                    <X className='w-4 h-4' />
-                    Discard
-                  </Button>
-                  <Button
-                    type='submit'
-                    disabled={createUser.isPending}
-                    className='gap-2 min-w-35'
-                  >
-                    {createUser.isPending ? (
-                      <>
-                        <Loader2 className='w-4 h-4 animate-spin' />
-                        Creating...
-                      </>
-                    ) : (
-                      <>
-                        <UserPlus className='w-4 h-4' />
-                        Create User
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
+                  <ArrowLeft className='w-5 h-5' />
+                </Button>
+                <Button
+                  variant='outline'
+                  type='button'
+                  onClick={() => navigate('/admin/users')}
+                  className='gap-2'
+                >
+                  <X className='w-4 h-4' />
+                  Discard
+                </Button>
+                <Button
+                  type='submit'
+                  disabled={createUser.isPending}
+                  className='gap-2 min-w-35'
+                >
+                  {createUser.isPending ? (
+                    <>
+                      <Loader2 className='w-4 h-4 animate-spin' />
+                      Creating...
+                    </>
+                  ) : (
+                    <>
+                      <UserPlus className='w-4 h-4' />
+                      Create User
+                    </>
+                  )}
+                </Button>
+              </>
+            }
+          />
 
           <div className='max-w-7xl mx-auto px-6 py-8'>
             <Card className='overflow-hidden border shadow-sm'>

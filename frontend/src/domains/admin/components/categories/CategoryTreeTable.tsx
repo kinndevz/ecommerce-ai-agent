@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import type { MouseEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   ChevronRight,
@@ -6,7 +7,6 @@ import {
   Eye,
   Edit,
   Trash2,
-  MoreVertical,
   FolderTree,
   Image as ImageIcon,
   Package,
@@ -32,6 +32,7 @@ import {
 } from '@/shared/components/ui/tooltip'
 import { useToggleCategoryStatus } from '@/hooks/useCategories'
 import type { Category } from '@/api/category.api'
+import { buildCategoryTree, type CategoryTreeNode } from '../../helpers/category.helpers'
 
 interface CategoryTreeTableProps {
   categories: Category[]
@@ -48,21 +49,7 @@ export function CategoryTreeTable({
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
   const toggleStatus = useToggleCategoryStatus()
 
-  // Build tree structure from flat list
-  const buildTree = (
-    items: Category[],
-    parentId: string | null = null
-  ): Category[] => {
-    return items
-      .filter((item) => item.parent_id === parentId)
-      .sort((a, b) => a.display_order - b.display_order)
-      .map((item) => ({
-        ...item,
-        children: buildTree(items, item.id),
-      })) as any
-  }
-
-  const tree = buildTree(categories)
+  const tree = useMemo(() => buildCategoryTree(categories), [categories])
 
   const toggleExpand = (id: string) => {
     setExpandedIds((prev) => {
@@ -78,9 +65,9 @@ export function CategoryTreeTable({
 
   const expandAll = () => {
     const allIds = new Set<string>()
-    const collectIds = (items: any[]) => {
+    const collectIds = (items: CategoryTreeNode[]) => {
       items.forEach((item) => {
-        if (item.children && item.children.length > 0) {
+        if (item.children?.length) {
           allIds.add(item.id)
           collectIds(item.children)
         }
@@ -94,7 +81,7 @@ export function CategoryTreeTable({
     setExpandedIds(new Set())
   }
 
-  const handleToggleStatus = (id: string, e: React.MouseEvent) => {
+  const handleToggleStatus = (id: string, e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     toggleStatus.mutate(id)
   }
@@ -181,17 +168,17 @@ export function CategoryTreeTable({
 
       {/* Table Body */}
       <div className='divide-y divide-border/50'>
-        {tree.map((category, index) => (
+        {tree.map((category) => (
           <CategoryRow
             key={category.id}
             category={category}
             level={0}
-            index={index}
             expandedIds={expandedIds}
             onToggleExpand={toggleExpand}
             onToggleStatus={handleToggleStatus}
             onDelete={onDelete}
-            navigate={navigate}
+            onView={(categoryId) => navigate(`/admin/categories/${categoryId}`)}
+            onEdit={(categoryId) => navigate(`/admin/categories/${categoryId}/edit`)}
           />
         ))}
       </div>
@@ -200,27 +187,27 @@ export function CategoryTreeTable({
 }
 
 interface CategoryRowProps {
-  category: Category & { children?: Category[] }
+  category: CategoryTreeNode
   level: number
-  index: number
   expandedIds: Set<string>
   onToggleExpand: (id: string) => void
-  onToggleStatus: (id: string, e: React.MouseEvent) => void
+  onToggleStatus: (id: string, e: MouseEvent<HTMLButtonElement>) => void
   onDelete: (category: Category) => void
-  navigate: any
+  onView: (id: string) => void
+  onEdit: (id: string) => void
 }
 
 function CategoryRow({
   category,
   level,
-  index,
   expandedIds,
   onToggleExpand,
   onToggleStatus,
   onDelete,
-  navigate,
+  onView,
+  onEdit,
 }: CategoryRowProps) {
-  const hasChildren = category.children && category.children.length > 0
+  const hasChildren = Boolean(category.children?.length)
   const isExpanded = expandedIds.has(category.id)
 
   return (
@@ -266,7 +253,7 @@ function CategoryRow({
 
           {/* Category Name */}
           <button
-            onClick={() => navigate(`/admin/categories/${category.id}`)}
+            onClick={() => onView(category.id)}
             className='font-medium hover:text-primary transition-colors text-left flex items-center gap-2 min-w-0 flex-1 group/name'
           >
             <span className='truncate'>{category.name}</span>
@@ -391,16 +378,14 @@ function CategoryRow({
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end' className='w-48'>
               <DropdownMenuItem
-                onClick={() => navigate(`/admin/categories/${category.id}`)}
+                onClick={() => onView(category.id)}
                 className='gap-2 cursor-pointer'
               >
                 <Eye className='w-4 h-4' />
                 <span>View Details</span>
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() =>
-                  navigate(`/admin/categories/${category.id}/edit`)
-                }
+                onClick={() => onEdit(category.id)}
                 className='gap-2 cursor-pointer'
               >
                 <Edit className='w-4 h-4' />
@@ -430,12 +415,12 @@ function CategoryRow({
               key={child.id}
               category={child}
               level={level + 1}
-              index={childIndex}
               expandedIds={expandedIds}
               onToggleExpand={onToggleExpand}
               onToggleStatus={onToggleStatus}
               onDelete={onDelete}
-              navigate={navigate}
+              onView={onView}
+              onEdit={onEdit}
             />
           ))}
         </div>

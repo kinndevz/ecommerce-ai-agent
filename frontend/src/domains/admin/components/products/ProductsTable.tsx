@@ -1,19 +1,11 @@
 import { useState } from 'react'
 import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
   Columns,
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
   Loader2,
   Star,
-  MoreHorizontal,
-  Eye,
-  Edit,
-  Trash2,
 } from 'lucide-react'
 import {
   Table,
@@ -30,13 +22,18 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
 } from '@/shared/components/ui/dropdown-menu'
-import { Skeleton } from '@/shared/components/ui/skeleton'
 import { Badge } from '@/shared/components/ui/badge'
 import type { ProductListItem } from '@/api/product.api'
-import { useNavigate } from 'react-router-dom'
+import {
+  formatVndPrice,
+  getAvailabilityBadgeClass,
+  getStockTextClass,
+} from '@/domains/admin/helpers/product.helpers'
+import { ProductsTableSkeleton } from './ProductsTableSkeleton'
+import { ProductsEmptyState } from './ProductsEmptyState'
+import { ProductsPaginationBar } from './ProductsPaginationBar'
+import { ProductActionsMenu } from './ProductActionsMenu'
 
 interface ProductsTableProps {
   products: ProductListItem[]
@@ -82,8 +79,6 @@ export function ProductsTable({
       {} as Record<string, boolean>
     )
   )
-  const navigate = useNavigate()
-
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
       setSelectedRows(new Set(products.map((p) => p.id)))
@@ -125,24 +120,17 @@ export function ProductsTable({
     )
   }
 
-  const formatPrice = (price: number) => {
-    const formattedNumber = new Intl.NumberFormat('vi-VN').format(price)
-    return `${formattedNumber} đ`
-  }
-
   const allSelected =
     products.length > 0 && selectedRows.size === products.length
   const someSelected = selectedRows.size > 0 && !allSelected
 
   // Initial loading - show skeletons
   if (isLoading && !isFetching) {
-    return (
-      <div className='space-y-3'>
-        {[...Array(10)].map((_, i) => (
-          <Skeleton key={i} className='h-16 w-full' />
-        ))}
-      </div>
-    )
+    return <ProductsTableSkeleton />
+  }
+
+  if (products.length === 0) {
+    return <ProductsEmptyState />
   }
 
   return (
@@ -250,17 +238,7 @@ export function ProductsTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={9}
-                  className='h-32 text-center text-muted-foreground'
-                >
-                  No products found.
-                </TableCell>
-              </TableRow>
-            ) : (
-              products.map((product) => (
+            {products.map((product) => (
                 <TableRow key={product.id} className='hover:bg-muted/50'>
                   {/* Checkbox */}
                   <TableCell className='w-12'>
@@ -306,15 +284,15 @@ export function ProductsTable({
                         {product.sale_price ? (
                           <>
                             <p className='font-semibold'>
-                              {formatPrice(product.sale_price)}
+                              {formatVndPrice(product.sale_price)}
                             </p>
                             <p className='text-xs text-muted-foreground line-through'>
-                              {formatPrice(product.price)}
+                              {formatVndPrice(product.price)}
                             </p>
                           </>
                         ) : (
                           <p className='font-semibold'>
-                            {formatPrice(product.price)}
+                            {formatVndPrice(product.price)}
                           </p>
                         )}
                       </div>
@@ -331,15 +309,7 @@ export function ProductsTable({
                   {/* Stock */}
                   {visibleColumns.stock && (
                     <TableCell>
-                      <span
-                        className={`font-medium ${
-                          product.stock_quantity > 10
-                            ? 'text-green-600'
-                            : product.stock_quantity > 0
-                            ? 'text-amber-600'
-                            : 'text-red-600'
-                        }`}
-                      >
+                      <span className={`font-medium ${getStockTextClass(product.stock_quantity)}`}>
                         {product.stock_quantity}
                       </span>
                     </TableCell>
@@ -371,11 +341,7 @@ export function ProductsTable({
                     <TableCell>
                       <Badge
                         variant='outline'
-                        className={
-                          product.is_available
-                            ? 'border-emerald-500/50 text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30'
-                            : 'border-orange-500/50 text-orange-700 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/30'
-                        }
+                        className={getAvailabilityBadgeClass(product.is_available)}
                       >
                         {product.is_available ? 'Active' : 'Out Of Stock'}
                       </Badge>
@@ -384,122 +350,19 @@ export function ProductsTable({
 
                   {/* Actions */}
                   <TableCell className='w-12'>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant='ghost' size='icon' className='h-8 w-8'>
-                          <MoreHorizontal className='h-4 w-4' />
-                          <span className='sr-only'>Open menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align='end'>
-                        <DropdownMenuItem
-                          onClick={() =>
-                            navigate(`/admin/products/${product.id}`)
-                          }
-                        >
-                          <Eye className='w-4 h-4 mr-2' />
-                          View details
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() =>
-                            navigate(`/admin/products/${product.id}/edit`)
-                          }
-                        >
-                          <Edit className='mr-2 h-4 w-4' />
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className='text-destructive'>
-                          <Trash2 className='mr-2 h-4 w-4' />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <ProductActionsMenu productId={product.id} />
                   </TableCell>
                 </TableRow>
-              ))
-            )}
+            ))}
           </TableBody>
         </Table>
       </div>
 
-      {/* Pagination */}
-      <div className='flex items-center justify-between'>
-        <p className='text-sm text-muted-foreground'>
-          Page {page} of {totalPages}
-        </p>
-
-        <div className='flex items-center gap-2'>
-          <Button
-            variant='outline'
-            size='icon'
-            className='h-8 w-8'
-            onClick={() => onPageChange(1)}
-            disabled={page === 1}
-          >
-            <ChevronsLeft className='h-4 w-4' />
-            <span className='sr-only'>First page</span>
-          </Button>
-          <Button
-            variant='outline'
-            size='icon'
-            className='h-8 w-8'
-            onClick={() => onPageChange(page - 1)}
-            disabled={page === 1}
-          >
-            <ChevronLeft className='h-4 w-4' />
-            <span className='sr-only'>Previous page</span>
-          </Button>
-
-          <div className='flex items-center gap-1'>
-            {[...Array(Math.min(5, totalPages))].map((_, i) => {
-              let pageNum: number
-              if (totalPages <= 5) {
-                pageNum = i + 1
-              } else if (page <= 3) {
-                pageNum = i + 1
-              } else if (page >= totalPages - 2) {
-                pageNum = totalPages - 4 + i
-              } else {
-                pageNum = page - 2 + i
-              }
-
-              return (
-                <Button
-                  key={i}
-                  variant={page === pageNum ? 'default' : 'outline'}
-                  size='icon'
-                  className='h-8 w-8'
-                  onClick={() => onPageChange(pageNum)}
-                >
-                  {pageNum}
-                </Button>
-              )
-            })}
-          </div>
-
-          <Button
-            variant='outline'
-            size='icon'
-            className='h-8 w-8'
-            onClick={() => onPageChange(page + 1)}
-            disabled={page === totalPages}
-          >
-            <ChevronRight className='h-4 w-4' />
-            <span className='sr-only'>Next page</span>
-          </Button>
-          <Button
-            variant='outline'
-            size='icon'
-            className='h-8 w-8'
-            onClick={() => onPageChange(totalPages)}
-            disabled={page === totalPages}
-          >
-            <ChevronsRight className='h-4 w-4' />
-            <span className='sr-only'>Last page</span>
-          </Button>
-        </div>
-      </div>
+      <ProductsPaginationBar
+        page={page}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
+      />
     </div>
   )
 }

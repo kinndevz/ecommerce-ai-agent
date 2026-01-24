@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -27,6 +27,11 @@ import { toast } from 'sonner'
 import { CategoryImageUploadSection } from './CategoryImageUploadSection'
 import { useCategories } from '@/hooks/useCategories'
 import type { Category } from '@/api/category.api'
+import {
+  flattenCategoryTree,
+  generateCategorySlug,
+  getSuggestedDisplayOrder,
+} from '../../helpers/category.helpers'
 
 // Validation Schema
 const categoryFormSchema = z.object({
@@ -56,7 +61,7 @@ export function CategoryForm({
     initialData?.image_url || null
   )
 
-  const { categories: categoryTree } = useCategories()
+  const { categories: categoryTreeData } = useCategories()
 
   const form = useForm<CategoryFormValues>({
     resolver: zodResolver(categoryFormSchema),
@@ -71,25 +76,7 @@ export function CategoryForm({
     },
   })
 
-  // Auto-generate slug from name
-  const nameValue = form.watch('name')
-  useEffect(() => {
-    if (nameValue && !initialData && !form.getValues('slug')) {
-      const slug = generateSlug(nameValue)
-      form.setValue('slug', slug, { shouldValidate: true })
-    }
-  }, [nameValue, form, initialData])
-
-  // Generate slug helper
-  const generateSlug = (text: string) => {
-    return text
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/đ/g, 'd')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '')
-  }
+  const categoryTree = useMemo(() => categoryTreeData, [categoryTreeData])
 
   // Manual slug generation
   const handleGenerateSlug = () => {
@@ -98,7 +85,7 @@ export function CategoryForm({
       toast.error('Please enter category name first')
       return
     }
-    const slug = generateSlug(name)
+    const slug = generateCategorySlug(name)
     form.setValue('slug', slug, { shouldValidate: true })
     toast.success('Slug generated!')
   }
@@ -120,66 +107,25 @@ export function CategoryForm({
     onSubmit(cleanData)
   }
 
-  // Flatten tree to list for parent selection (exclude current category and its children)
-  const flattenTree = (
-    nodes: any[],
-    level = 0,
-    excludeId?: string
-  ): Array<{
-    id: string
-    name: string
-    level: number
-    childrenCount: number
-  }> => {
-    const result: Array<{
-      id: string
-      name: string
-      level: number
-      childrenCount: number
-    }> = []
-    for (const node of nodes) {
-      if (node.id !== excludeId) {
-        result.push({
-          id: node.id,
-          name: node.name,
-          level,
-          childrenCount: node.children?.length || 0,
-        })
-        if (node.children && node.children.length > 0) {
-          result.push(...flattenTree(node.children, level + 1, excludeId))
-        }
-      }
-    }
-    return result
-  }
+  const parentOptions = useMemo(
+    () => flattenCategoryTree(categoryTree, 0, initialData?.id),
+    [categoryTree, initialData?.id]
+  )
 
-  const parentOptions = flattenTree(categoryTree, 0, initialData?.id)
-
-  // Calculate suggested display order based on selected parent
+  const nameValue = form.watch('name')
   const selectedParentId = form.watch('parent_id')
-  const getSuggestedOrder = () => {
-    if (!selectedParentId) {
-      // Top level - count top-level categories
-      const topLevelCount = categoryTree.length
-      return topLevelCount
-    } else {
-      // Has parent - find parent and count its children
-      const findParent = (nodes: any[]): any => {
-        for (const node of nodes) {
-          if (node.id === selectedParentId) return node
-          if (node.children?.length > 0) {
-            const found = findParent(node.children)
-            if (found) return found
-          }
-        }
-        return null
-      }
-      const parent = findParent(categoryTree)
-      return parent?.children?.length || 0
-    }
-  }
 
-  const suggestedOrder = getSuggestedOrder()
+  useEffect(() => {
+    if (nameValue && !initialData && !form.getValues('slug')) {
+      const slug = generateCategorySlug(nameValue)
+      form.setValue('slug', slug, { shouldValidate: true })
+    }
+  }, [nameValue, form, initialData])
+
+  const suggestedOrder = useMemo(
+    () => getSuggestedDisplayOrder(categoryTree, selectedParentId),
+    [categoryTree, selectedParentId]
+  )
 
   return (
     <Form {...form}>

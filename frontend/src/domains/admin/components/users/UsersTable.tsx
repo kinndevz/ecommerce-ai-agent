@@ -1,18 +1,7 @@
 import { useState } from 'react'
 import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
   Columns,
-  ArrowUpDown,
-  ArrowUp,
-  ArrowDown,
   Loader2,
-  MoreHorizontal,
-  Eye,
-  Edit,
-  Trash2,
   Shield,
   ShieldOff,
 } from 'lucide-react'
@@ -31,10 +20,7 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
 } from '@/shared/components/ui/dropdown-menu'
-import { Skeleton } from '@/shared/components/ui/skeleton'
 import { Badge } from '@/shared/components/ui/badge'
 import {
   Avatar,
@@ -42,13 +28,21 @@ import {
   AvatarImage,
 } from '@/shared/components/ui/avatar'
 import type { User } from '@/api/user.api'
-import { useNavigate } from 'react-router-dom'
 import {
-  TFA_STATUS_CONFIG,
-  USER_ROLE_CONFIG,
   USER_STATUS,
-  USER_STATUS_CONFIG,
 } from '@/api/services/user.constants'
+import {
+  formatUserDate,
+  formatUserTime,
+  getUserInitials,
+  getUserRoleConfig,
+  getUserStatusConfig,
+  getUserTfaConfig,
+} from '@/domains/admin/helpers/user.helpers'
+import { UsersTableSkeleton } from './UsersTableSkeleton'
+import { UsersEmptyState } from './UsersEmptyState'
+import { UsersPaginationBar } from './UsersPaginationBar'
+import { UserActionsMenu } from './UserActionsMenu'
 
 interface UsersTableProps {
   users: User[]
@@ -95,8 +89,6 @@ export function UsersTable({
       {} as Record<string, boolean>
     )
   )
-  const navigate = useNavigate()
-
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
       setSelectedRows(new Set(users.map((u) => u.id)))
@@ -119,33 +111,12 @@ export function UsersTable({
     setVisibleColumns((prev) => ({ ...prev, [key]: !prev[key] }))
   }
 
-  const handleSort = (columnKey: 'full_name' | 'email' | 'created_at') => {
-    onSort(columnKey)
-  }
-
-  // const getSortIcon = (columnKey: 'full_name' | 'email' | 'created_at') => {
-  //   if (sortBy !== columnKey) {
-  //     return <ArrowUpDown className='ml-2 h-4 w-4' />
-  //   }
-  //   return sortOrder === 'asc' ? (
-  //     <ArrowUp className='ml-2 h-4 w-4' />
-  //   ) : (
-  //     <ArrowDown className='ml-2 h-4 w-4' />
-  //   )
-  // }
-
   const allSelected = users.length > 0 && selectedRows.size === users.length
   const someSelected = selectedRows.size > 0 && !allSelected
 
   // Initial loading - show skeletons
   if (isLoading && !isFetching) {
-    return (
-      <div className='space-y-3'>
-        {[...Array(10)].map((_, i) => (
-          <Skeleton key={i} className='h-16 w-full' />
-        ))}
-      </div>
-    )
+    return <UsersTableSkeleton />
   }
 
   return (
@@ -236,38 +207,13 @@ export function UsersTable({
           </TableHeader>
           <TableBody>
             {users.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={8}
-                  className='h-32 text-center text-muted-foreground'
-                >
-                  No users found.
-                </TableCell>
-              </TableRow>
+              <UsersEmptyState colSpan={8} />
             ) : (
               users.map((user) => {
-                const initials = user.full_name
-                  .split(' ')
-                  .map((n) => n[0])
-                  .join('')
-                  .toUpperCase()
-                  .slice(0, 2)
-
-                // Normalize to UPPERCASE to match config keys
-                const statusKey = user.status.toUpperCase()
-                const roleKey = user.role.name.toUpperCase()
-
-                const statusConfig = USER_STATUS_CONFIG[statusKey] || {
-                  label: user.status,
-                  className: 'bg-gray-500/10 text-gray-500 border-gray-500/20',
-                }
-                const roleConfig = USER_ROLE_CONFIG[roleKey] || {
-                  label: user.role.name,
-                  className: 'bg-gray-500/10 text-gray-500 border-gray-500/20',
-                }
-                const tfaConfig = user.is_2fa_enabled
-                  ? TFA_STATUS_CONFIG.enabled
-                  : TFA_STATUS_CONFIG.disabled
+                const initials = getUserInitials(user.full_name)
+                const statusConfig = getUserStatusConfig(user.status)
+                const roleConfig = getUserRoleConfig(user.role.name)
+                const tfaConfig = getUserTfaConfig(user.is_2fa_enabled)
 
                 return (
                   <TableRow key={user.id} className='hover:bg-muted/50'>
@@ -359,11 +305,9 @@ export function UsersTable({
                     {visibleColumns.created && (
                       <TableCell>
                         <div className='text-sm'>
-                          <p>
-                            {new Date(user.created_at).toLocaleDateString()}
-                          </p>
+                          <p>{formatUserDate(user.created_at)}</p>
                           <p className='text-muted-foreground'>
-                            {new Date(user.created_at).toLocaleTimeString()}
+                            {formatUserTime(user.created_at)}
                           </p>
                         </div>
                       </TableCell>
@@ -371,57 +315,11 @@ export function UsersTable({
 
                     {/* Actions */}
                     <TableCell className='w-12'>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant='ghost'
-                            size='icon'
-                            className='h-8 w-8'
-                          >
-                            <MoreHorizontal className='h-4 w-4' />
-                            <span className='sr-only'>Open menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align='end'>
-                          <DropdownMenuItem
-                            onClick={() => navigate(`/admin/users/${user.id}`)}
-                          >
-                            <Eye className='w-4 h-4 mr-2' />
-                            View details
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() =>
-                              navigate(`/admin/users/${user.id}/edit`)
-                            }
-                          >
-                            <Edit className='mr-2 h-4 w-4' />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => onToggleStatus(user)}
-                          >
-                            {user.status === USER_STATUS.ACTIVE ? (
-                              <>
-                                <ShieldOff className='w-4 h-4 mr-2' />
-                                Deactivate
-                              </>
-                            ) : (
-                              <>
-                                <Shield className='w-4 h-4 mr-2' />
-                                Activate
-                              </>
-                            )}
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            className='text-destructive'
-                            onClick={() => onDelete(user)}
-                          >
-                            <Trash2 className='mr-2 h-4 w-4' />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <UserActionsMenu
+                        user={user}
+                        onToggleStatus={onToggleStatus}
+                        onDelete={onDelete}
+                      />
                     </TableCell>
                   </TableRow>
                 )
@@ -431,83 +329,11 @@ export function UsersTable({
         </Table>
       </div>
 
-      {/* Pagination */}
-      <div className='flex items-center justify-between'>
-        <p className='text-sm text-muted-foreground'>
-          Page {page} of {totalPages}
-        </p>
-
-        <div className='flex items-center gap-2'>
-          <Button
-            variant='outline'
-            size='icon'
-            className='h-8 w-8'
-            onClick={() => onPageChange(1)}
-            disabled={page === 1}
-          >
-            <ChevronsLeft className='h-4 w-4' />
-            <span className='sr-only'>First page</span>
-          </Button>
-          <Button
-            variant='outline'
-            size='icon'
-            className='h-8 w-8'
-            onClick={() => onPageChange(page - 1)}
-            disabled={page === 1}
-          >
-            <ChevronLeft className='h-4 w-4' />
-            <span className='sr-only'>Previous page</span>
-          </Button>
-
-          <div className='flex items-center gap-1'>
-            {[...Array(Math.min(5, totalPages))].map((_, i) => {
-              let pageNum: number
-              if (totalPages <= 5) {
-                pageNum = i + 1
-              } else if (page <= 3) {
-                pageNum = i + 1
-              } else if (page >= totalPages - 2) {
-                pageNum = totalPages - 4 + i
-              } else {
-                pageNum = page - 2 + i
-              }
-
-              return (
-                <Button
-                  key={i}
-                  variant={page === pageNum ? 'default' : 'outline'}
-                  size='icon'
-                  className='h-8 w-8'
-                  onClick={() => onPageChange(pageNum)}
-                >
-                  {pageNum}
-                </Button>
-              )
-            })}
-          </div>
-
-          <Button
-            variant='outline'
-            size='icon'
-            className='h-8 w-8'
-            onClick={() => onPageChange(page + 1)}
-            disabled={page === totalPages}
-          >
-            <ChevronRight className='h-4 w-4' />
-            <span className='sr-only'>Next page</span>
-          </Button>
-          <Button
-            variant='outline'
-            size='icon'
-            className='h-8 w-8'
-            onClick={() => onPageChange(totalPages)}
-            disabled={page === totalPages}
-          >
-            <ChevronsRight className='h-4 w-4' />
-            <span className='sr-only'>Last page</span>
-          </Button>
-        </div>
-      </div>
+      <UsersPaginationBar
+        page={page}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
+      />
     </div>
   )
 }

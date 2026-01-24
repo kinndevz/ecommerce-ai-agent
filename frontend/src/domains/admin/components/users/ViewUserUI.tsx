@@ -1,9 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import {
-  Home,
-  ChevronRight,
   Edit,
-  Trash2,
   Loader2,
   Mail,
   Phone,
@@ -14,7 +11,6 @@ import {
   Activity,
   User as UserIcon,
   Clock,
-  AlertCircle,
   Ban,
   ShieldCheck,
 } from 'lucide-react'
@@ -32,24 +28,23 @@ import {
   AvatarFallback,
   AvatarImage,
 } from '@/shared/components/ui/avatar'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/shared/components/ui/alert-dialog'
 import { useUser, useDeleteUser, useToggleUserStatus } from '@/hooks/useUsers'
 import {
-  USER_STATUS_CONFIG,
-  USER_ROLE_CONFIG,
-  TFA_STATUS_CONFIG,
+  USER_STATUS,
 } from '@/api/services/user.constants'
 import type { User } from '@/api/user.api'
+import { UserPageHeader } from './UserPageHeader'
+import { UserNotFoundState } from './UserNotFoundState'
+import { UserDetailSkeleton } from './UserDetailSkeleton'
+import { UserDeleteDialog } from './UserDeleteDialog'
+import { UserInfoRow } from './UserInfoRow'
+import {
+  formatUserLongDateTime,
+  getUserInitials,
+  getUserRoleConfig,
+  getUserStatusConfig,
+  getUserTfaConfig,
+} from '@/domains/admin/helpers/user.helpers'
 
 export function ViewUserUI() {
   const { id } = useParams<{ id: string }>()
@@ -86,141 +81,51 @@ export function ViewUserUI() {
 
   //  LOADING STATE
   if (isLoading) {
-    return (
-      <div className='flex items-center justify-center min-h-screen'>
-        <div className='text-center space-y-4'>
-          <Loader2 className='w-12 h-12 animate-spin text-primary mx-auto' />
-          <p className='text-sm text-muted-foreground'>
-            Loading user details...
-          </p>
-        </div>
-      </div>
-    )
+    return <UserDetailSkeleton />
   }
 
   //  NOT FOUND
   if (!user) {
     return (
-      <div className='flex items-center justify-center min-h-screen'>
-        <div className='text-center space-y-4'>
-          <AlertCircle className='w-16 h-16 text-muted-foreground mx-auto' />
-          <h2 className='text-2xl font-semibold'>User Not Found</h2>
-          <p className='text-muted-foreground'>
-            The user you're looking for doesn't exist or has been removed.
-          </p>
-          <Button onClick={() => navigate('/admin/users')} variant='outline'>
-            Back to Users
-          </Button>
-        </div>
-      </div>
+      <UserNotFoundState
+        actionLabel='Back to Users'
+        onAction={() => navigate('/admin/users')}
+      />
     )
   }
 
-  // UTILITY FUNCTIONS
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map((word) => word[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2)
-  }
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-  }
-
-  const getStatusConfig = () =>
-    USER_STATUS_CONFIG[user.status] || USER_STATUS_CONFIG.INACTIVE
-  const getRoleConfig = () =>
-    USER_ROLE_CONFIG[user.role.name] || USER_ROLE_CONFIG.CUSTOMER
-  const get2FAConfig = () =>
-    user.is_2fa_enabled ? TFA_STATUS_CONFIG.enabled : TFA_STATUS_CONFIG.disabled
+  const statusConfig = getUserStatusConfig(user.status)
+  const roleConfig = getUserRoleConfig(user.role.name)
+  const tfaConfig = getUserTfaConfig(user.is_2fa_enabled)
 
   return (
     <div className='min-h-screen p-6 space-y-6'>
       {/* ===== BREADCRUMB & ACTIONS ===== */}
-      <div className='flex items-center justify-between'>
-        <div className='flex items-center gap-2 text-sm text-muted-foreground'>
-          <Button
-            variant='ghost'
-            size='icon'
-            className='h-8 w-8'
-            onClick={() => navigate('/admin/dashboard')}
-          >
-            <Home className='w-4 h-4' />
-          </Button>
-          <ChevronRight className='w-4 h-4' />
-          <span
-            className='hover:text-foreground cursor-pointer transition-colors'
-            onClick={() => navigate('/admin/users')}
-          >
-            Users
-          </span>
-          <ChevronRight className='w-4 h-4' />
-          <span className='font-medium text-foreground'>Details</span>
-        </div>
-
-        <div className='flex items-center gap-2'>
-          <Button
-            variant='outline'
-            size='sm'
-            onClick={() => navigate(`/admin/users/${id}/edit`)}
-            disabled={deleteUser.isPending || toggleStatus.isPending}
-          >
-            <Edit className='w-4 h-4 mr-2' /> Edit
-          </Button>
-
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button
-                variant='outline'
-                size='sm'
-                disabled={deleteUser.isPending || toggleStatus.isPending}
-                className='text-destructive hover:bg-destructive/10 border-destructive/20'
-              >
-                <Trash2 className='w-4 h-4 mr-2' /> Delete
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete the
-                  user
-                  <span className='font-semibold text-foreground'>
-                    {' '}
-                    {user.full_name}
-                  </span>{' '}
-                  and remove their data from the system.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handleDelete}
-                  className='bg-destructive hover:bg-destructive/90'
-                >
-                  {deleteUser.isPending ? (
-                    <>
-                      <Loader2 className='w-4 h-4 mr-2 animate-spin' />
-                      Deleting...
-                    </>
-                  ) : (
-                    'Delete User'
-                  )}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
-      </div>
+      <UserPageHeader
+        breadcrumbs={[
+          { label: 'Users', onClick: () => navigate('/admin/users') },
+          { label: 'Details' },
+        ]}
+        title={user.full_name}
+        actions={
+          <>
+            <Button
+              variant='outline'
+              size='sm'
+              onClick={() => navigate(`/admin/users/${id}/edit`)}
+              disabled={deleteUser.isPending || toggleStatus.isPending}
+            >
+              <Edit className='w-4 h-4 mr-2' /> Edit
+            </Button>
+            <UserDeleteDialog
+              userName={user.full_name}
+              isDeleting={deleteUser.isPending}
+              onConfirm={handleDelete}
+              disabled={deleteUser.isPending || toggleStatus.isPending}
+            />
+          </>
+        }
+      />
 
       {/* ===== USER HEADER ===== */}
       <div className='bg-linear-to-br from-primary/10 via-primary/5 to-background rounded-xl border border-border p-8'>
@@ -229,7 +134,7 @@ export function ViewUserUI() {
           <Avatar className='w-24 h-24 border-4 border-background shadow-lg'>
             <AvatarImage src={user.avatar || undefined} alt={user.full_name} />
             <AvatarFallback className='text-2xl font-bold bg-primary/20 text-primary'>
-              {getInitials(user.full_name)}
+              {getUserInitials(user.full_name)}
             </AvatarFallback>
           </Avatar>
 
@@ -246,23 +151,23 @@ export function ViewUserUI() {
             </div>
 
             <div className='flex flex-wrap gap-2'>
-              <Badge variant='outline' className={getRoleConfig().className}>
+              <Badge variant='outline' className={roleConfig.className}>
                 <Shield className='w-3 h-3 mr-1' />
-                {getRoleConfig().label}
+                {roleConfig.label}
               </Badge>
 
-              <Badge variant='outline' className={getStatusConfig().className}>
-                {user.status === 'ACTIVE' ? (
+              <Badge variant='outline' className={statusConfig.className}>
+                {user.status === USER_STATUS.ACTIVE ? (
                   <CheckCircle2 className='w-3 h-3 mr-1' />
                 ) : (
                   <XCircle className='w-3 h-3 mr-1' />
                 )}
-                {getStatusConfig().label}
+                {statusConfig.label}
               </Badge>
 
-              <Badge variant='outline' className={get2FAConfig().className}>
+              <Badge variant='outline' className={tfaConfig.className}>
                 <ShieldCheck className='w-3 h-3 mr-1' />
-                2FA: {get2FAConfig().label}
+                2FA: {tfaConfig.label}
               </Badge>
             </div>
           </div>
@@ -278,12 +183,12 @@ export function ViewUserUI() {
             >
               {toggleStatus.isPending ? (
                 <Loader2 className='w-4 h-4 mr-2 animate-spin' />
-              ) : user.status === 'ACTIVE' ? (
+              ) : user.status === USER_STATUS.ACTIVE ? (
                 <Ban className='w-4 h-4 mr-2' />
               ) : (
                 <CheckCircle2 className='w-4 h-4 mr-2' />
               )}
-              {user.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
+              {user.status === USER_STATUS.ACTIVE ? 'Deactivate' : 'Activate'}
             </Button>
           </div>
         </div>
@@ -300,13 +205,13 @@ export function ViewUserUI() {
             </CardTitle>
           </CardHeader>
           <CardContent className='space-y-4'>
-            <InfoRow
+            <UserInfoRow
               icon={<Mail className='w-4 h-4' />}
               label='Email'
               value={user.email}
             />
             <Separator />
-            <InfoRow
+            <UserInfoRow
               icon={<Phone className='w-4 h-4' />}
               label='Phone'
               value={user.phone_number || 'Not provided'}
@@ -323,35 +228,32 @@ export function ViewUserUI() {
             </CardTitle>
           </CardHeader>
           <CardContent className='space-y-4'>
-            <InfoRow
+            <UserInfoRow
               icon={<Shield className='w-4 h-4' />}
               label='Role'
               value={
-                <Badge variant='outline' className={getRoleConfig().className}>
-                  {getRoleConfig().label}
+                <Badge variant='outline' className={roleConfig.className}>
+                  {roleConfig.label}
                 </Badge>
               }
             />
             <Separator />
-            <InfoRow
+            <UserInfoRow
               icon={<Activity className='w-4 h-4' />}
               label='Status'
               value={
-                <Badge
-                  variant='outline'
-                  className={getStatusConfig().className}
-                >
-                  {getStatusConfig().label}
+                <Badge variant='outline' className={statusConfig.className}>
+                  {statusConfig.label}
                 </Badge>
               }
             />
             <Separator />
-            <InfoRow
+            <UserInfoRow
               icon={<ShieldCheck className='w-4 h-4' />}
               label='2FA Status'
               value={
-                <Badge variant='outline' className={get2FAConfig().className}>
-                  {get2FAConfig().label}
+                <Badge variant='outline' className={tfaConfig.className}>
+                  {tfaConfig.label}
                 </Badge>
               }
             />
@@ -367,16 +269,16 @@ export function ViewUserUI() {
             </CardTitle>
           </CardHeader>
           <CardContent className='space-y-4'>
-            <InfoRow
+            <UserInfoRow
               icon={<Calendar className='w-4 h-4' />}
               label='Created'
-              value={formatDate(user.created_at)}
+              value={formatUserLongDateTime(user.created_at)}
             />
             <Separator />
-            <InfoRow
+            <UserInfoRow
               icon={<Calendar className='w-4 h-4' />}
               label='Last Updated'
-              value={formatDate(user.updated_at)}
+              value={formatUserLongDateTime(user.updated_at)}
             />
           </CardContent>
         </Card>
@@ -437,10 +339,10 @@ export function ViewUserUI() {
           </CardHeader>
           <CardContent className='grid grid-cols-2 gap-4 text-sm'>
             {user.created_by_id && (
-              <InfoRow label='Created By' value={user.created_by_id} mono />
+              <UserInfoRow label='Created By' value={user.created_by_id} mono />
             )}
             {user.updated_by_id && (
-              <InfoRow label='Updated By' value={user.updated_by_id} mono />
+              <UserInfoRow label='Updated By' value={user.updated_by_id} mono />
             )}
           </CardContent>
         </Card>
@@ -449,23 +351,3 @@ export function ViewUserUI() {
   )
 }
 
-interface InfoRowProps {
-  icon?: React.ReactNode
-  label: string
-  value: React.ReactNode
-  mono?: boolean
-}
-
-function InfoRow({ icon, label, value, mono = false }: InfoRowProps) {
-  return (
-    <div className='flex items-start justify-between gap-4'>
-      <div className='flex items-center gap-2 text-sm text-muted-foreground'>
-        {icon}
-        <span className='font-medium'>{label}</span>
-      </div>
-      <div className={`text-sm text-right ${mono ? 'font-mono' : ''}`}>
-        {value}
-      </div>
-    </div>
-  )
-}

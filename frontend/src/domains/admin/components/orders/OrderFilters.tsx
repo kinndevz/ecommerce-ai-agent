@@ -1,4 +1,5 @@
-import { Search, X, Filter } from 'lucide-react'
+import { Search, X } from 'lucide-react'
+import { useMemo } from 'react'
 import { Input } from '@/shared/components/ui/input'
 import { Button } from '@/shared/components/ui/button'
 import { Badge } from '@/shared/components/ui/badge'
@@ -6,6 +7,7 @@ import {
   ORDER_STATUS,
   type OrderStatusType,
 } from '@/api/services/order.constants'
+import { getOrderStatusTabs } from '@/domains/admin/helpers/order.helpers'
 
 interface OrderFiltersProps {
   search: string
@@ -26,50 +28,7 @@ export function OrderFilters({
 }: OrderFiltersProps) {
   const hasFilters = search || statusFilter !== 'all'
 
-  const tabs = [
-    {
-      value: 'all',
-      label: 'All orders',
-      count: statusCounts?.total || 0,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-500/10',
-    },
-    {
-      value: ORDER_STATUS.PENDING,
-      label: 'Pending',
-      count: statusCounts?.pending || 0,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-500/10',
-    },
-    {
-      value: ORDER_STATUS.PROCESSING,
-      label: 'Processing',
-      count: statusCounts?.processing || 0,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-500/10',
-    },
-    {
-      value: ORDER_STATUS.SHIPPED,
-      label: 'Shipped',
-      count: statusCounts?.shipped || 0,
-      color: 'text-cyan-600',
-      bgColor: 'bg-cyan-500/10',
-    },
-    {
-      value: ORDER_STATUS.DELIVERED,
-      label: 'Delivered',
-      count: statusCounts?.delivered || 0,
-      color: 'text-green-600',
-      bgColor: 'bg-green-500/10',
-    },
-    {
-      value: ORDER_STATUS.CANCELLED,
-      label: 'Cancelled',
-      count: statusCounts?.cancelled || 0,
-      color: 'text-red-600',
-      bgColor: 'bg-red-500/10',
-    },
-  ]
+  const tabs = useMemo(() => getOrderStatusTabs(statusCounts), [statusCounts])
 
   return (
     <div className='space-y-4'>

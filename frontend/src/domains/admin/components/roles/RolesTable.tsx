@@ -1,23 +1,16 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import {
   Shield,
-  MoreHorizontal,
-  Edit,
-  Trash2,
   Columns,
-  Eye,
   Loader2,
   CheckCircle2,
   XCircle,
   Lock,
-  Settings,
 } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import { Badge } from '@/shared/components/ui/badge'
 import { Checkbox } from '@/shared/components/ui/checkbox'
 import { Avatar, AvatarFallback } from '@/shared/components/ui/avatar'
-import { Skeleton } from '@/shared/components/ui/skeleton'
 import {
   Table,
   TableBody,
@@ -29,20 +22,21 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
   DropdownMenuCheckboxItem,
 } from '@/shared/components/ui/dropdown-menu'
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-} from 'lucide-react'
 import type { RoleDetailData } from '@/api/role.api'
 import { ViewRoleDialog } from './ViewRoleDialog'
 import { EditRoleDialog } from './EditRoleDialog'
+import { RolesTableSkeleton } from './RolesTableSkeleton'
+import { RolesEmptyState } from './RolesEmptyState'
+import { RolesPaginationBar } from './RolesPaginationBar'
+import { RoleActionsMenu } from './RoleActionsMenu'
+import {
+  formatRoleDate,
+  getRoleStatusBadgeClass,
+  getRoleStatusLabel,
+} from '@/domains/admin/helpers/role.helpers'
 
 interface RolesTableProps {
   roles: RoleDetailData[]
@@ -88,8 +82,6 @@ export function RolesTable({
   )
   const [viewRoleId, setViewRoleId] = useState<string | null>(null)
   const [editRoleId, setEditRoleId] = useState<string | null>(null)
-  const navigate = useNavigate()
-
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
       setSelectedRows(new Set(roles.map((r) => r.id)))
@@ -117,13 +109,7 @@ export function RolesTable({
 
   // Initial loading - show skeletons
   if (isLoading && !isFetching) {
-    return (
-      <div className='space-y-3'>
-        {[...Array(10)].map((_, i) => (
-          <Skeleton key={i} className='h-16 w-full' />
-        ))}
-      </div>
-    )
+    return <RolesTableSkeleton />
   }
 
   return (
@@ -213,17 +199,7 @@ export function RolesTable({
           </TableHeader>
           <TableBody>
             {roles.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={COLUMNS.length + 2}
-                  className='h-24 text-center'
-                >
-                  <div className='flex flex-col items-center justify-center py-8'>
-                    <Shield className='h-12 w-12 text-muted-foreground/50 mb-2' />
-                    <p className='text-muted-foreground'>No roles found</p>
-                  </div>
-                </TableCell>
-              </TableRow>
+              <RolesEmptyState colSpan={COLUMNS.length + 2} />
             ) : (
               roles.map((role) => {
                 const isSelected = selectedRows.has(role.id)
@@ -275,18 +251,14 @@ export function RolesTable({
                       <TableCell>
                         <Badge
                           variant='outline'
-                          className={
-                            role.is_active
-                              ? 'bg-green-500/10 text-green-600 border-green-500/20'
-                              : 'bg-gray-500/10 text-gray-600 border-gray-500/20'
-                          }
+                          className={getRoleStatusBadgeClass(role.is_active)}
                         >
                           {role.is_active ? (
                             <CheckCircle2 className='w-3 h-3 mr-1' />
                           ) : (
                             <XCircle className='w-3 h-3 mr-1' />
                           )}
-                          {role.is_active ? 'Active' : 'Inactive'}
+                          {getRoleStatusLabel(role.is_active)}
                         </Badge>
                       </TableCell>
                     )}
@@ -304,45 +276,16 @@ export function RolesTable({
 
                     {visibleColumns.created && (
                       <TableCell className='text-sm text-muted-foreground'>
-                        {new Date(role.created_at).toLocaleDateString()}
+                        {formatRoleDate(role.created_at)}
                       </TableCell>
                     )}
 
                     <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant='ghost'
-                            size='icon'
-                            className='h-8 w-8'
-                          >
-                            <MoreHorizontal className='h-4 w-4' />
-                            <span className='sr-only'>Open menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align='end'>
-                          <DropdownMenuItem
-                            onClick={() => setViewRoleId(role.id)}
-                          >
-                            <Eye className='mr-2 h-4 w-4' />
-                            View Details
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => setEditRoleId(role.id)}
-                          >
-                            <Edit className='mr-2 h-4 w-4' />
-                            Edit Role
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            className='text-destructive'
-                            onClick={() => onDelete(role)}
-                          >
-                            <Trash2 className='mr-2 h-4 w-4' />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <RoleActionsMenu
+                        onView={() => setViewRoleId(role.id)}
+                        onEdit={() => setEditRoleId(role.id)}
+                        onDelete={() => onDelete(role)}
+                      />
                     </TableCell>
                   </TableRow>
                 )
@@ -352,83 +295,11 @@ export function RolesTable({
         </Table>
       </div>
 
-      {/* Pagination */}
-      <div className='flex items-center justify-between'>
-        <p className='text-sm text-muted-foreground'>
-          Page {page} of {totalPages}
-        </p>
-
-        <div className='flex items-center gap-2'>
-          <Button
-            variant='outline'
-            size='icon'
-            className='h-8 w-8'
-            onClick={() => onPageChange(1)}
-            disabled={page === 1}
-          >
-            <ChevronsLeft className='h-4 w-4' />
-            <span className='sr-only'>First page</span>
-          </Button>
-          <Button
-            variant='outline'
-            size='icon'
-            className='h-8 w-8'
-            onClick={() => onPageChange(page - 1)}
-            disabled={page === 1}
-          >
-            <ChevronLeft className='h-4 w-4' />
-            <span className='sr-only'>Previous page</span>
-          </Button>
-
-          <div className='flex items-center gap-1'>
-            {[...Array(Math.min(5, totalPages))].map((_, i) => {
-              let pageNum: number
-              if (totalPages <= 5) {
-                pageNum = i + 1
-              } else if (page <= 3) {
-                pageNum = i + 1
-              } else if (page >= totalPages - 2) {
-                pageNum = totalPages - 4 + i
-              } else {
-                pageNum = page - 2 + i
-              }
-
-              return (
-                <Button
-                  key={i}
-                  variant={page === pageNum ? 'default' : 'outline'}
-                  size='icon'
-                  className='h-8 w-8'
-                  onClick={() => onPageChange(pageNum)}
-                >
-                  {pageNum}
-                </Button>
-              )
-            })}
-          </div>
-
-          <Button
-            variant='outline'
-            size='icon'
-            className='h-8 w-8'
-            onClick={() => onPageChange(page + 1)}
-            disabled={page === totalPages}
-          >
-            <ChevronRight className='h-4 w-4' />
-            <span className='sr-only'>Next page</span>
-          </Button>
-          <Button
-            variant='outline'
-            size='icon'
-            className='h-8 w-8'
-            onClick={() => onPageChange(totalPages)}
-            disabled={page === totalPages}
-          >
-            <ChevronsRight className='h-4 w-4' />
-            <span className='sr-only'>Last page</span>
-          </Button>
-        </div>
-      </div>
+      <RolesPaginationBar
+        page={page}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
+      />
 
       {/* Dialogs */}
       <ViewRoleDialog

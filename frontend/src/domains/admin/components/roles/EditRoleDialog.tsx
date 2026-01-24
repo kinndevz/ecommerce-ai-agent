@@ -45,6 +45,7 @@ import { usePermissionsByModule } from '@/hooks/usePermissions'
 import { HTTP_METHOD_CONFIG } from '@/api/services/http-method.constants'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { RoleDialogNotFoundState } from './RoleDialogNotFoundState'
 
 // Form schema
 const editRoleFormSchema = z.object({
@@ -489,9 +490,7 @@ export function EditRoleDialog({
             </form>
           </Form>
         ) : (
-          <div className='p-6 text-center'>
-            <p className='text-muted-foreground'>Role not found</p>
-          </div>
+          <RoleDialogNotFoundState />
         )}
       </DialogContent>
     </Dialog>

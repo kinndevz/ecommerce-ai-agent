@@ -1,15 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router-dom'
-import {
-  ArrowLeft,
-  Save,
-  Sparkles,
-  Package,
-  Home,
-  ChevronRight,
-  Loader2,
-} from 'lucide-react'
+import { ArrowLeft, Save, Sparkles, Package, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/shared/components/ui/button'
 import { Badge } from '@/shared/components/ui/badge'
@@ -19,6 +11,7 @@ import { useCategories } from '@/hooks/useCategories'
 import { productFormSchema } from './product.schema'
 import { ProductForm } from '@/domains/admin/components/products/ProductForm'
 import { Form } from '@/shared/components/ui/form'
+import { ProductPageHeader } from './ProductPageHeader'
 
 export function AddProductUI() {
   const navigate = useNavigate()
@@ -69,27 +62,21 @@ export function AddProductUI() {
     <div className='max-w-7xl mx-auto p-6 pb-20'>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
-          {/* HEADER */}
-          <div className='sticky top-0 z-20 bg-background/95 backdrop-blur -mx-6 px-6 py-4 border-b shadow-sm'>
-            {/* Breadcrumb */}
-            <div className='flex items-center gap-2 text-sm text-muted-foreground mb-3'>
-              <Home className='w-4 h-4' />
-              <ChevronRight className='w-4 h-4' />
-              <button
-                type='button'
-                onClick={() => navigate('/admin/products')}
-                className='hover:text-foreground transition-colors'
-              >
-                Products
-              </button>
-              <ChevronRight className='w-4 h-4' />
-              <span className='text-foreground font-medium'>
-                Add New Product
-              </span>
-            </div>
-
-            <div className='flex items-center justify-between'>
-              <div className='flex items-center gap-4'>
+          <ProductPageHeader
+            breadcrumbs={[
+              { label: 'Products', onClick: () => navigate('/admin/products') },
+              { label: 'Add New Product' },
+            ]}
+            title='Create New Product'
+            subtitle='Add a new cosmetics product to your inventory'
+            meta={
+              <Badge variant='secondary' className='ml-2'>
+                <Package className='w-3 h-3 mr-1' />
+                New
+              </Badge>
+            }
+            actions={
+              <>
                 <Button
                   variant='ghost'
                   size='icon'
@@ -99,22 +86,6 @@ export function AddProductUI() {
                 >
                   <ArrowLeft className='w-5 h-5' />
                 </Button>
-                <div>
-                  <h1 className='text-2xl font-bold tracking-tight'>
-                    Create New Product
-                  </h1>
-                  <div className='flex items-center gap-2 mt-1'>
-                    <p className='text-sm text-muted-foreground'>
-                      Add a new cosmetics product to your inventory
-                    </p>
-                    <Badge variant='secondary' className='ml-2'>
-                      <Package className='w-3 h-3 mr-1' />
-                      New
-                    </Badge>
-                  </div>
-                </div>
-              </div>
-              <div className='flex items-center gap-3'>
                 <Button
                   variant='outline'
                   type='button'
@@ -141,9 +112,9 @@ export function AddProductUI() {
                     </>
                   )}
                 </Button>
-              </div>
-            </div>
-          </div>
+              </>
+            }
+          />
 
           {/* Product Form */}
           <ProductForm

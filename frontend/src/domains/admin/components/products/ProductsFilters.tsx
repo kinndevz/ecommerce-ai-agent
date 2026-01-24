@@ -18,30 +18,13 @@ import { Checkbox } from '@/shared/components/ui/checkbox'
 import { Label } from '@/shared/components/ui/label'
 import { useCategories } from '@/hooks/useCategories'
 import type { ProductQueryParams } from '@/api/product.api'
-import type { CategoryTreeNode } from '@/api/category.api'
 import { useState } from 'react'
+import { flattenCategoryOptions } from '@/domains/admin/helpers/product.helpers'
 
 interface ProductsFiltersProps {
   filters: ProductQueryParams
   onFilterChange: (filters: ProductQueryParams) => void
   onClearFilters: () => void
-}
-
-// Flatten category tree for dropdown
-function flattenCategories(categories: CategoryTreeNode[]): CategoryTreeNode[] {
-  const result: CategoryTreeNode[] = []
-
-  function traverse(cats: CategoryTreeNode[], depth = 0) {
-    for (const cat of cats) {
-      result.push({ ...cat, display_order: depth })
-      if (cat.children && cat.children.length > 0) {
-        traverse(cat.children, depth + 1)
-      }
-    }
-  }
-
-  traverse(categories)
-  return result
 }
 
 export function ProductsFilters({
@@ -50,7 +33,7 @@ export function ProductsFilters({
   onClearFilters,
 }: ProductsFiltersProps) {
   const { categories, isLoading: categoriesLoading } = useCategories()
-  const flatCategories = flattenCategories(categories)
+  const flatCategories = flattenCategoryOptions(categories)
 
   const [categorySearch, setCategorySearch] = useState('')
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
@@ -212,7 +195,7 @@ export function ProductsFilters({
                       key={cat.id}
                       onClick={() => handleCategoryToggle(cat.id)}
                       className='w-full flex items-center gap-2 px-2 py-1.5 text-sm rounded hover:bg-accent'
-                      style={{ paddingLeft: `${cat.display_order * 12 + 8}px` }}
+                      style={{ paddingLeft: `${cat.level * 12 + 8}px` }}
                     >
                       <Checkbox
                         checked={selectedCategories.includes(cat.id)}

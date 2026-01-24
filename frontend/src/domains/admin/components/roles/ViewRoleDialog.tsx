@@ -25,6 +25,12 @@ import {
 } from 'lucide-react'
 import { useRole } from '@/hooks/useRoles'
 import { HTTP_METHOD_CONFIG } from '@/api/services/http-method.constants'
+import {
+  formatRoleDateTime,
+  getRoleStatusBadgeClass,
+  getRoleStatusLabel,
+} from '@/domains/admin/helpers/role.helpers'
+import { RoleDialogNotFoundState } from './RoleDialogNotFoundState'
 
 interface ViewRoleDialogProps {
   roleId: string | null
@@ -72,20 +78,13 @@ export function ViewRoleDialog({
                 <div className='flex-1'>
                   <div className='flex items-center gap-3 mb-2'>
                     <DialogTitle className='text-2xl'>{role.name}</DialogTitle>
-                    <Badge
-                      variant='outline'
-                      className={
-                        role.is_active
-                          ? 'bg-green-500/10 text-green-600 border-green-500/20'
-                          : 'bg-gray-500/10 text-gray-600 border-gray-500/20'
-                      }
-                    >
+                    <Badge variant='outline' className={getRoleStatusBadgeClass(role.is_active)}>
                       {role.is_active ? (
                         <CheckCircle2 className='w-3 h-3 mr-1' />
                       ) : (
                         <XCircle className='w-3 h-3 mr-1' />
                       )}
-                      {role.is_active ? 'Active' : 'Inactive'}
+                      {getRoleStatusLabel(role.is_active)}
                     </Badge>
                   </div>
                   <DialogDescription className='text-sm'>
@@ -108,7 +107,7 @@ export function ViewRoleDialog({
                       Created
                     </div>
                     <div className='text-sm font-medium'>
-                      {new Date(role.created_at).toLocaleString()}
+                      {formatRoleDateTime(role.created_at)}
                     </div>
                   </div>
                   <div className='space-y-1'>
@@ -232,9 +231,7 @@ export function ViewRoleDialog({
             </div>
           </>
         ) : (
-          <div className='p-6 text-center'>
-            <p className='text-muted-foreground'>Role not found</p>
-          </div>
+          <RoleDialogNotFoundState />
         )}
       </DialogContent>
     </Dialog>

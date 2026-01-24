@@ -1,9 +1,8 @@
 import { useParams, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 import {
   Edit,
   Trash2,
-  Home,
-  ChevronRight,
   Image as ImageIcon,
   FolderTree,
   Package,
@@ -21,7 +20,6 @@ import {
   CardTitle,
 } from '@/shared/components/ui/card'
 import { Badge } from '@/shared/components/ui/badge'
-import { Skeleton } from '@/shared/components/ui/skeleton'
 import { Separator } from '@/shared/components/ui/separator'
 import {
   AlertDialog,
@@ -33,8 +31,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/shared/components/ui/alert-dialog'
-import { useState } from 'react'
 import { useCategory, useDeleteCategory } from '@/hooks/useCategories'
+import { CategoryPageHeader } from './CategoryPageHeader'
+import { CategoryDetailSkeleton } from './CategoryDetailSkeleton'
+import { CategoryNotFoundState } from './CategoryNotFoundState'
 
 export default function ViewCategoryUI() {
   const { id } = useParams<{ id: string }>()
@@ -55,23 +55,15 @@ export default function ViewCategoryUI() {
   }
 
   if (isLoading) {
-    return <LoadingSkeleton />
+    return <CategoryDetailSkeleton />
   }
 
   if (!category) {
     return (
-      <div className='min-h-screen flex items-center justify-center'>
-        <div className='text-center'>
-          <FolderTree className='w-16 h-16 mx-auto text-muted-foreground mb-4' />
-          <h2 className='text-2xl font-bold mb-2'>Category Not Found</h2>
-          <p className='text-muted-foreground mb-6'>
-            The category you're looking for doesn't exist or has been deleted.
-          </p>
-          <Button onClick={() => navigate('/admin/categories')}>
-            Back to Categories
-          </Button>
-        </div>
-      </div>
+      <CategoryNotFoundState
+        actionLabel='Back to Categories'
+        onAction={() => navigate('/admin/categories')}
+      />
     )
   }
 
@@ -80,78 +72,61 @@ export default function ViewCategoryUI() {
 
   return (
     <div className='min-h-screen'>
-      {/* Sticky Header */}
-      <div className='sticky top-0 z-20 bg-background/95 backdrop-blur border-b shadow-sm'>
-        <div className='max-w-7xl mx-auto px-6 py-4'>
-          {/* Breadcrumb */}
-          <div className='flex items-center gap-2 text-sm text-muted-foreground mb-3'>
-            <Home className='w-4 h-4' />
-            <ChevronRight className='w-4 h-4' />
-            <button
-              onClick={() => navigate('/admin/categories')}
-              className='hover:text-foreground transition-colors'
+      <CategoryPageHeader
+        breadcrumbs={[
+          { label: 'Categories', onClick: () => navigate('/admin/categories') },
+          { label: category.name },
+        ]}
+        title={category.name}
+        meta={
+          <>
+            <Badge
+              variant='outline'
+              className={
+                category.is_active
+                  ? 'bg-green-500/10 text-green-600 border-green-500/20 gap-1.5'
+                  : 'bg-gray-500/10 text-gray-600 border-gray-500/20 gap-1.5'
+              }
             >
-              Categories
-            </button>
-            <ChevronRight className='w-4 h-4' />
-            <span className='text-foreground font-medium'>{category.name}</span>
-          </div>
-
-          {/* Header Actions */}
-          <div className='flex items-center justify-between'>
-            <div>
-              <h1 className='text-2xl font-bold tracking-tight'>
-                {category.name}
-              </h1>
-              <div className='flex items-center gap-2 mt-2'>
-                <Badge
-                  variant='outline'
-                  className={
-                    category.is_active
-                      ? 'bg-green-500/10 text-green-600 border-green-500/20 gap-1.5'
-                      : 'bg-gray-500/10 text-gray-600 border-gray-500/20 gap-1.5'
-                  }
-                >
-                  {category.is_active ? (
-                    <CheckCircle className='w-3.5 h-3.5' />
-                  ) : (
-                    <XCircle className='w-3.5 h-3.5' />
-                  )}
-                  {category.is_active ? 'Active' : 'Inactive'}
-                </Badge>
-                <Badge variant='outline' className='gap-1.5'>
-                  <Package className='w-3.5 h-3.5' />
-                  {category.product_count} Products
-                </Badge>
-                {hasChildren && (
-                  <Badge variant='secondary' className='gap-1.5'>
-                    <FolderTree className='w-3.5 h-3.5' />
-                    {category.children_count} Subcategories
-                  </Badge>
-                )}
-              </div>
-            </div>
-
-            <div className='flex items-center gap-2'>
-              <Button
-                variant='outline'
-                onClick={() => navigate(`/admin/categories/${id}/edit`)}
-              >
-                <Edit className='w-4 h-4 mr-2' />
-                Edit
-              </Button>
-              <Button
-                variant='destructive'
-                onClick={() => setShowDeleteDialog(true)}
-                disabled={hasProducts || hasChildren}
-              >
-                <Trash2 className='w-4 h-4 mr-2' />
-                Delete
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+              {category.is_active ? (
+                <CheckCircle className='w-3.5 h-3.5' />
+              ) : (
+                <XCircle className='w-3.5 h-3.5' />
+              )}
+              {category.is_active ? 'Active' : 'Inactive'}
+            </Badge>
+            <Badge variant='outline' className='gap-1.5'>
+              <Package className='w-3.5 h-3.5' />
+              {category.product_count} Products
+            </Badge>
+            {hasChildren && (
+              <Badge variant='secondary' className='gap-1.5'>
+                <FolderTree className='w-3.5 h-3.5' />
+                {category.children_count} Subcategories
+              </Badge>
+            )}
+          </>
+        }
+        actions={
+          <>
+            <Button
+              variant='outline'
+              onClick={() => navigate(`/admin/categories/${id}/edit`)}
+            >
+              <Edit className='w-4 h-4 mr-2' />
+              Edit
+            </Button>
+            <Button
+              variant='destructive'
+              onClick={() => setShowDeleteDialog(true)}
+              disabled={hasProducts || hasChildren}
+            >
+              <Trash2 className='w-4 h-4 mr-2' />
+              Delete
+            </Button>
+          </>
+        }
+      />
 
       {/* Content */}
       <div className='max-w-7xl mx-auto px-6 py-8'>
@@ -367,44 +342,6 @@ export default function ViewCategoryUI() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
-  )
-}
-
-function LoadingSkeleton() {
-  return (
-    <div className='min-h-screen'>
-      <div className='sticky top-0 z-20 bg-background border-b'>
-        <div className='max-w-7xl mx-auto px-6 py-4'>
-          <Skeleton className='h-4 w-64 mb-3' />
-          <div className='flex items-center justify-between'>
-            <div className='space-y-2'>
-              <Skeleton className='h-8 w-48' />
-              <div className='flex gap-2'>
-                <Skeleton className='h-6 w-20' />
-                <Skeleton className='h-6 w-24' />
-              </div>
-            </div>
-            <div className='flex gap-2'>
-              <Skeleton className='h-10 w-24' />
-              <Skeleton className='h-10 w-24' />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className='max-w-7xl mx-auto px-6 py-8'>
-        <div className='grid grid-cols-1 lg:grid-cols-12 gap-6'>
-          <div className='lg:col-span-4 space-y-6'>
-            <Skeleton className='aspect-video w-full' />
-            <Skeleton className='h-48 w-full' />
-          </div>
-          <div className='lg:col-span-8 space-y-6'>
-            <Skeleton className='h-64 w-full' />
-            <Skeleton className='h-48 w-full' />
-          </div>
-        </div>
-      </div>
     </div>
   )
 }

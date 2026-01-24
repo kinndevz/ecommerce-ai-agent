@@ -1,9 +1,8 @@
 import { useParams, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 import {
   Edit,
   Trash2,
-  Home,
-  ChevronRight,
   Globe,
   MapPin,
   Package,
@@ -33,8 +32,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/shared/components/ui/alert-dialog'
-import { useState } from 'react'
 import { useBrand, useDeleteBrand } from '@/hooks/useBrands'
+import { BrandPageHeader } from './BrandPageHeader'
+import { BrandDetailSkeleton } from './BrandDetailSkeleton'
+import { BrandNotFoundState } from './BrandNotFoundState'
+import {
+  formatBrandDate,
+  getBrandStatusBadgeClass,
+} from '../../helpers/brand.helpers'
 
 export default function ViewBrandUI() {
   const { id } = useParams<{ id: string }>()
@@ -55,100 +60,71 @@ export default function ViewBrandUI() {
   }
 
   if (isLoading) {
-    return <LoadingSkeleton />
+    return <BrandDetailSkeleton />
   }
 
   if (!brand) {
     return (
-      <div className='min-h-screen flex items-center justify-center'>
-        <div className='text-center'>
-          <Package className='w-16 h-16 mx-auto text-muted-foreground mb-4' />
-          <h2 className='text-2xl font-bold mb-2'>Brand Not Found</h2>
-          <p className='text-muted-foreground mb-6'>
-            The brand you're looking for doesn't exist or has been deleted.
-          </p>
-          <Button onClick={() => navigate('/admin/brands')}>
-            Back to Brands
-          </Button>
-        </div>
-      </div>
+      <BrandNotFoundState
+        actionLabel='Back to Brands'
+        onAction={() => navigate('/admin/brands')}
+      />
     )
   }
 
   return (
     <div className='min-h-screen'>
-      {/* Sticky Header */}
-      <div className='sticky top-0 z-20 bg-background/95 backdrop-blur border-b shadow-sm'>
-        <div className='max-w-7xl mx-auto px-6 py-4'>
-          {/* Breadcrumb */}
-          <div className='flex items-center gap-2 text-sm text-muted-foreground mb-3'>
-            <Home className='w-4 h-4' />
-            <ChevronRight className='w-4 h-4' />
-            <button
-              onClick={() => navigate('/admin/brands')}
-              className='hover:text-foreground transition-colors'
+      <BrandPageHeader
+        breadcrumbs={[
+          { label: 'Brands', onClick: () => navigate('/admin/brands') },
+          { label: brand.name },
+        ]}
+        title={brand.name}
+        meta={
+          <>
+            <Badge
+              variant='outline'
+              className={`${getBrandStatusBadgeClass(brand.is_active)} gap-1.5`}
             >
-              Brands
-            </button>
-            <ChevronRight className='w-4 h-4' />
-            <span className='text-foreground font-medium'>{brand.name}</span>
-          </div>
-
-          {/* Header Actions */}
-          <div className='flex items-center justify-between'>
-            <div>
-              <h1 className='text-2xl font-bold tracking-tight'>
-                {brand.name}
-              </h1>
-              <div className='flex items-center gap-2 mt-2'>
-                <Badge
-                  variant='outline'
-                  className={
-                    brand.is_active
-                      ? 'bg-green-500/10 text-green-600 border-green-500/20 gap-1.5'
-                      : 'bg-gray-500/10 text-gray-600 border-gray-500/20 gap-1.5'
-                  }
-                >
-                  {brand.is_active ? (
-                    <CheckCircle className='w-3.5 h-3.5' />
-                  ) : (
-                    <XCircle className='w-3.5 h-3.5' />
-                  )}
-                  {brand.is_active ? 'Active' : 'Inactive'}
-                </Badge>
-                {brand.country && (
-                  <Badge variant='secondary' className='gap-1.5'>
-                    <MapPin className='w-3.5 h-3.5' />
-                    {brand.country}
-                  </Badge>
-                )}
-                <Badge variant='outline' className='gap-1.5'>
-                  <Package className='w-3.5 h-3.5' />
-                  {brand.product_count} Products
-                </Badge>
-              </div>
-            </div>
-
-            <div className='flex items-center gap-2'>
-              <Button
-                variant='outline'
-                onClick={() => navigate(`/admin/brands/${id}/edit`)}
-              >
-                <Edit className='w-4 h-4 mr-2' />
-                Edit
-              </Button>
-              <Button
-                variant='destructive'
-                onClick={() => setShowDeleteDialog(true)}
-                disabled={brand.product_count > 0}
-              >
-                <Trash2 className='w-4 h-4 mr-2' />
-                Delete
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+              {brand.is_active ? (
+                <CheckCircle className='w-3.5 h-3.5' />
+              ) : (
+                <XCircle className='w-3.5 h-3.5' />
+              )}
+              {brand.is_active ? 'Active' : 'Inactive'}
+            </Badge>
+            {brand.country && (
+              <Badge variant='secondary' className='gap-1.5'>
+                <MapPin className='w-3.5 h-3.5' />
+                {brand.country}
+              </Badge>
+            )}
+            <Badge variant='outline' className='gap-1.5'>
+              <Package className='w-3.5 h-3.5' />
+              {brand.product_count} Products
+            </Badge>
+          </>
+        }
+        actions={
+          <>
+            <Button
+              variant='outline'
+              onClick={() => navigate(`/admin/brands/${id}/edit`)}
+            >
+              <Edit className='w-4 h-4 mr-2' />
+              Edit
+            </Button>
+            <Button
+              variant='destructive'
+              onClick={() => setShowDeleteDialog(true)}
+              disabled={brand.product_count > 0}
+            >
+              <Trash2 className='w-4 h-4 mr-2' />
+              Delete
+            </Button>
+          </>
+        }
+      />
 
       {/* Content */}
       <div className='max-w-7xl mx-auto px-6 py-8'>
@@ -192,11 +168,7 @@ export default function ViewBrandUI() {
                   <span className='text-sm text-muted-foreground'>Status</span>
                   <Badge
                     variant='outline'
-                    className={
-                      brand.is_active
-                        ? 'bg-green-500/10 text-green-600 border-green-500/20 font-medium'
-                        : 'bg-gray-500/10 text-gray-600 border-gray-500/20 font-medium'
-                    }
+                    className={`${getBrandStatusBadgeClass(brand.is_active)} font-medium`}
                   >
                     {brand.is_active ? 'Active' : 'Inactive'}
                   </Badge>
@@ -289,11 +261,7 @@ export default function ViewBrandUI() {
                       Created At
                     </div>
                     <p className='text-sm pl-6 font-medium'>
-                      {new Date(brand.created_at).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
-                      })}
+                      {formatBrandDate(brand.created_at)}
                     </p>
                   </div>
 
@@ -303,11 +271,7 @@ export default function ViewBrandUI() {
                       Updated At
                     </div>
                     <p className='text-sm pl-6 font-medium'>
-                      {new Date(brand.updated_at).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
-                      })}
+                      {formatBrandDate(brand.updated_at)}
                     </p>
                   </div>
                 </div>
@@ -356,44 +320,6 @@ export default function ViewBrandUI() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
-  )
-}
-
-function LoadingSkeleton() {
-  return (
-    <div className='min-h-screen'>
-      <div className='sticky top-0 z-20 bg-background border-b'>
-        <div className='max-w-7xl mx-auto px-6 py-4'>
-          <Skeleton className='h-4 w-64 mb-3' />
-          <div className='flex items-center justify-between'>
-            <div className='space-y-2'>
-              <Skeleton className='h-8 w-48' />
-              <div className='flex gap-2'>
-                <Skeleton className='h-6 w-20' />
-                <Skeleton className='h-6 w-24' />
-              </div>
-            </div>
-            <div className='flex gap-2'>
-              <Skeleton className='h-10 w-24' />
-              <Skeleton className='h-10 w-24' />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className='max-w-7xl mx-auto px-6 py-8'>
-        <div className='grid grid-cols-1 lg:grid-cols-12 gap-6'>
-          <div className='lg:col-span-4 space-y-6'>
-            <Skeleton className='aspect-square w-full' />
-            <Skeleton className='h-32 w-full' />
-          </div>
-          <div className='lg:col-span-8 space-y-6'>
-            <Skeleton className='h-64 w-full' />
-            <Skeleton className='h-48 w-full' />
-          </div>
-        </div>
-      </div>
     </div>
   )
 }
