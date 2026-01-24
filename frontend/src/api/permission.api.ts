@@ -1,81 +1,15 @@
 import api from '@/lib/api'
 import { API_ENDPOINT } from './services/constants'
-
-//  REQUEST INTERFACES
-export interface PermissionCreateRequest {
-  name: string
-  description?: string
-  path: string
-  method: string // GET, POST, PUT, DELETE, PATCH
-  module?: string
-}
-
-export interface PermissionUpdateRequest {
-  name?: string
-  description?: string
-  module?: string
-}
-
-export interface PermissionQueryParams {
-  page?: number
-  limit?: number
-  search?: string
-  module?: string
-  method?: string // GET, POST, PUT, DELETE, PATCH
-}
-
-//  RESPONSE DATA INTERFACES
-export interface PermissionData {
-  id: string
-  name: string
-  description: string
-  path: string
-  method: string
-  module: string
-  created_at: string
-  updated_at: string
-}
-
-export interface PermissionsByModule {
-  [moduleName: string]: PermissionData[]
-}
-
-//  RESPONSE WRAPPERS
-export interface ApiSuccessResponse<T = any> {
-  success: boolean
-  message: string
-  data: T
-  meta?: {
-    page: number
-    limit: number
-    total: number
-    total_pages: number
-  }
-}
-
-export interface PermissionResponse {
-  success: boolean
-  message: string
-  data: PermissionData
-}
-
-export interface PermissionListResponse {
-  success: boolean
-  message: string
-  data: PermissionData[]
-  meta?: {
-    page: number
-    limit: number
-    total: number
-    total_pages: number
-  }
-}
-
-export interface PermissionsByModuleResponse {
-  success: boolean
-  message: string
-  data: PermissionsByModule
-}
+import type {
+  ApiSuccessResponse,
+  PermissionCreateRequest,
+  PermissionData,
+  PermissionListResponse,
+  PermissionQueryParams,
+  PermissionResponse,
+  PermissionUpdateRequest,
+  PermissionsByModuleResponse,
+} from './types/permission.types'
 
 //  PERMISSION API METHODS
 export const permissionAPI = {
@@ -156,4 +90,14 @@ export const permissionAPI = {
   },
 }
 
-export type { PermissionData as Permission }
+export type {
+  PermissionCreateRequest,
+  PermissionUpdateRequest,
+  PermissionQueryParams,
+  PermissionData,
+  PermissionsByModuleResponse,
+  PermissionResponse,
+  PermissionListResponse,
+  ApiSuccessResponse,
+  PermissionData as Permission,
+} from './types/permission.types'

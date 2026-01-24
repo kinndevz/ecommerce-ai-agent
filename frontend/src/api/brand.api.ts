@@ -1,60 +1,14 @@
 import api from '@/lib/api'
 import { API_ENDPOINT } from './services/constants'
-
-// Request Interfaces
-interface CreateBrandRequest {
-  name: string
-  slug: string
-  description?: string | null
-  country?: string | null
-  website_url?: string | null
-  logo_url?: string | null
-}
-
-type UpdateBrandRequest = Partial<CreateBrandRequest>
-
-interface BrandQueryParams {
-  include_inactive?: boolean
-}
-
-// Response Data Interfaces
-interface Brand {
-  id: string
-  name: string
-  slug: string
-  description: string | null
-  country: string | null
-  website_url: string | null
-  logo_url: string | null
-  is_active: boolean
-  created_at: string
-  updated_at: string
-  product_count: number
-}
-
-interface BrandListData {
-  brands: Brand[]
-  total: number
-}
-
-interface BrandStats {
-  total_brands: number
-  active_brands: number
-  inactive_brands: number
-  top_brands: Array<{
-    name: string
-    product_count: number
-    [key: string]: any
-  }>
-}
-
-// Response Wrappers
-
-interface ApiSuccessResponse<T = any> {
-  success: boolean
-  message: string
-  data: T
-}
+import type {
+  ApiSuccessResponse,
+  Brand,
+  BrandListData,
+  BrandQueryParams,
+  BrandStats,
+  CreateBrandRequest,
+  UpdateBrandRequest,
+} from './types/brand.types'
 
 // BRAND API METHODS
 export const brandAPI = {
@@ -127,4 +81,4 @@ export type {
   BrandListData,
   BrandStats,
   ApiSuccessResponse,
-}
+} from './types/brand.types'

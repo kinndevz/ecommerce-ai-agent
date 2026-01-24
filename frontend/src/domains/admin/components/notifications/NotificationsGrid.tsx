@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import type { NotificationItem } from '@/api/notification.types'
+import type { NotificationItem } from '@/api/types/notification.types'
 import {
   formatNotificationTypeLabel,
   getNotificationStatusBadgeClass,

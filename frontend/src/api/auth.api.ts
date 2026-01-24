@@ -1,69 +1,14 @@
 import api from '@/lib/api'
 import { API_ENDPOINT } from './services/constants'
-interface LoginRequest {
-  email: string
-  password: string
-  totp_code?: string
-  otp_code?: string
-}
-
-interface RegisterRequest {
-  email: string
-  password: string
-  confirm_password: string
-  full_name: string
-  phone_number?: string
-  code: string
-}
-
-interface ForgotPasswordRequest {
-  email: string
-  code: string
-  new_password: string
-}
-
-interface SendOTPRequest {
-  email: string
-  type: 'REGISTER' | 'FORGOT_PASSWORD' | 'LOGIN' | 'DISABLE_2FA'
-}
-
-interface AuthResponse {
-  success: boolean
-  message: string
-  data: {
-    access_token: string
-    token_type: string
-  }
-}
-
-interface UserProfile {
-  id: string
-  email: string
-  full_name: string
-  phone_number: string | null
-  avatar: string | null
-  status: string
-  is_2fa_enabled: boolean
-  role: {
-    id: string
-    name: string
-    description: string
-    permissions?: Array<{
-      id: string
-      name: string
-      method: string
-      path: string
-    }>
-  }
-  created_at: string
-  updated_at: string
-}
-
-interface ApiSuccessResponse<T = any> {
-  success: boolean
-  message: string
-  data: T
-}
+import type {
+  ApiSuccessResponse,
+  AuthResponse,
+  ForgotPasswordRequest,
+  LoginRequest,
+  RegisterRequest,
+  SendOTPRequest,
+  UserProfile,
+} from './types/auth.types'
 
 // AUTH API METHODS
 export const authAPI = {
@@ -168,4 +113,4 @@ export type {
   AuthResponse,
   UserProfile,
   ApiSuccessResponse,
-}
+} from './types/auth.types'

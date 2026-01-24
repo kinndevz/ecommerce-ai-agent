@@ -7,15 +7,10 @@ import type {
   NotificationCreateRequest,
   NotificationItem,
   NotificationOnlineUsers,
+  NotificationQueryParams,
   NotificationStats,
   WsTicketData,
-} from './notification.types'
-
-export interface NotificationQueryParams {
-  page?: number
-  limit?: number
-  unreadOnly?: boolean
-}
+} from './types/notification.types'
 
 const buildNotificationParams = (params?: NotificationQueryParams) => {
   if (!params) return undefined
@@ -123,3 +118,19 @@ export const notificationAPI = {
     return data
   },
 }
+
+export type {
+  ApiSuccessResponse,
+  BroadcastNotificationRequest,
+  NotificationConnectionStatus,
+  NotificationCreateRequest,
+  NotificationItem,
+  NotificationOnlineUsers,
+  NotificationQueryParams,
+  NotificationStats,
+  WsTicketData,
+  NotificationWsMessage,
+  NotificationType,
+  ORDER_NOTIFICATION_TYPES,
+  UPDATE_NOTIFICATION_TYPES,
+} from './types/notification.types'

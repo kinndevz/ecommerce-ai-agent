@@ -10,7 +10,7 @@ import {
   ORDER_NOTIFICATION_TYPES,
   UPDATE_NOTIFICATION_TYPES,
   type NotificationType,
-} from '@/api/notification.types'
+} from '@/api/types/notification.types'
 import { Button } from '@/shared/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/shared/components/ui/tabs'
 import {

@@ -1,4 +1,4 @@
-import type { NotificationItem, NotificationStats } from '@/api/notification.types'
+import type { NotificationItem, NotificationStats } from '@/api/types/notification.types'
 import { getAccessToken } from '@/api/services/token.service'
 import { notificationAPI } from '@/api/notification.api'
 import { buildNotificationWsUrl } from './notification-url'

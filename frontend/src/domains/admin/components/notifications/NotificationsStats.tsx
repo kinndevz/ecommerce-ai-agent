@@ -1,7 +1,7 @@
 import { Bell, BellRing, CheckCircle2, Layers } from 'lucide-react'
 import { Card, CardContent } from '@/shared/components/ui/card'
 import { Skeleton } from '@/shared/components/ui/skeleton'
-import type { NotificationStats } from '@/api/notification.types'
+import type { NotificationStats } from '@/api/types/notification.types'
 
 interface NotificationsStatsProps {
   stats?: NotificationStats | null

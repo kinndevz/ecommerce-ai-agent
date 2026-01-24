@@ -10,11 +10,11 @@ import {
 } from '@tabler/icons-react'
 import { useNavigate } from 'react-router-dom'
 
-import type { NotificationItem, NotificationType } from '@/api/notification.types'
+import type { NotificationItem, NotificationType } from '@/api/types/notification.types'
 import {
   ORDER_NOTIFICATION_TYPES,
   UPDATE_NOTIFICATION_TYPES,
-} from '@/api/notification.types'
+} from '@/api/types/notification.types'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { formatWeekdayTime } from '@/domains/customer/helpers/formatters'
 import { cn } from '@/lib/utils'

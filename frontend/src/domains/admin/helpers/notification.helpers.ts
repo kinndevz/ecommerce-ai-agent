@@ -1,4 +1,4 @@
-import type { NotificationType } from '@/api/notification.types'
+import type { NotificationType } from '@/api/types/notification.types'
 
 export const formatNotificationTypeLabel = (type: NotificationType) =>
   type

@@ -39,6 +39,12 @@ export interface NotificationItem {
   created_at: string
 }
 
+export interface NotificationQueryParams {
+  page?: number
+  limit?: number
+  unreadOnly?: boolean
+}
+
 export interface NotificationStats {
   total_notifications: number
   unread_notifications: number

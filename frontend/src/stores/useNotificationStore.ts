@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { notificationAPI, type NotificationQueryParams } from '@/api/notification.api'
-import type { NotificationItem, NotificationStats } from '@/api/notification.types'
+import type { NotificationItem, NotificationStats } from '@/api/types/notification.types'
 import {
   NotificationSocket,
   type NotificationSocketCallbacks,

@@ -1,66 +1,16 @@
 import api from '@/lib/api'
 import { API_ENDPOINT } from './services/constants'
-
-// REQUEST INTERFACES
-interface TagCreateRequest {
-  name: string
-  slug: string
-}
-
-interface TagUpdateRequest {
-  name?: string
-  slug?: string
-}
-
-interface MergeTagsRequest {
-  source_tag_id: string
-  target_tag_id: string
-}
-
-// RESPONSE DATA INTERFACES
-interface TagData {
-  id: string
-  name: string
-  slug: string
-  created_at: string
-  updated_at: string
-  usage_count?: number
-}
-
-interface TagStats {
-  total_tags: number
-  most_used_tags: Array<{
-    name: string
-    product_count: number
-  }>
-  unused_tags_count: number
-}
-
-interface TagListData {
-  tags: TagData[]
-  total: number
-}
-
-interface MergeTagsData {
-  products_affected: number
-  target_tag: {
-    id: string
-    name: string
-    slug: string
-  }
-}
-
-// RESPONSE WRAPPERS
-interface ApiSuccessResponse<T = any> {
-  success: boolean
-  message: string
-  data: T
-}
-
-interface MessageResponse {
-  success: boolean
-  message: string
-}
+import type {
+  ApiSuccessResponse,
+  MergeTagsData,
+  MergeTagsRequest,
+  MessageResponse,
+  TagCreateRequest,
+  TagData,
+  TagListData,
+  TagStats,
+  TagUpdateRequest,
+} from './types/tag.types'
 
 // TAG API METHODS
 export const tagAPI = {
@@ -160,4 +110,4 @@ export type {
   MergeTagsData,
   ApiSuccessResponse,
   MessageResponse,
-}
+} from './types/tag.types'

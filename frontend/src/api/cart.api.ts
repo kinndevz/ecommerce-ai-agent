@@ -1,58 +1,12 @@
 import api from '@/lib/api'
 import { API_ENDPOINT } from './services/constants'
-
-// Request Interfaces
-interface AddToCartRequest {
-  product_id: string
-  variant_id?: string | null
-  quantity: number
-}
-
-interface UpdateCartItemRequest {
-  quantity: number
-}
-
-// Response Data Interfaces
-interface CartItem {
-  id: string
-  product_id: string
-  variant_id: string | null
-  quantity: number
-  price: number
-
-  // Product details
-  product_name: string
-  product_slug: string
-  product_image: string | null
-  variant_name: string | null
-
-  // Computed
-  subtotal: number
-
-  created_at: string
-  updated_at: string
-}
-
-interface CartData {
-  id: string
-  user_id: string
-  items: CartItem[]
-
-  // Summary
-  total_items: number
-  subtotal: number
-
-  created_at: string
-  updated_at: string
-}
-
-// Response Wrappers
-interface ApiSuccessResponse<T = any> {
-  success: boolean
-  message: string
-  data: T | null
-  meta?: Record<string, any> | null
-}
+import type {
+  AddToCartRequest,
+  ApiSuccessResponse,
+  CartData,
+  CartItem,
+  UpdateCartItemRequest,
+} from './types/cart.types'
 
 // CART API METHODS
 export const cartAPI = {
@@ -125,4 +79,4 @@ export type {
   CartItem,
   CartData,
   ApiSuccessResponse,
-}
+} from './types/cart.types'

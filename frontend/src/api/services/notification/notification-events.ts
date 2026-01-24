@@ -2,7 +2,7 @@ import type {
   NotificationWsMessage,
   NotificationItem,
   NotificationStats,
-} from '@/api/notification.types'
+} from '@/api/types/notification.types'
 
 const isObject = (value: unknown): value is Record<string, any> => {
   return typeof value === 'object' && value !== null

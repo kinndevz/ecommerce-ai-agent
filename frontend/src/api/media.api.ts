@@ -1,47 +1,14 @@
 import api from '@/lib/api'
 import { API_ENDPOINT } from './services/constants'
-
-// REQUEST INTERFACES
-interface PresignedUploadFileRequest {
-  filename: string
-  filesize: number
-}
-
-interface FileConfig {
-  filename: string
-  filesize: number
-}
-
-interface PresignedUploadFilesRequest {
-  files: FileConfig[]
-}
-
-interface DeleteFileRequest {
-  file_url: string
-}
-
-// RESPONSE DATA INTERFACES
-interface UploadedFileData {
-  url: string
-}
-
-interface PresignedUrlData {
-  presigned_url: string
-  url: string
-  expires_in: number
-}
-
-interface BatchPresignedUrlData extends PresignedUrlData {
-  filename?: string
-  [key: string]: any
-}
-
-// RESPONSE WRAPPERS
-interface ApiSuccessResponse<T = any> {
-  success: boolean
-  message: string
-  data: T
-}
+import type {
+  ApiSuccessResponse,
+  BatchPresignedUrlData,
+  DeleteFileRequest,
+  PresignedUploadFileRequest,
+  PresignedUploadFilesRequest,
+  PresignedUrlData,
+  UploadedFileData,
+} from './types/media.types'
 
 // MEDIA API METHODS
 export const mediaAPI = {
@@ -93,4 +60,4 @@ export type {
   PresignedUrlData,
   BatchPresignedUrlData,
   ApiSuccessResponse,
-}
+} from './types/media.types'

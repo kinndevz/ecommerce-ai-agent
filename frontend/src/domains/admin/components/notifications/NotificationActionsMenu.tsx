@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { CheckCircle, Eye, MoreHorizontal, Trash2 } from 'lucide-react'
 
-import type { NotificationItem } from '@/api/notification.types'
+import type { NotificationItem } from '@/api/types/notification.types'
 import { Button } from '@/shared/components/ui/button'
 import {
   DropdownMenu,
