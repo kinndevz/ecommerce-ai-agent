@@ -32,12 +32,13 @@ import {
 } from '@/shared/components/ui/tooltip'
 import { useToggleCategoryStatus } from '@/hooks/useCategories'
 import type { Category } from '@/api/category.api'
-import { buildCategoryTree, type CategoryTreeNode } from '../../helpers/category.helpers'
+import { buildCategoryTree } from '../../helpers/category.helpers'
+import type { CategoryTreeNode } from '@/api/category.api'
 
 interface CategoryTreeTableProps {
   categories: Category[]
   isLoading: boolean
-  onDelete: (category: Category) => void
+  onDelete: (category: CategoryTreeNode) => void
 }
 
 export function CategoryTreeTable({
@@ -192,7 +193,7 @@ interface CategoryRowProps {
   expandedIds: Set<string>
   onToggleExpand: (id: string) => void
   onToggleStatus: (id: string, e: MouseEvent<HTMLButtonElement>) => void
-  onDelete: (category: Category) => void
+  onDelete: (category: CategoryTreeNode) => void
   onView: (id: string) => void
   onEdit: (id: string) => void
 }
@@ -263,7 +264,7 @@ function CategoryRow({
                 className='text-[10px] px-1.5 py-0 h-5 shrink-0'
               >
                 <Layers className='w-3 h-3 mr-0.5' />
-                {category.children_count}
+                {category.children?.length}
               </Badge>
             )}
           </button>
@@ -395,7 +396,7 @@ function CategoryRow({
               <DropdownMenuItem
                 onClick={() => onDelete(category)}
                 disabled={
-                  category.product_count > 0 || category.children_count > 0
+                  category.product_count > 0 || (category.children?.length ?? 0) > 0
                 }
                 className='gap-2 cursor-pointer text-destructive focus:text-destructive disabled:cursor-not-allowed disabled:opacity-50'
               >

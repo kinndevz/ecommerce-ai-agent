@@ -16,7 +16,7 @@ import AdminLayout from '@/domains/admin/components/layout/AdminLayout'
 import { CategoryFilters } from '@/domains/admin/components/categories/CategoryFilters'
 import { CategoryTreeTable } from '@/domains/admin/components/categories/CategoryTreeTable'
 import { useCategoriesList, useDeleteCategory } from '@/hooks/useCategories'
-import type { Category } from '@/api/category.api'
+import type { Category, CategoryTreeNode } from '@/api/category.api'
 import { CategoryStatsCards } from '../../components/categories/CategoryStatCards'
 
 export default function CategoriesPage() {
@@ -24,7 +24,9 @@ export default function CategoriesPage() {
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState<'all' | 'active' | 'inactive'>('all')
   const [isRefreshing, setIsRefreshing] = useState(false)
-  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
+  const [categoryToDelete, setCategoryToDelete] = useState<
+    CategoryTreeNode | null
+  >(
     null
   )
 
@@ -72,7 +74,7 @@ export default function CategoriesPage() {
   }
 
   const hasProducts = categoryToDelete?.product_count || 0
-  const hasChildren = categoryToDelete?.children_count || 0
+  const hasChildren = categoryToDelete?.children?.length || 0
 
   return (
     <AdminLayout>
