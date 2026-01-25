@@ -119,6 +119,7 @@ class UnifiedAgent:
             "artifacts": artifacts,
             "metadata": {
                 "tool_calls": len(called_tools),
+                "called_tools": called_tools,
                 "has_artifacts": len(artifacts) > 0
             }
         }

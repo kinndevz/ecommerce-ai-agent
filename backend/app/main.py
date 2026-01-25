@@ -4,6 +4,7 @@ from fastapi.exceptions import RequestValidationError
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 import time
 from contextlib import asynccontextmanager
+from dotenv import load_dotenv
 from app.elastic.controller import init_elasticsearch
 from app.core.config import settings, close_checkpointer
 from app.routes import auth, account, users, role, brands, categories, products, tags, carts, orders, chat, media, chat_streaming, notifications, wishlist, reviews, analytics
@@ -17,6 +18,8 @@ from app.utils.exceptions import (
 from app.agent.mcp_manager import mcp_manager
 from app.agent.agent import get_unified_agent
 from app.core.redis_rate_limit_middleware import RedisRateLimitMiddleware
+
+load_dotenv()
 
 
 @asynccontextmanager

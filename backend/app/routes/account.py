@@ -6,6 +6,11 @@ from app.schemas.account import (
     UpdateUserProfileRequest,
     ChangePasswordRequest
 )
+from app.schemas.preferences import (
+    UserPreferenceResponse,
+    UpdateUserPreferenceRequest
+)
+from app.services.preferences import PreferenceService
 from app.utils.deps import get_current_active_user
 from app.db.database import get_db
 from sqlalchemy.orm import Session
@@ -30,3 +35,20 @@ def change_my_password(password_data: ChangePasswordRequest,
                        current_user: User = Depends(get_current_active_user),
                        db: Session = Depends(get_db)):
     return AccountService.change_password(db, current_user.id, password_data)
+
+
+@router.get("/me/preferences", response_model=UserPreferenceResponse)
+def get_my_preferences(
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    return PreferenceService.get_my_preferences(db, current_user.id)
+
+
+@router.put("/me/preferences", response_model=UserPreferenceResponse)
+def update_my_preferences(
+    payload: UpdateUserPreferenceRequest,
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    return PreferenceService.update_my_preferences(db, current_user.id, payload)

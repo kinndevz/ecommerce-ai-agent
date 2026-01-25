@@ -61,6 +61,12 @@ class Settings(BaseSettings):
     # Open api key
     OPENAI_API_KEY: str
 
+    # LangSmith tracing (LangChain env names)
+    LANGCHAIN_TRACING_V2: bool = False
+    LANGCHAIN_ENDPOINT: str = "https://api.smith.langchain.com"
+    LANGCHAIN_API_KEY: Optional[str] = None
+    LANGCHAIN_PROJECT: Optional[str] = None
+
     # Redis Cloud (Rate Limiting)
     REDIS_HOST: str
     REDIS_PORT: int
