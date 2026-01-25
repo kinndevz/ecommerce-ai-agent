@@ -1,0 +1,11 @@
+export { HeroSection } from './HeroSection'
+export { FeaturedProducts } from './FeaturedProducts'
+export { BrandShowcase } from './BrandShowcase'
+export { TestimonialsSection } from './TestimonialsSection'
+export { NewsletterSection } from './NewsletterSection'
+
+export * from './hero'
+export * from './featured-products'
+export * from './brand-showcase'
+export * from './testimonials'
+export * from './newsletter'

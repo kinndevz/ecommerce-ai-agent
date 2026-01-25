@@ -1,40 +1,36 @@
-import { NewsletterSection } from '@/domains/customer/components/home/NewsletterSection'
 import { Navbar } from '../components/layout/Navbar'
 import { HeroSection } from '../components/home/HeroSection'
-import { ShopByCategory } from '../components/home/ShopByCategory'
 import { FeaturedProducts } from '../components/home/FeaturedProducts'
-import { Sidebar } from '../components/layout/Sidebar'
+import { BrandShowcase } from '../components/home/BrandShowcase'
+import { TestimonialsSection } from '../components/home/TestimonialsSection'
+import { NewsletterSection } from '../components/home/NewsletterSection'
 import { Footer } from '../components/layout/Footer'
 
 export default function HomePage() {
   return (
-    <div className='min-h-screen bg-background relative overflow-hidden'>
+    <div className='min-h-screen bg-background'>
+      {/* Navigation */}
       <Navbar />
 
+      {/* Hero Section */}
       <HeroSection />
 
-      <div className='max-w-7xl mx-auto px-6 py-8'>
-        <div className='grid lg:grid-cols-[1fr_320px] gap-8'>
-          <main className='space-y-16'>
-            <div className='animate-in fade-in slide-in-from-bottom duration-1000'>
-              <ShopByCategory />
-            </div>
+      {/* Main Content */}
+      <main>
+        {/* Featured Products with Trending Section */}
+        <FeaturedProducts />
 
-            <FeaturedProducts />
-          </main>
+        {/* Brand Showcase */}
+        <BrandShowcase />
 
-          <aside className='hidden lg:block'>
-            <div className='sticky top-24 h-[calc(100vh-7rem)]'>
-              <Sidebar />
-            </div>
-          </aside>
-        </div>
-      </div>
+        {/* Customer Testimonials */}
+        <TestimonialsSection />
 
-      <div className='animate-in fade-in slide-in-from-bottom duration-1000'>
+        {/* Newsletter Subscription */}
         <NewsletterSection />
-      </div>
+      </main>
 
+      {/* Footer */}
       <Footer />
     </div>
   )
