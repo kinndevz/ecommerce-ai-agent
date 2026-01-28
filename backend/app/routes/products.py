@@ -41,6 +41,13 @@ def search_api(
         None, description="Từ khóa tìm kiếm (VD: kem chống nắng da dầu)"),
     min_price: Optional[float] = None,
     max_price: Optional[float] = None,
+    brand: Optional[str] = Query(None, description="Brand name"),
+    category: Optional[str] = Query(None, description="Category name"),
+    skin_types: Optional[List[str]] = Query(None, description="Skin types"),
+    concerns: Optional[List[str]] = Query(None, description="Skin concerns"),
+    benefits: Optional[List[str]] = Query(None, description="Benefits"),
+    tags: Optional[List[str]] = Query(None, description="Tags"),
+    is_available: Optional[bool] = Query(True, description="Only available products"),
     page: int = 1,
     limit: int = 20
 ):
@@ -51,6 +58,13 @@ def search_api(
         keyword=q,
         min_price=min_price,
         max_price=max_price,
+        brand=brand,
+        category=category,
+        skin_types=skin_types,
+        concerns=concerns,
+        benefits=benefits,
+        tags=tags,
+        is_available=is_available,
         page=page,
         limit=limit
     )

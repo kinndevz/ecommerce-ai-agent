@@ -61,6 +61,11 @@ class Settings(BaseSettings):
     # Open api key
     OPENAI_API_KEY: str
 
+    # Embeddings / RAG
+    EMBEDDING_MODEL: str = "text-embedding-3-small"
+    EMBEDDING_DIM: int = 1536
+    RAG_EMBED_BATCH_SIZE: int = 100
+
     # LangSmith tracing (LangChain env names)
     LANGCHAIN_TRACING_V2: bool = False
     LANGCHAIN_ENDPOINT: str = "https://api.smith.langchain.com"

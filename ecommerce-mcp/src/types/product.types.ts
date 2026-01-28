@@ -69,14 +69,88 @@ const ProductListItemSchema = z.object({
   tags: z.array(TagSchema).optional().default([]),
 });
 
-// TOOL INPUT SCHEMAS
-// Search Products Input
+// ============== TOOL INPUT SCHEMAS ==============
+
+/**
+ * Search Products Input Schema
+ * 
+ * IMPORTANT USAGE RULES:
+ * 1. `search` should contain ONLY the product type/category keywords
+ *    Good: "sữa rửa mặt", "kem dưỡng", "serum"
+ *    Bad: "sữa rửa mặt cerave da dầu giá dưới 300k" (use filters instead)
+ * 
+ * 2. Use structured filters for specific criteria:
+ *    - brand: specific brand name
+ *    - skin_types: user's skin type (e.g., "da dầu", "da khô")
+ *    - concerns: skin concerns (e.g., "mụn", "thâm nám")
+ *    - min_price/max_price: price range in VND
+ * 
+ * 3. Filters are combined with AND logic
+ * 4. All filter values should be in Vietnamese as stored in the database
+ */
 export const SearchProductsInputSchema = z.object({
   search: z
     .string()
-    .describe("Keywords like 'kem chống nắng laroche' or 'trị mụn da dầu'"),
-  min_price: z.number().nullable().optional(),
-  max_price: z.number().nullable().optional(),
+    .describe(
+      "Product type or category keywords ONLY. " +
+      "Example: 'sữa rửa mặt', 'kem chống nắng', 'serum vitamin c'. " +
+      "DO NOT include brand, skin type, or price in this field - use dedicated filters."
+    ),
+  brand: z
+    .string()
+    .nullable()
+    .optional()
+    .describe("Brand name to filter by. Example: 'cerave', 'la roche-posay', 'innisfree'"),
+  category: z
+    .string()
+    .nullable()
+    .optional()
+    .describe("Category name to filter by"),
+  skin_types: z
+    .array(z.string())
+    .nullable()
+    .optional()
+    .describe(
+      "Skin types to filter by (Vietnamese). " +
+      "Examples: 'da dầu', 'da khô', 'da hỗn hợp', 'da nhạy cảm', 'da thường'"
+    ),
+  concerns: z
+    .array(z.string())
+    .nullable()
+    .optional()
+    .describe(
+      "Skin concerns to filter by (Vietnamese). " +
+      "Examples: 'mụn', 'thâm nám', 'lão hóa', 'khô da', 'lỗ chân lông'"
+    ),
+  benefits: z
+    .array(z.string())
+    .nullable()
+    .optional()
+    .describe(
+      "Product benefits to filter by (Vietnamese). " +
+      "Examples: 'dưỡng ẩm', 'làm sáng da', 'chống lão hóa', 'trị mụn'"
+    ),
+  tags: z
+    .array(z.string())
+    .nullable()
+    .optional()
+    .describe("Tags to filter by"),
+  min_price: z
+    .number()
+    .nullable()
+    .optional()
+    .describe("Minimum price in VND"),
+  max_price: z
+    .number()
+    .nullable()
+    .optional()
+    .describe("Maximum price in VND"),
+  is_available: z
+    .boolean()
+    .nullable()
+    .optional()
+    .default(true)
+    .describe("Filter by availability. Default: true"),
   page: z.number().nullable().default(1),
   limit: z.number().nullable().default(10),
 });

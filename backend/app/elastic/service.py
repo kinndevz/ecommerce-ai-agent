@@ -1,3 +1,5 @@
+from typing import Iterable, List, Optional
+
 from app.models.product import Product
 from app.elastic.config import es_client, PRODUCT_INDEX
 
@@ -50,7 +52,20 @@ def delete_product(product_id: str):
         pass
 
 
-def search_products_query(keyword, min_price, max_price, limit, page):
+def search_products_query(
+    keyword,
+    min_price,
+    max_price,
+    limit,
+    page,
+    brand: Optional[Iterable[str]] = None,
+    category: Optional[Iterable[str]] = None,
+    skin_types: Optional[Iterable[str]] = None,
+    concerns: Optional[Iterable[str]] = None,
+    benefits: Optional[Iterable[str]] = None,
+    tags: Optional[Iterable[str]] = None,
+    is_available: Optional[bool] = True
+):
     """Logic Query DSL"""
     query_conditions = []
 
@@ -58,27 +73,88 @@ def search_products_query(keyword, min_price, max_price, limit, page):
         query_conditions.append({
             "multi_match": {
                 "query": keyword,
-                "fields": ["name^3", "brand_name^2", "category_name", "concerns", "skin_types", "tags", "description"],
+                "fields": [
+                    "name^3",
+                    "brand_name^2",
+                    "category_name^2",
+                    "concerns",
+                    "skin_types",
+                    "benefits",
+                    "tags",
+                    "description"
+                ],
                 "fuzziness": "AUTO",
                 "operator": "and"
             }
         })
 
-    filter_conditions = [{"term": {"is_available": True}}]
-    if min_price:
+    filter_conditions = []
+    if is_available is not None:
+        filter_conditions.append({"term": {"is_available": is_available}})
+
+    if min_price is not None:
         filter_conditions.append({"range": {"price": {"gte": min_price}}})
-    if max_price:
+    if max_price is not None:
         filter_conditions.append({"range": {"price": {"lte": max_price}}})
+
+    brand_values = _normalize_list(brand)
+    if brand_values:
+        filter_conditions.append(_build_terms_filter("brand_name.keyword", brand_values))
+
+    category_values = _normalize_list(category)
+    if category_values:
+        filter_conditions.append(_build_terms_filter("category_name.keyword", category_values))
+
+    skin_type_values = _normalize_list(skin_types)
+    if skin_type_values:
+        filter_conditions.append(_build_terms_filter("skin_types", skin_type_values))
+
+    concern_values = _normalize_list(concerns)
+    if concern_values:
+        filter_conditions.append(_build_terms_filter("concerns.keyword", concern_values))
+
+    benefit_values = _normalize_list(benefits)
+    if benefit_values:
+        filter_conditions.append(_build_terms_filter("benefits.keyword", benefit_values))
+
+    tag_values = _normalize_list(tags)
+    if tag_values:
+        filter_conditions.append(_build_terms_filter("tags.keyword", tag_values))
 
     body = {
         "from": (page - 1) * limit,
         "size": limit,
         "query": {
             "bool": {
-                "must": query_conditions if query_conditions else {"match_all": {}},
-                "filter": filter_conditions
+                "must": query_conditions if query_conditions else [{"match_all": {}}],
+                "filter": filter_conditions or []
             }
         }
     }
 
     return es_client.search(index=PRODUCT_INDEX, body=body)
+
+
+def _normalize_list(values: Optional[Iterable[str]]) -> List[str]:
+    if not values:
+        return []
+
+    if isinstance(values, str):
+        items = [item for item in values.split(",") if item]
+    else:
+        items = list(values)
+
+    cleaned: List[str] = []
+    for item in items:
+        if item is None:
+            continue
+        value = str(item).strip().lower()
+        if value:
+            cleaned.append(value)
+    return cleaned
+
+
+def _build_terms_filter(field: str, values: List[str]) -> dict:
+    if len(values) == 1:
+        return {"term": {field: values[0]}}
+    return {"terms": {field: values}}

@@ -56,6 +56,8 @@ export interface MessageResponse {
 export interface ChatMessageRequest {
   message: string
   conversation_id?: string
+  /** If false, message will be hidden from UI (used for system-triggered prompts like create_order) */
+  is_active?: boolean
 }
 
 export interface ChatResponse {

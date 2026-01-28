@@ -37,7 +37,8 @@ export class StreamingClient {
   async streamMessage(
     message: string,
     conversationId: string | null,
-    callbacks: StreamCallbacks
+    callbacks: StreamCallbacks,
+    options?: { isActive?: boolean }
   ): Promise<void> {
     const accessToken = getAccessToken()
 
@@ -58,6 +59,7 @@ export class StreamingClient {
         body: JSON.stringify({
           message,
           conversation_id: conversationId,
+          is_active: options?.isActive ?? true,
         }),
       })
 

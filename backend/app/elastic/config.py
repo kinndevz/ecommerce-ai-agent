@@ -25,22 +25,92 @@ def create_product_index():
         es_client.indices.create(
             index=PRODUCT_INDEX,
             body={
+                "settings": {
+                    "analysis": {
+                        "normalizer": {
+                            "lowercase_normalizer": {
+                                "type": "custom",
+                                "filter": ["lowercase"]
+                            }
+                        }
+                    }
+                },
                 "mappings": {
                     "properties": {
                         "id": {"type": "keyword"},
-                        "name": {"type": "text", "analyzer": "standard"},
+                        "name": {
+                            "type": "text",
+                            "analyzer": "standard",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword",
+                                    "normalizer": "lowercase_normalizer"
+                                }
+                            }
+                        },
                         "slug": {"type": "keyword"},
                         "price": {"type": "double"},
                         "stock_quantity": {"type": "integer"},
                         "product_image": {"type": "text"},
                         "is_available": {"type": "boolean"},
-                        "brand_name": {"type": "text"},
-                        "category_name": {"type": "text"},
-                        "concerns": {"type": "text"},
-                        "skin_types": {"type": "keyword"},
-                        "benefits": {"type": "text"},
-                        "tags": {"type": "text"},
-                        "description": {"type": "text"},
+                        "brand_name": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword",
+                                    "normalizer": "lowercase_normalizer"
+                                }
+                            }
+                        },
+                        "category_name": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword",
+                                    "normalizer": "lowercase_normalizer"
+                                }
+                            }
+                        },
+                        "concerns": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword",
+                                    "normalizer": "lowercase_normalizer"
+                                }
+                            }
+                        },
+                        "skin_types": {
+                            "type": "keyword",
+                            "normalizer": "lowercase_normalizer"
+                        },
+                        "benefits": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword",
+                                    "normalizer": "lowercase_normalizer"
+                                }
+                            }
+                        },
+                        "tags": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword",
+                                    "normalizer": "lowercase_normalizer"
+                                }
+                            }
+                        },
+                        "description": {
+                            "type": "text",
+                            "fields": {
+                                "keyword": {
+                                    "type": "keyword",
+                                    "normalizer": "lowercase_normalizer"
+                                }
+                            }
+                        },
                         "rating_average": {"type": "float"}
                     }
                 }

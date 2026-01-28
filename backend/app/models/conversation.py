@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Text, ForeignKey, DateTime
+from sqlalchemy import Column, String, Text, ForeignKey, DateTime, Boolean
 from sqlalchemy.dialects.postgresql import JSONB, ARRAY
 from sqlalchemy.orm import relationship
 from decimal import Decimal
@@ -43,6 +43,8 @@ class Message(Base, TimestampMixin):
     content = Column(Text, nullable=False)
     # Tool calls, citations, etc.
     message_metadata = Column(JSONB, nullable=True)
+    # False = hidden from UI (e.g., system prompts from frontend)
+    is_active = Column(Boolean, default=True, nullable=False)
 
     # Relationships
     conversation = relationship("Conversation", back_populates="messages")

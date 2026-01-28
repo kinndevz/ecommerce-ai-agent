@@ -36,3 +36,27 @@ export function cleanParams<T extends Record<string, any>>(
     Object.entries(params).filter(([_, v]) => v != null)
   ) as Partial<T>;
 }
+
+/**
+ * Serialize params with repeated keys for arrays
+ */
+export function serializeParams(params: Record<string, any>): string {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value == null) {
+      return;
+    }
+    if (Array.isArray(value)) {
+      value.forEach((item) => {
+        if (item != null) {
+          searchParams.append(key, String(item));
+        }
+      });
+      return;
+    }
+    searchParams.append(key, String(value));
+  });
+
+  return searchParams.toString();
+}

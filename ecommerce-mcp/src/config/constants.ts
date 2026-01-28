@@ -28,6 +28,11 @@ export const TOOL_METADATA = {
     category: "order",
     requires_auth: true,
   },
+  PREFERENCE_MANAGEMENT: {
+    agent: "profile",
+    category: "preferences",
+    requires_auth: true,
+  },
 } as const;
 
 export const HTTP_HEADERS = {

@@ -46,7 +46,8 @@ async def stream_message(
             conversation_id=conversation_id,
             message_content=data.message,
             chat_service=chat_service,
-            auth_token=token
+            auth_token=token,
+            is_active=data.is_active
         ),
         media_type="text/event-stream",
         headers={
@@ -98,7 +99,8 @@ async def stream_new_conversation(
             conversation_id=conversation_id,
             message_content=data.message,
             chat_service=chat_service,
-            auth_token=token
+            auth_token=token,
+            is_active=data.is_active
         ),
         media_type="text/event-stream",
         headers={

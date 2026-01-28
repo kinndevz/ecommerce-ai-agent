@@ -135,7 +135,7 @@ ${JSON.stringify(payload, null, 2)}
 \`\`\``
 
     setIsCheckoutOpen(false)
-    await sendMessageStreaming(orderPrompt, { suppressUserMessage: true })
+    await sendMessageStreaming(orderPrompt, { suppressUserMessage: true, isActive: false })
   }
 
   if (!cartData || cartData.items.length === 0) {

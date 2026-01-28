@@ -30,7 +30,8 @@ async def send_message(
         user.id,
         data.message,
         data.conversation_id,
-        auth_token=token
+        auth_token=token,
+        is_active=data.is_active
     )
 
 

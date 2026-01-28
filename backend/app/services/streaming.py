@@ -52,7 +52,8 @@ class StreamingService:
         conversation_id: str,
         message_content: str,
         chat_service: Any,
-        auth_token: Optional[str] = None
+        auth_token: Optional[str] = None,
+        is_active: bool = True
     ) -> AsyncGenerator[str, None]:
         """
         Stream agent response as Server-Sent Events with artifacts support
@@ -73,7 +74,8 @@ class StreamingService:
                 user_id=user_id,
                 conversation_id=conversation_id,
                 message_content=message_content,
-                auth_token=auth_token
+                auth_token=auth_token,
+                is_active=is_active
             )
 
             # Extract artifacts and content

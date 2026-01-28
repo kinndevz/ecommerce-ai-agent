@@ -12,6 +12,8 @@ class ChatRequest(BaseModel):
                          description="User message")
     conversation_id: Optional[str] = Field(
         None, description="Existing conversation ID (optional for new conversation)")
+    is_active: bool = Field(
+        True, description="If False, message will be hidden from UI (used for system-triggered prompts)")
 
     class Config(BaseConfig):
         pass

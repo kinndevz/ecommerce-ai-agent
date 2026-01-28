@@ -8,3 +8,6 @@ export * from "./cart.types";
 
 // Order Types
 export * from "./order.types";
+
+// Preferences Types
+export * from "./preferences.types";

@@ -22,7 +22,7 @@ interface ChatState {
   sendMessage: (message: string) => Promise<void>
   sendMessageStreaming: (
     message: string,
-    options?: { suppressUserMessage?: boolean }
+    options?: { suppressUserMessage?: boolean; isActive?: boolean }
   ) => Promise<void>
   startNewConversation: () => void
   fetchConversationDetail: (id: string) => Promise<void>
@@ -193,6 +193,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
     try {
       const client = new StreamingClient()
+      const isActive = options?.isActive ?? true
 
       await client.streamMessage(message, conversationId, {
         onStatus: (statusMessage) => {
@@ -270,7 +271,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
             },
           }))
         },
-      })
+      }, { isActive })
     } catch (error: any) {
       toast.error(error.message || 'Streaming failed')
 

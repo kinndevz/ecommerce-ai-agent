@@ -4,6 +4,7 @@ import {
   registerProductTools,
   registerCartTools,
   registerOrderTools,
+  registerPreferencesTools,
 } from "./tools";
 
 /**
@@ -32,6 +33,10 @@ export class EcommerceMCP extends McpAgent {
     // Register Order Tools
     registerOrderTools(this.server);
     console.log("✅ Order tools registered (4 tools)");
+
+    // Register Preferences Tools
+    registerPreferencesTools(this.server);
+    console.log("✅ Preferences tools registered (2 tools)");
 
     console.log("🎉 Ecommerce MCP Server ready!");
   }

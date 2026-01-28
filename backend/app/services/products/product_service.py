@@ -19,10 +19,35 @@ from app.elastic.service import search_products_query
 
 class ProductService:
     @staticmethod
-    def search_products_with_es(keyword, min_price, max_price, limit, page):
+    def search_products_with_es(
+        keyword,
+        min_price,
+        max_price,
+        limit,
+        page,
+        brand=None,
+        category=None,
+        skin_types=None,
+        concerns=None,
+        benefits=None,
+        tags=None,
+        is_available=True
+    ):
         try:
             response = search_products_query(
-                keyword, min_price, max_price, limit, page)
+                keyword=keyword,
+                min_price=min_price,
+                max_price=max_price,
+                limit=limit,
+                page=page,
+                brand=brand,
+                category=category,
+                skin_types=skin_types,
+                concerns=concerns,
+                benefits=benefits,
+                tags=tags,
+                is_available=is_available
+            )
 
             total = response['hits']['total']['value']
             hits = response['hits']['hits']

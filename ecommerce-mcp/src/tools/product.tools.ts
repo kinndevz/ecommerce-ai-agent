@@ -16,7 +16,7 @@ import {
   formatSuccessResponse,
   formatErrorResponse,
 } from "../utils/api";
-import { createToolDescription, cleanParams } from "../utils/helper";
+import { createToolDescription, cleanParams, serializeParams } from "../utils/helper";
 
 /**
  * Register all product-related tools
@@ -29,44 +29,48 @@ export function registerProductTools(server: McpServer) {
 
 /**
  * Tool: search_products
- * Search for cosmetics products with filters
+ * 
+ * Search for cosmetics products with structured filters.
+ * 
+ * IMPORTANT USAGE:
+ * - Put product type ONLY in `search` (e.g., "sữa rửa mặt", "serum")
+ * - Use `brand`, `skin_types`, `concerns`, `min_price`, `max_price` for filtering
+ * - Do NOT combine everything into the search string
+ * 
+ * Example for "tìm sữa rửa mặt cerave cho da dầu giá dưới 300k":
+ * - search: "sữa rửa mặt"
+ * - brand: "cerave"
+ * - skin_types: ["oily"]
+ * - max_price: 300000
  */
 function registerSearchProducts(server: McpServer) {
   server.registerTool(
     "search_products",
     {
-      title: "Search products (AI Powered)",
+      title: "Search Cosmetics Products",
       description: createToolDescription(
         TOOL_METADATA.PRODUCT_SEARCH,
-        "Search for cosmetics products with keyword, price range, and pagination"
+        "Search for cosmetics products with keyword and structured filters. " +
+        "Put product type in 'search', use dedicated filter fields for brand, skin type, concerns, and price."
       ),
       inputSchema: SearchProductsInputSchema,
       outputSchema: FlatProductListOutput,
     },
     async (args: SearchProductsInput) => {
       try {
-        console.log(`[MCP] Searching products: ${args.search}`);
+        console.log(`[MCP] Searching products - search: "${args.search}", brand: ${args.brand}, skin_types: ${args.skin_types}`);
 
-        // Clean parameters (remove null/undefined)
-        const params = cleanParams({
-          q: args.search,
-          min_price: args.min_price,
-          max_price: args.max_price,
-          page: args.page,
-          limit: args.limit,
-        });
+        const params = buildSearchParams(args);
 
         const response = await apiClient.get("/products/search", {
           params,
+          paramsSerializer: serializeParams,
           timeout: API_CONFIG.SEARCH_TIMEOUT,
         });
-        console.log(">>>>>> response", response);
 
         if (!response.success || !response.data) {
           throw new Error("Invalid API response structure");
         }
-
-        console.log(">>>> formatResponse", formatSuccessResponse(response));
 
         return formatSuccessResponse(response);
       } catch (error: any) {
@@ -74,6 +78,27 @@ function registerSearchProducts(server: McpServer) {
       }
     }
   );
+}
+
+/**
+ * Build search params from tool input.
+ * Separates concern from implementation detail.
+ */
+function buildSearchParams(args: SearchProductsInput): Record<string, any> {
+  return cleanParams({
+    q: args.search,
+    brand: args.brand,
+    category: args.category,
+    skin_types: args.skin_types?.length ? args.skin_types : undefined,
+    concerns: args.concerns?.length ? args.concerns : undefined,
+    benefits: args.benefits?.length ? args.benefits : undefined,
+    tags: args.tags?.length ? args.tags : undefined,
+    min_price: args.min_price,
+    max_price: args.max_price,
+    is_available: args.is_available,
+    page: args.page,
+    limit: args.limit,
+  });
 }
 
 /**
