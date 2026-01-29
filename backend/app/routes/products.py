@@ -47,7 +47,8 @@ def search_api(
     concerns: Optional[List[str]] = Query(None, description="Skin concerns"),
     benefits: Optional[List[str]] = Query(None, description="Benefits"),
     tags: Optional[List[str]] = Query(None, description="Tags"),
-    is_available: Optional[bool] = Query(True, description="Only available products"),
+    is_available: Optional[bool] = Query(
+        True, description="Only available products"),
     page: int = 1,
     limit: int = 20
 ):
@@ -204,6 +205,15 @@ def get_product_detail(
 ):
     """Get product detail by ID - Public endpoint"""
     return ProductService.get_product_by_id(db, product_id)
+
+
+@router.get("/{product_slug}/slug", response_model=ProductResponse)
+def get_product_detail_by_slug(
+    product_slug: str,
+    db: Session = Depends(get_db)
+):
+    """Get product detail by SLUG - Public endpoint"""
+    return ProductService.get_product_by_slug(db, product_slug)
 
 
 @router.post("", response_model=ProductResponse, status_code=201)

@@ -166,6 +166,28 @@ class ProductService:
         return ResponseHandler.get_single_success("Product", product_id, product_dict)
 
     @staticmethod
+    def get_product_by_slug(db: Session, product_slug: str):
+        """Get product detail"""
+
+        product = db.query(Product).options(
+            joinedload(Product.brand),
+            joinedload(Product.category),
+            joinedload(Product.images),
+            joinedload(Product.variants),
+            joinedload(Product.tags)
+        ).filter(
+            Product.slug == product_slug,
+            Product.deleted_at.is_(None)
+        ).first()
+
+        if not product:
+            ResponseHandler.not_found_error("Product", product_slug)
+
+        product_dict = format_product_detail(product)
+
+        return ResponseHandler.get_single_success("Product", product_slug, product_dict)
+
+    @staticmethod
     def create_product(db: Session, data: ProductCreateRequest, created_by_id: str):
         #  VALIDATIONS
         if db.query(Product).filter(

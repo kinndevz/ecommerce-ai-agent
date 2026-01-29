@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom'
 import { Flame, ArrowRight } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
-import { ProductCardCompact, type ProductCardData } from '@/domains/customer/components/product'
+import {
+  ProductCardCompact,
+  type ProductCardData,
+} from '../../product/ProductCard'
 
 interface TrendingSectionProps {
   products: ProductCardData[]

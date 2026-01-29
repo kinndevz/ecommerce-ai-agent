@@ -18,14 +18,14 @@ export const API_ENDPOINT = {
   TOGGLE_CATEGORY_STATUS: (id: string) => `/categories/${id}/toggle-status`,
   MOVE_CATEGORY: (id: string) => `/categories/${id}/move`,
 
-  // Cart Endpoints
+  // Cart Routes
   GET_CART: '/cart',
   ADD_TO_CART: '/cart/items',
   CLEAR_CART: '/cart',
   UPDATE_CART_ITEM: (id: string) => `/cart/items/${id}`,
   REMOVE_CART_ITEM: (id: string) => `/cart/items/${id}`,
 
-  // Order Endpoints
+  // Order Routes
   CREATE_ORDER: '/orders',
   GET_MY_ORDERS: '/orders',
   GET_ALL_ORDERS_ADMIN: '/orders/all',
@@ -35,7 +35,16 @@ export const API_ENDPOINT = {
   CANCEL_ORDER: (id: string) => `/orders/${id}/cancel`,
   UPDATE_ORDER_STATUS: (id: string) => `/orders/${id}/status`,
 
-  // Tags
+  // Review Routes
+  CREATE_REVIEW: (product_id: string) => `/products/${product_id}/reviews`,
+  GET_ALL_PRODCT_REVIEWS: (product_id: string) =>
+    `/products/${product_id}/reviews`,
+  GET_RATING_SUMMARY: (product_id: string) =>
+    `/products/${product_id}/rating-summary`,
+  UPDATE_REVIEW: (review_id: string) => `/reviews/${review_id}`,
+  DELETE_REVIEW: (review_id: string) => `/reviews/${review_id}`,
+
+  // Tags Routes
   TAGS: '/tags',
   TAG_POPULAR: '/tags/popular',
   TAG_STATS: '/tags/stats',
@@ -77,17 +86,18 @@ export const API_ENDPOINT = {
   PRODUCT_LOW_STOCK: '/products/low-stock',
   PRODUCT_OUT_OF_STOCK: '/products/out-of-stock',
 
-  // Discovery
+  // Discovery Routes
   PRODUCT_FEATURED: '/products/featured',
   PRODUCT_TRENDING: '/products/trending',
   PRODUCT_NEW_ARRIVALS: '/products/new-arrivals',
   PRODUCT_ON_SALE: '/products/on-sale',
 
-  // Dynamic URL Generators
+  // Dynamic URL Generators Routes
   PRODUCT_BY_BRAND: (slug: string) => `/products/by-brand/${slug}`,
   PRODUCT_BY_CATEGORY: (slug: string) => `/products/by-category/${slug}`,
   PRODUCT_RELATED: (id: string) => `/products/${id}/related`,
   PRODUCT_DETAIL: (id: string) => `/products/${id}`,
+  PRODUCT_DETAIL_SLUG: (slug: string) => `/products/${slug}/slug`,
 
   // Stock & Toggles
   PRODUCT_UPDATE_STOCK: (id: string) => `/products/${id}/stock`,
@@ -95,17 +105,17 @@ export const API_ENDPOINT = {
     `/products/${id}/toggle-availability`,
   PRODUCT_TOGGLE_FEATURED: (id: string) => `/products/${id}/toggle-featured`,
 
-  // Tags
+  // Tags Routes
   PRODUCT_TAGS: (id: string) => `/products/${id}/tags`,
   PRODUCT_REMOVE_TAG: (id: string, tagId: string) =>
     `/products/${id}/tags/${tagId}`,
 
-  // Images
+  // Images Routes
   PRODUCT_IMAGES: (id: string) => `/products/${id}/images`,
   PRODUCT_IMAGE_DETAIL: (id: string, imageId: string) =>
     `/products/${id}/images/${imageId}`,
 
-  // Variants
+  // Variants Routes
   PRODUCT_VARIANTS: (id: string) => `/products/${id}/variants`,
   PRODUCT_VARIANT_DETAIL: (id: string, variantId: string) =>
     `/products/${id}/variants/${variantId}`,
@@ -128,7 +138,7 @@ export const API_ENDPOINT = {
   PROFILE: '/me',
   UPDATE_PROFILE: '/me',
 
-  // CHAT ENDPOINTS
+  // CHAT Routes
   CHAT: '/chat',
   CHAT_CONVERSATIONS: '/chat/conversations',
   CHAT_CONVERSATION_DETAIL: (id: string) => `/chat/conversations/${id}`,

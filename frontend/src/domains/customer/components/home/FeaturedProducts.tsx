@@ -1,8 +1,12 @@
 import { useState, useCallback } from 'react'
 import { Sparkles } from 'lucide-react'
 import { useFeaturedProducts, useTrendingProducts } from '@/hooks/useProducts'
-import { ProductCard, normalizeProduct } from '@/domains/customer/components/product'
-import { SectionHeader, ProductSkeleton, TrendingSection } from './featured-products'
+import {
+  SectionHeader,
+  ProductSkeleton,
+  TrendingSection,
+} from './featured-products'
+import ProductCard, { normalizeProduct } from '../product/ProductCard'
 
 export const FeaturedProducts = () => {
   const { data, isLoading } = useFeaturedProducts(6)

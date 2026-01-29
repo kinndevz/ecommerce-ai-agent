@@ -8,6 +8,7 @@ import HomePage from './domains/customer/pages/HomePage'
 import MaintenancePage from './shared/pages/MaintenancePage'
 import NotFoundPage from './shared/pages/NotFoundPage'
 import ChatPage from './domains/customer/pages/ChatPage'
+import ProductDetailPage from './domains/customer/pages/ProductDetaiPage'
 
 function App() {
   const isMaintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === 'true'
@@ -33,8 +34,10 @@ function App() {
 
           <Route path='/chat' element={<ChatPage />} />
 
+          <Route path='/products/:slug' element={<ProductDetailPage />} />
+
           {adminRoutes}
-          
+
           {/* Error routes */}
           <Route path='/maintenance' element={<MaintenancePage />} />
 

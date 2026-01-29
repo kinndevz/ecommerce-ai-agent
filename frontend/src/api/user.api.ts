@@ -1,17 +1,12 @@
 import api from '@/lib/api'
-import { API_ENDPOINT } from './services/constants'
+import { API_ENDPOINT, type UserStatus } from './services/constants'
 import type {
   ApiSuccessResponse,
   CreateUserRequest,
-  PaginationMeta,
-  Permission,
-  Role,
   UpdateUserRequest,
   User,
-  UserIncludeRole,
   UserListResponse,
   UserQueryParams,
-  UserRoleStats,
   UserStats,
 } from './types/user.types'
 

@@ -9,7 +9,8 @@ const currencyFormatter = new Intl.NumberFormat('vi-VN', {
 
 const VIETNAM_TIMEZONE = 'Asia/Ho_Chi_Minh'
 
-export const formatCurrencyVnd = (value: number) => currencyFormatter.format(value)
+export const formatCurrencyVnd = (value: number) =>
+  currencyFormatter.format(value)
 
 const formatInVietnamTime = (value: string | Date, pattern: string) => {
   const input =
@@ -25,6 +26,11 @@ const formatInVietnamTime = (value: string | Date, pattern: string) => {
 
   if (!isValid(date)) return String(value)
   return formatInTimeZone(date, VIETNAM_TIMEZONE, pattern, { locale: vi })
+}
+
+export const calculateDiscount = (original: number, sale: number) => {
+  if (!original || !sale) return 0
+  return Math.round(((original - sale) / original) * 100)
 }
 
 export const formatShortDate = (value: string | Date) =>

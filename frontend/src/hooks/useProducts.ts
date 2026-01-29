@@ -24,6 +24,7 @@ export const productKeys = {
     [...productKeys.all, 'search', filters] as const,
   details: () => [...productKeys.all, 'detail'] as const,
   detail: (id: string) => [...productKeys.details(), id] as const,
+  detail_slug: (slug: string) => [...productKeys.details(), slug] as const,
   variants: (productId: string) =>
     [...productKeys.detail(productId), 'variants'] as const,
   stats: () => [...productKeys.all, 'stats'] as const,
@@ -39,7 +40,13 @@ export const productKeys = {
   byBrand: (brandSlug: string, page: number, limit: number) =>
     [...productKeys.discovery(), 'by-brand', brandSlug, page, limit] as const,
   byCategory: (categorySlug: string, page: number, limit: number) =>
-    [...productKeys.discovery(), 'by-category', categorySlug, page, limit] as const,
+    [
+      ...productKeys.discovery(),
+      'by-category',
+      categorySlug,
+      page,
+      limit,
+    ] as const,
   related: (productId: string, limit: number) =>
     [...productKeys.discovery(), 'related', productId, limit] as const,
   inventory: () => [...productKeys.all, 'inventory'] as const,
@@ -71,6 +78,14 @@ export function useProduct(id: string) {
     queryKey: productKeys.detail(id),
     queryFn: () => productAPI.getById(id),
     enabled: !!id,
+  })
+}
+
+export function useProductBySlug(slug: string) {
+  return useQuery({
+    queryKey: productKeys.detail_slug(slug),
+    queryFn: () => productAPI.getBySlug(slug),
+    enabled: !!slug,
   })
 }
 

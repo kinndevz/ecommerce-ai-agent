@@ -3,25 +3,19 @@ import { API_ENDPOINT } from './services/constants'
 import type {
   AddTagsRequest,
   ApiSuccessResponse,
-  BrandSimple,
-  CategorySimple,
   CreateProductRequest,
   ProductDetail,
   ProductImageCreateRequest,
   ProductImageData,
-  ProductImageInput,
   ProductImageUpdateRequest,
   ProductListData,
-  ProductListItem,
   ProductListMeta,
   ProductQueryParams,
   ProductStats,
   ProductVariantCreateRequest,
   ProductVariantData,
-  ProductVariantInput,
   ProductVariantUpdateRequest,
   SearchQueryParams,
-  TagSimple,
   UpdateProductRequest,
   UpdateStockRequest,
 } from './types/product.types'
@@ -33,10 +27,7 @@ export const productAPI = {
   ): Promise<ApiSuccessResponse<ProductListData, ProductListMeta>> => {
     const { data } = await api.get<
       ApiSuccessResponse<ProductListData, ProductListMeta>
-    >(
-      API_ENDPOINT.PRODUCT_SEARCH,
-      { params }
-    )
+    >(API_ENDPOINT.PRODUCT_SEARCH, { params })
     return data
   },
 
@@ -45,10 +36,7 @@ export const productAPI = {
   ): Promise<ApiSuccessResponse<ProductListData, ProductListMeta>> => {
     const { data } = await api.get<
       ApiSuccessResponse<ProductListData, ProductListMeta>
-    >(
-      API_ENDPOINT.PRODUCTS,
-      { params }
-    )
+    >(API_ENDPOINT.PRODUCTS, { params })
     return data
   },
 
@@ -62,6 +50,15 @@ export const productAPI = {
   getById: async (id: string): Promise<ApiSuccessResponse<ProductDetail>> => {
     const { data } = await api.get<ApiSuccessResponse<ProductDetail>>(
       API_ENDPOINT.PRODUCT_DETAIL(id)
+    )
+    return data
+  },
+
+  getBySlug: async (
+    slug: string
+  ): Promise<ApiSuccessResponse<ProductDetail>> => {
+    const { data } = await api.get<ApiSuccessResponse<ProductDetail>>(
+      API_ENDPOINT.PRODUCT_DETAIL_SLUG(slug)
     )
     return data
   },
@@ -111,10 +108,7 @@ export const productAPI = {
   ): Promise<ApiSuccessResponse<ProductListData, ProductListMeta>> => {
     const { data } = await api.get<
       ApiSuccessResponse<ProductListData, ProductListMeta>
-    >(
-      API_ENDPOINT.PRODUCT_LOW_STOCK,
-      { params: { threshold } }
-    )
+    >(API_ENDPOINT.PRODUCT_LOW_STOCK, { params: { threshold } })
     return data
   },
 
@@ -123,9 +117,7 @@ export const productAPI = {
   > => {
     const { data } = await api.get<
       ApiSuccessResponse<ProductListData, ProductListMeta>
-    >(
-      API_ENDPOINT.PRODUCT_OUT_OF_STOCK
-    )
+    >(API_ENDPOINT.PRODUCT_OUT_OF_STOCK)
     return data
   },
 
@@ -153,10 +145,7 @@ export const productAPI = {
   ): Promise<ApiSuccessResponse<ProductListData, ProductListMeta>> => {
     const { data } = await api.get<
       ApiSuccessResponse<ProductListData, ProductListMeta>
-    >(
-      API_ENDPOINT.PRODUCT_FEATURED,
-      { params: { limit } }
-    )
+    >(API_ENDPOINT.PRODUCT_FEATURED, { params: { limit } })
     return data
   },
 
@@ -166,10 +155,7 @@ export const productAPI = {
   ): Promise<ApiSuccessResponse<ProductListData, ProductListMeta>> => {
     const { data } = await api.get<
       ApiSuccessResponse<ProductListData, ProductListMeta>
-    >(
-      API_ENDPOINT.PRODUCT_TRENDING,
-      { params: { days, limit } }
-    )
+    >(API_ENDPOINT.PRODUCT_TRENDING, { params: { days, limit } })
     return data
   },
 
@@ -179,10 +165,7 @@ export const productAPI = {
   ): Promise<ApiSuccessResponse<ProductListData, ProductListMeta>> => {
     const { data } = await api.get<
       ApiSuccessResponse<ProductListData, ProductListMeta>
-    >(
-      API_ENDPOINT.PRODUCT_NEW_ARRIVALS,
-      { params: { days, limit } }
-    )
+    >(API_ENDPOINT.PRODUCT_NEW_ARRIVALS, { params: { days, limit } })
     return data
   },
 
@@ -191,10 +174,7 @@ export const productAPI = {
   ): Promise<ApiSuccessResponse<ProductListData, ProductListMeta>> => {
     const { data } = await api.get<
       ApiSuccessResponse<ProductListData, ProductListMeta>
-    >(
-      API_ENDPOINT.PRODUCT_ON_SALE,
-      { params: { limit } }
-    )
+    >(API_ENDPOINT.PRODUCT_ON_SALE, { params: { limit } })
     return data
   },
 
@@ -205,10 +185,7 @@ export const productAPI = {
   ): Promise<ApiSuccessResponse<ProductListData, ProductListMeta>> => {
     const { data } = await api.get<
       ApiSuccessResponse<ProductListData, ProductListMeta>
-    >(
-      API_ENDPOINT.PRODUCT_BY_BRAND(brandSlug),
-      { params: { page, limit } }
-    )
+    >(API_ENDPOINT.PRODUCT_BY_BRAND(brandSlug), { params: { page, limit } })
     return data
   },
 
@@ -219,10 +196,9 @@ export const productAPI = {
   ): Promise<ApiSuccessResponse<ProductListData, ProductListMeta>> => {
     const { data } = await api.get<
       ApiSuccessResponse<ProductListData, ProductListMeta>
-    >(
-      API_ENDPOINT.PRODUCT_BY_CATEGORY(categorySlug),
-      { params: { page, limit } }
-    )
+    >(API_ENDPOINT.PRODUCT_BY_CATEGORY(categorySlug), {
+      params: { page, limit },
+    })
     return data
   },
 
@@ -232,10 +208,7 @@ export const productAPI = {
   ): Promise<ApiSuccessResponse<ProductListData, ProductListMeta>> => {
     const { data } = await api.get<
       ApiSuccessResponse<ProductListData, ProductListMeta>
-    >(
-      API_ENDPOINT.PRODUCT_RELATED(productId),
-      { params: { limit } }
-    )
+    >(API_ENDPOINT.PRODUCT_RELATED(productId), { params: { limit } })
     return data
   },
 

@@ -1,19 +1,12 @@
 import api from '@/lib/api'
 import { API_ENDPOINT } from './services/constants'
 import type {
-  OrderStatusType,
-  PaymentMethodType,
-  PaymentStatusType,
-} from './services/order.constants'
-import type {
   ApiSuccessResponse,
   CreateOrderRequest,
   OrderDetail,
-  OrderItem,
   OrderListItem,
   OrderQueryParams,
   OrderStats,
-  ShippingAddress,
   UpdateOrderStatusRequest,
 } from './types/order.types'
 

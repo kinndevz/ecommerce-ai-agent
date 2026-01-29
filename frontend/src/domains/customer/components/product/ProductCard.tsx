@@ -34,10 +34,12 @@ export interface ProductCardProps {
 
 // HELPERS
 
-const FALLBACK_IMAGE = 'https://placehold.co/400x400/f8f8f8/e4e4e7?text=No+Image'
+const FALLBACK_IMAGE =
+  'https://placehold.co/400x400/f8f8f8/e4e4e7?text=No+Image'
 
 export const normalizeProduct = (product: ProductListItem): ProductCardData => {
-  const hasSale = product.sale_price !== null && product.sale_price !== undefined
+  const hasSale =
+    product.sale_price !== null && product.sale_price !== undefined
 
   return {
     id: product.id,
@@ -54,7 +56,10 @@ export const normalizeProduct = (product: ProductListItem): ProductCardData => {
   }
 }
 
-export const calculateDiscount = (price: number, originalPrice?: number): number => {
+export const calculateDiscount = (
+  price: number,
+  originalPrice?: number
+): number => {
   if (!originalPrice || originalPrice <= price) return 0
   return Math.round(((originalPrice - price) / originalPrice) * 100)
 }
@@ -67,7 +72,11 @@ interface FavoriteButtonProps {
   className?: string
 }
 
-export const FavoriteButton = ({ isFavorite, onToggle, className }: FavoriteButtonProps) => (
+export const FavoriteButton = ({
+  isFavorite,
+  onToggle,
+  className,
+}: FavoriteButtonProps) => (
   <button
     onClick={(e) => {
       e.preventDefault()
@@ -92,7 +101,6 @@ export const FavoriteButton = ({ isFavorite, onToggle, className }: FavoriteButt
   </button>
 )
 
-
 export const ProductCard = ({
   product,
   variant = 'default',
@@ -104,7 +112,7 @@ export const ProductCard = ({
   const [localFavorite, setLocalFavorite] = useState(isFavorite)
   const [isAddingToCart, setIsAddingToCart] = useState(false)
 
-  const productUrl = `/products/${product.slug || product.id}`
+  const productUrl = `/products/${product.slug || product}`
 
   const handleToggleFavorite = () => {
     setLocalFavorite(!localFavorite)
@@ -121,8 +129,8 @@ export const ProductCard = ({
   }
 
   // Format display name: "Brand - Product Name" or just "Product Name"
-  const displayName = product.brand 
-    ? `${product.brand} - ${product.name}` 
+  const displayName = product.brand
+    ? `${product.brand} - ${product.name}`
     : product.name
 
   return (
@@ -251,11 +259,15 @@ export const ProductCardCompact = ({
         {/* Info */}
         <div className='space-y-1'>
           <h4 className='text-sm font-medium text-foreground line-clamp-1'>
-            {product.brand ? `${product.brand} - ${product.name}` : product.name}
+            {product.brand
+              ? `${product.brand} - ${product.name}`
+              : product.name}
           </h4>
-          
+
           <div className='flex items-baseline gap-1.5'>
-            <span className='text-sm font-semibold'>{formatCurrencyVnd(product.price)}</span>
+            <span className='text-sm font-semibold'>
+              {formatCurrencyVnd(product.price)}
+            </span>
             {product.originalPrice && (
               <span className='text-xs text-muted-foreground line-through'>
                 {formatCurrencyVnd(product.originalPrice)}
