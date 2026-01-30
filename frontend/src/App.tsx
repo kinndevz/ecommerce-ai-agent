@@ -9,6 +9,8 @@ import MaintenancePage from './shared/pages/MaintenancePage'
 import NotFoundPage from './shared/pages/NotFoundPage'
 import ChatPage from './domains/customer/pages/ChatPage'
 import ProductDetailPage from './domains/customer/pages/ProductDetaiPage'
+import WishlistPage from './domains/customer/pages/WishListPage'
+import CartPage from './domains/customer/pages/CartPage'
 
 function App() {
   const isMaintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === 'true'
@@ -35,6 +37,10 @@ function App() {
           <Route path='/chat' element={<ChatPage />} />
 
           <Route path='/products/:slug' element={<ProductDetailPage />} />
+
+          <Route path='/wishlist' element={<WishlistPage />} />
+
+          <Route path='/cart' element={<CartPage />} />
 
           {adminRoutes}
 

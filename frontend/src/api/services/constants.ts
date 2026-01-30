@@ -44,6 +44,10 @@ export const API_ENDPOINT = {
   UPDATE_REVIEW: (review_id: string) => `/reviews/${review_id}`,
   DELETE_REVIEW: (review_id: string) => `/reviews/${review_id}`,
 
+  // Wishlist Routes
+  WISHLIST: `/wishlist`,
+  WISHLIST_REMOVE: (product_id: string) => `/wishlist/${product_id}`,
+
   // Tags Routes
   TAGS: '/tags',
   TAG_POPULAR: '/tags/popular',

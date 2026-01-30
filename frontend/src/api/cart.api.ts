@@ -4,7 +4,6 @@ import type {
   AddToCartRequest,
   ApiSuccessResponse,
   CartData,
-  CartItem,
   UpdateCartItemRequest,
 } from './types/cart.types'
 

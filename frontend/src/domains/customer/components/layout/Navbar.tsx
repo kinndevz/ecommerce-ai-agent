@@ -1,6 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Search, ShoppingCart, Sun, Moon, MessageSquare } from 'lucide-react'
+import {
+  Search,
+  ShoppingCart,
+  Sun,
+  Moon,
+  MessageSquare,
+  Heart,
+} from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { useCategories } from '@/hooks/useCategories'
 import { useTheme } from '@/shared/components/theme-provider'
@@ -11,6 +18,8 @@ import { Badge } from '@/shared/components/ui/badge'
 import { DesktopNav } from './DesktopNav'
 import { MobileNav } from './MobileNav'
 import { UserNav } from './UserNav'
+import { useWishlist } from '@/hooks/useWishlist'
+import { useCart } from '@/hooks/useCarts'
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('')
@@ -22,6 +31,10 @@ export const Navbar = () => {
   const { theme, setTheme } = useTheme()
   const navigate = useNavigate()
   const resetChat = useChatStore((state) => state.reset)
+
+  const { data: wishlistResponse } = useWishlist({ page: 1, limit: 1 })
+
+  const { data: cartResponse } = useCart()
 
   useEffect(() => {
     const timer = setTimeout(() => setIsAuthLoading(false), 300)
@@ -43,11 +56,12 @@ export const Navbar = () => {
 
   const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark')
 
-  const cartItemsCount = 3
+  const wishlistCount = wishlistResponse?.meta?.total || 0
+  const cartItemsCount = cartResponse?.total_items || 0
 
   return (
     <header className='sticky top-0 z-50 w-full shadow-sm'>
-      <div className='bg-linear-to-r from-primary/5 via-primary/10 to-secondary/5 border-b border-border/40 overflow-hidden relative'>
+      <div className='bg-background from-primary/5 via-primary/10 to-secondary/5 border-b border-border/40 overflow-hidden relative'>
         <div className='h-10 flex items-center'>
           <div className='flex animate-marquee-seamless whitespace-nowrap'>
             <span className='text-xs font-medium text-foreground/80 tracking-wide px-8'>
@@ -100,7 +114,7 @@ export const Navbar = () => {
                 alt='BeautyShop'
                 className='h-10 w-auto'
               />
-              <span className='font-serif font-bold text-xl hidden sm:inline'>
+              <span className='font-bold text-xl hidden sm:inline'>
                 BeautyShop
               </span>
             </Link>
@@ -141,6 +155,21 @@ export const Navbar = () => {
                 <MessageSquare className='w-5 h-5' />
 
                 <span className='hidden sm:inline font-medium'>AI Chat</span>
+              </Button>
+
+              <Button
+                variant='ghost'
+                size='default'
+                className='relative hover:bg-primary/10 rounded-full px-3 sm:px-4 gap-2'
+                onClick={() => navigate('/wishlist')}
+              >
+                <Heart className='w-5 h-5' />
+                <span className='hidden lg:inline font-medium'>Wishlist</span>
+                {wishlistCount > 0 && (
+                  <Badge className='ml-1 px-1.5 h-5 min-w-5 flex items-center justify-center text-[10px] bg-primary text-primary-foreground hover:bg-primary rounded-full'>
+                    {wishlistCount}
+                  </Badge>
+                )}
               </Button>
 
               <Button

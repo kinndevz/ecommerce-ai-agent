@@ -1,5 +1,3 @@
-// review.types.ts
-
 export interface Review {
   id: string
   product_id: string
