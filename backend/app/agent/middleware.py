@@ -1,4 +1,4 @@
-from typing import Callable, Awaitable
+from typing import Callable, Awaitable, Dict, Any
 from langchain.agents.middleware import wrap_model_call, wrap_tool_call, ModelRequest, ModelResponse
 from langchain.agents import AgentState
 from langchain_core.messages import SystemMessage, ToolMessage
@@ -6,13 +6,8 @@ from pathlib import Path
 from functools import lru_cache
 import logging
 
-from app.agent.personalization.preferences_formatter import PreferencesFormatter
-
 logger = logging.getLogger(__name__)
 PROMPT_FILE_PATH = Path(__file__).parent / "system_prompt.md"
-
-# Singleton formatter instance
-_preferences_formatter = PreferencesFormatter()
 
 
 class AgentStateWithContext(AgentState):
@@ -50,8 +45,9 @@ async def cosmetics_middleware(
     state = request.state or {}
     user_context = state.get("user_context", {})
     user_id = user_context.get("user_id", "anonymous")
+    user_prefs = user_context.get("preferences", {})
 
-    prompt_content = _build_system_prompt(request, user_id)
+    prompt_content = _build_system_prompt(request, user_prefs)
 
     modified_request = request.override(
         system_message=SystemMessage(content=prompt_content)
@@ -60,18 +56,52 @@ async def cosmetics_middleware(
     return await handler(modified_request)
 
 
-def _build_system_prompt(request: ModelRequest, user_id: str) -> str:
+def _build_system_prompt(request: ModelRequest, user_prefs: Dict[str, Any]) -> str:
     """Build complete system prompt with context and preferences."""
-    prompt_content = _load_system_prompt()
+    base_prompt = _load_system_prompt()
 
-    # Add conversation state hint
+    profile_text = _format_user_profile(user_prefs)
+
+    # 2. Inject vào placeholder trong file markdown
+    # Nếu file md có chứa chuỗi "{user_profile_context}", nó sẽ được thay thế
+    # Nếu không, ta append vào cuối.
+    if "{user_profile_context}" in base_prompt:
+        prompt_content = base_prompt.replace(
+            "{user_profile_context}", profile_text)
+    else:
+        prompt_content = f"{base_prompt}\n\n### USER PROFILE\n{profile_text}"
+
     prompt_content += _get_conversation_state_hint(request)
 
-    # Inject user preferences
-    preferences_prompt = _get_user_preferences_prompt(request.runtime, user_id)
-    prompt_content += preferences_prompt
-
     return prompt_content
+
+
+def _format_user_profile(prefs: Dict[str, Any]) -> str:
+    """Convert preferences dict to readable text for LLM."""
+    if not prefs:
+        return "- No profile data available yet. Ask the user about their skin type."
+
+    lines = []
+    if prefs.get("skin_type"):
+        lines.append(f"- Skin Type: {prefs['skin_type']}")
+    if prefs.get("skin_concerns"):
+        lines.append(f"- Concerns: {', '.join(prefs['skin_concerns'])}")
+    if prefs.get("favorite_brands"):
+        lines.append(
+            f"- Favorite Brands: {', '.join(prefs['favorite_brands'])}")
+    if prefs.get("allergies"):
+        lines.append(
+            f"- Allergies: {', '.join(prefs['allergies'])} (IMPORTANT)")
+
+    # Format budget
+    min_p = prefs.get("price_range_min")
+    max_p = prefs.get("price_range_max")
+    if min_p or max_p:
+        budget = f"{min_p:,.0f}" if min_p else "0"
+        budget += f" - {max_p:,.0f}" if max_p else "+"
+        lines.append(f"- Budget: {budget} VND")
+
+    return "\n".join(lines) if lines else "- Profile is empty."
 
 
 def _get_conversation_state_hint(request: ModelRequest) -> str:
@@ -95,35 +125,3 @@ def _load_system_prompt() -> str:
     except FileNotFoundError:
         logger.warning("System prompt file not found, using default")
         return "You are a helpful Vietnamese cosmetics e-commerce consultant."
-
-
-def _get_user_preferences_prompt(runtime, user_id: str) -> str:
-    """Fetch user preferences from store and format as prompt section."""
-    preferences = _fetch_preferences_from_store(runtime, user_id)
-
-    if not preferences:
-        return ""
-
-    print(">>>>> _get_user_preferences_prompt: ", user_id)
-    return _preferences_formatter.format_for_prompt(preferences)
-
-
-def _fetch_preferences_from_store(runtime, user_id: str) -> dict:
-    """Fetch raw preferences dict from runtime store."""
-    if not runtime or not getattr(runtime, "store", None):
-        return {}
-
-    try:
-        store = runtime.store
-        prefs = store.get(("preferences",), user_id)
-        print(">>>> prefs", prefs)
-
-        if prefs and prefs.value:
-            print(">>>>> _fetch_preferences_from_store: ", user_id)
-            logger.debug("Loaded preferences for user_id=%s", user_id)
-            return prefs.value
-
-    except Exception as e:
-        logger.debug("Could not load user preferences: %s", e)
-
-    return {}

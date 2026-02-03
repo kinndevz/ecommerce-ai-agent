@@ -6,10 +6,6 @@ from app.models.conversation import Conversation, Message
 from app.utils.responses import ResponseHandler
 from app.agent.agent import get_unified_agent
 from app.services.preferences import PreferenceService
-from app.agent.preferences_inferencer import (
-    infer_preferences_from_message,
-    merge_preference_updates
-)
 from app.schemas.preferences import UpdateUserPreferenceRequest
 
 
@@ -58,52 +54,19 @@ class ChatService:
         db.add(user_message)
         db.commit()
 
+        user_pref_orm = PreferenceService.get_user_preference(db, user_id)
+        user_prefs_dict = PreferenceService.to_dict(user_pref_orm)
+
         # Get agent response
         agent = await get_unified_agent()
-
-        # Hydrate preferences for personalization
-        try:
-            preference = PreferenceService.get_user_preference(db, user_id)
-            pref_payload = PreferenceService.to_dict(preference)
-            agent.store.put(("preferences",), user_id, pref_payload)
-            logger.debug(
-                "Loaded preferences for user_id=%s, keys=%s",
-                user_id,
-                list(pref_payload.keys())
-            )
-        except Exception as e:
-            logger.warning("Failed to load user preferences: %s", e)
 
         result = await agent.chat(
             user_id=user_id,
             message=message_content,
             conversation_id=conversation.thread_id,
-            auth_token=auth_token or ""
+            auth_token=auth_token or "",
+            preferences=user_prefs_dict
         )
-
-        # Fallback auto-update if agent didn't call update_preferences
-        try:
-            called_tools = result.get("metadata", {}).get("called_tools", [])
-            if "update_preferences" not in called_tools:
-                extracted = await infer_preferences_from_message(message_content)
-                if extracted:
-                    existing = PreferenceService.get_user_preference(
-                        db, user_id)
-                    update_payload = merge_preference_updates(
-                        existing, extracted)
-                    if update_payload:
-                        PreferenceService.update_my_preferences(
-                            db,
-                            user_id,
-                            UpdateUserPreferenceRequest(**update_payload)
-                        )
-                        logger.debug(
-                            "Fallback auto-updated preferences for user_id=%s, keys=%s",
-                            user_id,
-                            list(update_payload.keys())
-                        )
-        except Exception as e:
-            logger.warning("Failed to fallback-update preferences: %s", e)
 
         artifacts = result.get("artifacts", [])
 

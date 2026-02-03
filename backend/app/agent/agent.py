@@ -67,13 +67,16 @@ class UnifiedAgent:
         user_id: str,
         message: str,
         conversation_id: str,
-        auth_token: str
+        auth_token: str,
+        preferences: Dict[str, Any] = None
     ) -> Dict[str, Any]:
         agent = await self.get_agent()
 
         input_payload = {
             "messages": [HumanMessage(content=message)],
-            "user_context": {"user_id": user_id, "auth_token": auth_token}
+            "user_context": {"user_id": user_id,
+                             "auth_token": auth_token,
+                             "preferences": preferences or {}}
         }
 
         config = {"configurable": {"thread_id": conversation_id}}
