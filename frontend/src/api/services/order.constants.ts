@@ -1,3 +1,11 @@
+import {
+  Clock,
+  Package,
+  Truck,
+  CheckCircle,
+  type LucideIcon,
+} from 'lucide-react'
+
 // 1. PAYMENT METHOD CONSTANTS
 export const PAYMENT_METHOD = {
   COD: 'cod',
@@ -10,7 +18,6 @@ export const PAYMENT_METHOD = {
 export type PaymentMethodType =
   (typeof PAYMENT_METHOD)[keyof typeof PAYMENT_METHOD]
 
-// UI Configuration for Payment Methods
 export const PAYMENT_METHOD_CONFIG: Record<
   string,
   { label: string; className: string }
@@ -48,7 +55,6 @@ export const ORDER_STATUS = {
 
 export type OrderStatusType = (typeof ORDER_STATUS)[keyof typeof ORDER_STATUS]
 
-// UI Configuration for Order Status
 export const ORDER_STATUS_CONFIG: Record<
   string,
   { label: string; className: string }
@@ -75,6 +81,40 @@ export const ORDER_STATUS_CONFIG: Record<
   },
 }
 
+export interface OrderStatusStep {
+  status: OrderStatusType
+  label: string
+  icon: LucideIcon
+  description: string
+}
+
+export const ORDER_STATUS_FLOW: OrderStatusStep[] = [
+  {
+    status: ORDER_STATUS.PENDING,
+    label: 'Chờ xác nhận',
+    icon: Clock,
+    description: 'Đơn hàng đang chờ xác nhận',
+  },
+  {
+    status: ORDER_STATUS.PROCESSING,
+    label: 'Đang xử lý',
+    icon: Package,
+    description: 'Người bán đang chuẩn bị hàng',
+  },
+  {
+    status: ORDER_STATUS.SHIPPED,
+    label: 'Đang vận chuyển',
+    icon: Truck,
+    description: 'Đơn hàng đang trên đường giao đến bạn',
+  },
+  {
+    status: ORDER_STATUS.DELIVERED,
+    label: 'Hoàn thành',
+    icon: CheckCircle,
+    description: 'Giao hàng thành công',
+  },
+]
+
 // 3. PAYMENT STATUS CONSTANTS
 export const PAYMENT_STATUS = {
   UNPAID: 'unpaid',
@@ -86,7 +126,6 @@ export const PAYMENT_STATUS = {
 export type PaymentStatusType =
   (typeof PAYMENT_STATUS)[keyof typeof PAYMENT_STATUS]
 
-// UI Configuration for Payment Status
 export const PAYMENT_STATUS_CONFIG: Record<
   string,
   { label: string; className: string }

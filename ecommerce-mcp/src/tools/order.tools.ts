@@ -177,6 +177,8 @@ function registerGetOrderDetail(server: McpServer) {
           throw new Error("Failed to fetch order detail");
         }
 
+        console.log(">>>>>order detail: ", response);
+
         const orderData = OrderAPIResponseSchema.parse(response);
 
         return formatSuccessResponse(orderData);

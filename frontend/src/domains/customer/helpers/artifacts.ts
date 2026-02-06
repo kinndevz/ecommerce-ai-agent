@@ -80,3 +80,15 @@ export const extractCreatedOrder = (
   const data = getArtifactData(artifact)
   return isOrderDetail(data) ? data : null
 }
+
+export const extractOrderDetail = (
+  artifacts?: Artifact[]
+): OrderDetail | null => {
+  if (!artifacts || artifacts.length === 0) return null
+  const artifact = artifacts.find(
+    (item) => item.tool_name === 'get_order_detail'
+  )
+  if (!artifact) return null
+  const data = getArtifactData(artifact)
+  return data as OrderDetail
+}

@@ -8,15 +8,22 @@ import { Button } from '@/shared/components/ui/button'
 import { cn } from '@/lib/utils'
 import DOMPurify from 'dompurify'
 import { useState } from 'react'
-import { ProductCarousel } from './ProductCarousel'
-import { ProductDetailSheet } from './ProductDetailSheet'
-import { CartView } from './CartView'
-import { OrderListView } from './OrderListView'
-import { OrderSummaryView } from './OrderSummaryView'
-import { extractCart, extractCreatedOrder, extractOrders, extractProducts } from '../../helpers/artifacts'
-import { formatShortTime } from '../../helpers/formatters'
+import { ProductCarousel } from './productview/ProductCarousel'
+import { ProductDetailSheet } from './productview/ProductDetailSheet'
+import { OrderListView } from './orderview/OrderListView'
+import { OrderSummaryView } from './orderview/OrderSummaryView'
+import {
+  extractCart,
+  extractCreatedOrder,
+  extractOrderDetail,
+  extractOrders,
+  extractProducts,
+} from '../../helpers/artifacts'
+import { formatShortDate } from '../../helpers/formatters'
 import type { Artifact, ProductData } from '@/api/chat.api'
 import { toast } from 'sonner'
+import { CartView } from './cartview/CartView'
+import { OrderDetailView } from './orderview/OrderDetailView'
 
 export const COMPANY_LOGO_SRC = 'src/assets/company-logo.svg'
 
@@ -28,7 +35,6 @@ export interface Message {
   status?: 'sending' | 'sent' | 'read'
   artifacts?: Artifact[]
 }
-
 
 interface ChatMessageProps {
   message: Message
@@ -47,6 +53,7 @@ export const ChatMessage = ({ message, userAvatar }: ChatMessageProps) => {
   const cartData = extractCart(message.artifacts)
   const orders = extractOrders(message.artifacts)
   const createdOrder = extractCreatedOrder(message.artifacts)
+  const orderDetail = extractOrderDetail(message.artifacts)
 
   const handleViewProduct = (product: ProductData) => {
     setSelectedProduct(product)
@@ -60,7 +67,7 @@ export const ChatMessage = ({ message, userAvatar }: ChatMessageProps) => {
     }
   }
 
-  const formattedTime = formatShortTime(message.timestamp)
+  const formattedTime = formatShortDate(message.timestamp)
 
   return (
     <div className='flex flex-col gap-2 mb-8 animate-in fade-in slide-in-from-bottom-2 duration-500 group'>
@@ -73,10 +80,7 @@ export const ChatMessage = ({ message, userAvatar }: ChatMessageProps) => {
         >
           {isAI ? (
             <div className='h-full w-full flex items-center justify-center'>
-              <AvatarImage
-                src={COMPANY_LOGO_SRC}
-                className='object-cover'
-              />
+              <AvatarImage src={COMPANY_LOGO_SRC} className='object-cover' />
             </div>
           ) : (
             <>
@@ -143,6 +147,12 @@ export const ChatMessage = ({ message, userAvatar }: ChatMessageProps) => {
             {orders.length > 0 && (
               <div className='mt-4'>
                 <OrderListView orders={orders} />
+              </div>
+            )}
+
+            {orderDetail && (
+              <div className='mt-4'>
+                <OrderDetailView order={orderDetail} />
               </div>
             )}
 
