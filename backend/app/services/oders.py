@@ -3,12 +3,15 @@ from decimal import Decimal
 from datetime import datetime, timezone
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func, desc
+from fastapi import BackgroundTasks
 from app.models.order import Order, OrderItem
 from app.models.cart import Cart, CartItem
+from app.models.user import User
 from app.utils.responses import ResponseHandler
 from app.core.enums import OrderStatus, PaymentStatus, PaymentMethod, NotificationType
 from app.core.constant import OrderConstants
 from app.services.notification_events import NotificationEventEmitter
+from app.utils.email import send_order_confirmation_email
 
 
 class OrderService:
@@ -87,10 +90,62 @@ class OrderService:
             "updated_at": OrderService._safe_datetime(order.updated_at)
         }
 
+    @staticmethod
+    def _trigger_confirmation_email(background_tasks: BackgroundTasks, user: User, order: Order):
+        """
+        Prepare email context and add to background tasks.
+        """
+        shipping_address = order.shipping_address or {}
+        ship_info = f"{shipping_address.get('address', '')}, {shipping_address.get('city', '')} - SĐT: {shipping_address.get('phone', '')}"
+
+        email_items = [
+            {
+                "name": item.product_name,
+                "variant": item.variant_name if item.variant_name else "",
+                "quantity": item.quantity,
+                "price": float(item.unit_price)
+            } for item in order.items
+        ]
+
+        email_context = {
+            "app_name": "Cosmetic Store",
+            "full_name": user.full_name,
+            "order_number": order.order_number,
+            "created_at": order.created_at.strftime("%d/%m/%Y %H:%M"),
+            "payment_method": order.payment_method.upper(),
+            "items": email_items,
+            "subtotal": float(order.subtotal),
+            "shipping_fee": float(order.shipping_fee),
+            "discount": float(order.discount),
+            "total_amount": float(order.total),
+            "shipping_address": ship_info
+        }
+
+        background_tasks.add_task(
+            send_order_confirmation_email,
+            user.email,
+            email_context
+        )
+
     # CUSTOMER ENDPOINTS
     @staticmethod
-    def create_order(db: Session, user_id: str, shipping_address: dict, payment_method: str, notes: str = None):
+    def create_order(db: Session,
+                     user_id: str,
+                     shipping_address: dict,
+                     payment_method: str,
+                     background_tasks: BackgroundTasks,
+                     notes: str = None,
+                     ):
         """Create order from cart"""
+
+        # Get user's infor
+        user = db.query(User).filter(
+            User.id == user_id
+        ).first()
+
+        if not user:
+            ResponseHandler.not_found_error(
+                "User with this ", user_id + " not found")
 
         # Get user's cart with items
         cart = db.query(Cart).options(
@@ -185,12 +240,17 @@ class OrderService:
 
         # Format response
         order_data = OrderService._format_order_detail(order)
+
+        # Push Notification
         NotificationEventEmitter.emit(
             db,
             notification_type=NotificationType.ORDER_CREATED,
             model=order,
             send_websocket=True
         )
+
+        # Send Email
+        OrderService._trigger_confirmation_email(background_tasks, user, order)
 
         return ResponseHandler.create_success("Order", order.id, order_data)
 

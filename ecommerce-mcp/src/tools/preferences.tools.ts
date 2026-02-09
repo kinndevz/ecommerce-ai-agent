@@ -1,6 +1,6 @@
 /**
  * Preferences Tools - User personalization preferences
- * 
+ *
  * These tools manage user preferences for personalized cosmetics recommendations.
  * Preferences include skin type, concerns, favorite brands, budget, and allergies.
  */
@@ -20,7 +20,11 @@ import {
   formatSuccessResponse,
   formatErrorResponse,
 } from "../utils/api";
-import { createToolDescription, validateAuthToken, cleanParams } from "../utils/helper";
+import {
+  createToolDescription,
+  validateAuthToken,
+  cleanParams,
+} from "../utils/helper";
 
 /**
  * Register all preferences-related tools
@@ -32,7 +36,7 @@ export function registerPreferencesTools(server: McpServer) {
 
 /**
  * Tool: get_preferences
- * 
+ *
  * Fetch the current user's saved preferences.
  * Call this at conversation start if preferences are not already injected.
  * Use the returned data to personalize search filters.
@@ -45,7 +49,7 @@ function registerGetPreferences(server: McpServer) {
       description: createToolDescription(
         TOOL_METADATA.PREFERENCE_MANAGEMENT,
         "Fetch user's saved preferences (skin type, concerns, brands, budget, allergies). " +
-        "Call this at conversation start to enable personalization."
+          "Call this at conversation start to enable personalization."
       ),
       inputSchema: GetPreferencesInputSchema,
       outputSchema: UserPreferenceAPIResponseSchema,
@@ -57,17 +61,22 @@ function registerGetPreferences(server: McpServer) {
         const authToken = args.__auth_token;
         validateAuthToken(authToken);
 
-        const response = await apiClient.get<UserPreference>("/me/preferences", {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        });
+        const response = await apiClient.get<UserPreference>(
+          "/me/preferences",
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
 
         if (!response.success) {
           throw new Error("Failed to fetch user preferences");
         }
 
         const prefsData = UserPreferenceAPIResponseSchema.parse(response);
+        console.log(">>>> get_preferences", prefsData);
+
         return formatSuccessResponse(prefsData);
       } catch (error: any) {
         return formatErrorResponse(error.message);
@@ -78,16 +87,16 @@ function registerGetPreferences(server: McpServer) {
 
 /**
  * Tool: update_preferences
- * 
+ *
  * Persist user preferences for future sessions.
- * 
+ *
  * WHEN TO CALL:
  * - User mentions their skin type: "da dầu" → skin_type: "oily"
  * - User mentions concerns: "bị mụn, thâm" → skin_concerns: ["acne", "dark_spots"]
  * - User mentions brands: "thích cerave" → favorite_brands: ["cerave"]
  * - User mentions budget: "200-500k" → price_range_min: 200000, price_range_max: 500000
  * - User mentions allergies: "dị ứng cồn" → allergies: ["alcohol"]
- * 
+ *
  * This is a partial update - only provided fields are updated.
  */
 function registerUpdatePreferences(server: McpServer) {
@@ -98,8 +107,8 @@ function registerUpdatePreferences(server: McpServer) {
       description: createToolDescription(
         TOOL_METADATA.PREFERENCE_MANAGEMENT,
         "Save user preferences for personalization. " +
-        "Call when user mentions skin type, concerns, brands, budget, or allergies. " +
-        "Partial update - only provided fields are changed."
+          "Call when user mentions skin type, concerns, brands, budget, or allergies. " +
+          "Partial update - only provided fields are changed."
       ),
       inputSchema: UpdatePreferencesInputSchema,
       outputSchema: UserPreferenceAPIResponseSchema,
@@ -127,6 +136,7 @@ function registerUpdatePreferences(server: McpServer) {
         }
 
         const prefsData = UserPreferenceAPIResponseSchema.parse(response);
+        console.log(">>>> update_preferences", prefsData);
         return formatSuccessResponse(prefsData);
       } catch (error: any) {
         return formatErrorResponse(error.message);
@@ -138,7 +148,9 @@ function registerUpdatePreferences(server: McpServer) {
 /**
  * Build preference update payload from tool args.
  */
-function buildPreferencePayload(args: UpdatePreferencesInput): Record<string, any> {
+function buildPreferencePayload(
+  args: UpdatePreferencesInput
+): Record<string, any> {
   return cleanParams({
     skin_type: args.skin_type,
     skin_concerns: args.skin_concerns,

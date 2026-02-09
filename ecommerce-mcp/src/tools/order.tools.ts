@@ -82,6 +82,8 @@ function registerCreateOrder(server: McpServer) {
 
         const orderData = OrderAPIResponseSchema.parse(response);
 
+        console.log(">>> create_order", orderData);
+
         return formatSuccessResponse(orderData);
       } catch (error: any) {
         return formatErrorResponse(error.message);
@@ -133,6 +135,8 @@ function registerGetMyOrders(server: McpServer) {
 
         const ordersData = OrderListAPIResponseSchema.parse(response);
 
+        console.log(">>> get_my_orders", ordersData);
+
         return formatSuccessResponse(ordersData);
       } catch (error: any) {
         return formatErrorResponse(error.message);
@@ -181,6 +185,8 @@ function registerGetOrderDetail(server: McpServer) {
 
         const orderData = OrderAPIResponseSchema.parse(response);
 
+        console.log(">>>>>get_order_detail: ", orderData);
+
         return formatSuccessResponse(orderData);
       } catch (error: any) {
         return formatErrorResponse(error.message);
@@ -227,6 +233,7 @@ function registerCancelOrder(server: McpServer) {
         }
 
         const orderData = OrderAPIResponseSchema.parse(response);
+        console.log(">>>> >cancel_order: ", orderData);
 
         return formatSuccessResponse(orderData);
       } catch (error: any) {

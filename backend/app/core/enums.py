@@ -105,11 +105,11 @@ class PaymentMethod(str, Enum):
 # PRODUCT ENUMS
 class SkinType(str, Enum):
     """Skin type values"""
-    OILY = "oily"
-    DRY = "dry"
-    COMBINATION = "combination"
-    SENSITIVE = "sensitive"
-    NORMAL = "normal"
+    OILY = "da dầu"
+    DRY = "da khô"
+    COMBINATION = "da hỗn hợp"
+    SENSITIVE = "da nhạy cảm"
+    NORMAL = "da thường"
 
     @classmethod
     def values(cls):
@@ -119,17 +119,22 @@ class SkinType(str, Enum):
 
 class SkinConcern(str, Enum):
     """Common skin concerns"""
-    ACNE = "acne"
-    WRINKLES = "wrinkles"
-    DARK_SPOTS = "dark_spots"
-    DRYNESS = "dryness"
-    DEHYDRATION = "dehydration"
-    IRRITATION = "irritation"
-    PORES = "pores"
-    SEBUM_CONTROL = "sebum_control"
-    AGING = "aging"
-    UNEVEN_TONE = "uneven_tone"
-    SUN_PROTECTION = "sun_protection"
+    ACNE = "mụn"
+    BLACKHEADS = "mụn đầu đen"
+    PORES = "lỗ chân lông to"
+    SEBUM_CONTROL = "đổ dầu nhiều"
+    WRINKLES = "nếp nhăn"
+    AGING = "lão hóa"
+    DARK_SPOTS = "thâm nám"
+    UNEVEN_TONE = "da không đều màu"
+    DULLNESS = "da xỉn màu"
+    DRYNESS = "khô da"
+    DEHYDRATION = "mất nước"
+    IRRITATION = "kích ứng"
+    REDNESS = "mẩn đỏ"
+    BARRIER_REPAIR = "tổn thương màng bảo vệ"
+    EYE_CARE = "quầng thâm mắt"
+    SUN_PROTECTION = "chống nắng"
 
     @classmethod
     def values(cls):
@@ -139,15 +144,19 @@ class SkinConcern(str, Enum):
 
 class ProductBenefit(str, Enum):
     """Product benefits"""
-    MOISTURIZING = "moisturizing"
-    BRIGHTENING = "brightening"
-    ANTI_AGING = "anti_aging"
-    HYDRATING = "hydrating"
-    SOOTHING = "soothing"
-    EXFOLIATING = "exfoliating"
-    FIRMING = "firming"
-    PORE_MINIMIZING = "pore_minimizing"
-    OIL_CONTROL = "oil_control"
-    ANTI_ACNE = "anti_acne"
-    NOURISHING = "nourishing"
-    PROTECTIVE = "protective"
+
+    MOISTURIZING = "dưỡng ẩm"
+    HYDRATING = "cấp nước"
+    NOURISHING = "nuôi dưỡng sâu"
+    BRIGHTENING = "dưỡng trắng"
+    ANTI_AGING = "chống lão hóa"
+    ANTI_ACNE = "trị mụn"
+    EXFOLIATING = "tẩy tế bào chết"
+    FIRMING = "săn chắc da"
+    PORE_MINIMIZING = "thu nhỏ lỗ chân lông"
+    OIL_CONTROL = "kiềm dầu"
+    UNEVEN_TEXTURE = "cải thiện bề mặt da"
+    SOOTHING = "làm dịu da"
+    PROTECTIVE = "bảo vệ da"
+    RECOVERY = "phục hồi da"
+    TONE_UP = "nâng tông"

@@ -554,7 +554,7 @@ export function ProductBasicInfoTab({ product }: ProductBasicInfoTabProps) {
                           )
                         }}
                       >
-                        {type.toUpperCase().replace('_', ' ')}
+                        {type.toUpperCase()}
                       </Badge>
                     )
                   })}

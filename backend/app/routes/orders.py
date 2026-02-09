@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, BackgroundTasks
 from sqlalchemy.orm import Session
 from typing import List
 from app.db.database import get_db
@@ -20,6 +20,7 @@ router = APIRouter(prefix="/orders", tags=["Orders"])
 @router.post("", response_model=APIResponse[OrderResponse], status_code=201)
 def create_order(
     data: CreateOrderRequest,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
@@ -33,7 +34,8 @@ def create_order(
         current_user.id,
         data.shipping_address.model_dump(),
         data.payment_method,
-        data.notes
+        background_tasks,
+        data.notes,
     )
 
 

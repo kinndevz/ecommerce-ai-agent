@@ -753,7 +753,9 @@ export function ProductForm({
                         <SelectContent>
                           {flatCategories.map((cat) => (
                             <SelectItem key={cat.id} value={cat.id}>
-                              <span style={{ paddingLeft: `${cat.level * 12}px` }}>
+                              <span
+                                style={{ paddingLeft: `${cat.level * 12}px` }}
+                              >
                                 {cat.level > 0 && '└─ '}
                                 {cat.name}
                               </span>

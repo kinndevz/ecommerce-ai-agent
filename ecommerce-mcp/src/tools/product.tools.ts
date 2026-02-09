@@ -16,7 +16,11 @@ import {
   formatSuccessResponse,
   formatErrorResponse,
 } from "../utils/api";
-import { createToolDescription, cleanParams, serializeParams } from "../utils/helper";
+import {
+  createToolDescription,
+  cleanParams,
+  serializeParams,
+} from "../utils/helper";
 
 /**
  * Register all product-related tools
@@ -29,14 +33,14 @@ export function registerProductTools(server: McpServer) {
 
 /**
  * Tool: search_products
- * 
+ *
  * Search for cosmetics products with structured filters.
- * 
+ *
  * IMPORTANT USAGE:
  * - Put product type ONLY in `search` (e.g., "sữa rửa mặt", "serum")
  * - Use `brand`, `skin_types`, `concerns`, `min_price`, `max_price` for filtering
  * - Do NOT combine everything into the search string
- * 
+ *
  * Example for "tìm sữa rửa mặt cerave cho da dầu giá dưới 300k":
  * - search: "sữa rửa mặt"
  * - brand: "cerave"
@@ -51,14 +55,16 @@ function registerSearchProducts(server: McpServer) {
       description: createToolDescription(
         TOOL_METADATA.PRODUCT_SEARCH,
         "Search for cosmetics products with keyword and structured filters. " +
-        "Put product type in 'search', use dedicated filter fields for brand, skin type, concerns, and price."
+          "Put product type in 'search', use dedicated filter fields for brand, skin type, concerns, and price."
       ),
       inputSchema: SearchProductsInputSchema,
       outputSchema: FlatProductListOutput,
     },
     async (args: SearchProductsInput) => {
       try {
-        console.log(`[MCP] Searching products - search: "${args.search}", brand: ${args.brand}, skin_types: ${args.skin_types}`);
+        console.log(
+          `[MCP] Searching products - search: "${args.search}", brand: ${args.brand}, skin_types: ${args.skin_types}`
+        );
 
         const params = buildSearchParams(args);
 
@@ -71,6 +77,8 @@ function registerSearchProducts(server: McpServer) {
         if (!response.success || !response.data) {
           throw new Error("Invalid API response structure");
         }
+
+        console.log(">>>> search_products: ", response);
 
         return formatSuccessResponse(response);
       } catch (error: any) {

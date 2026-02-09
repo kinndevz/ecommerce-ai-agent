@@ -1,7 +1,16 @@
 import smtplib
+import os
+from pathlib import Path
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from datetime import datetime
+from jinja2 import Environment, FileSystemLoader
+
 from app.core.config import settings
+BASE_DIR = Path(__file__).resolve().parent.parent
+TEMPLATE_DIR = os.path.join(BASE_DIR, "templates")
+
+env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 
 
 def send_email_smtp(to_email: str, subject: str, html_body: str):
@@ -33,6 +42,16 @@ def send_email_smtp(to_email: str, subject: str, html_body: str):
         raise
 
 
+def render_template(template_name: str, context: dict):
+    """Hàm helper để đọc file HTML và điền dữ liệu"""
+    try:
+        template = env.get_template(template_name)
+        return template.render(**context)
+    except Exception as e:
+        print(f"Error rendering template {template_name}: {e}")
+        return ""
+
+
 def send_otp_email(email: str, code: str):
     """Send OTP email via SMTP"""
     subject = f"Your OTP Code - {settings.APP_NAME}"
@@ -58,23 +77,24 @@ def send_otp_email(email: str, code: str):
     send_email_smtp(email, subject, html_body)
 
 
-def send_order_confirmation_email(email: str, order_number: str):
-    """Send order confirmation email"""
-    subject = f"Order Confirmation - {order_number}"
-
-    html_body = f"""
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #4CAF50;">✅ Thank you for your order!</h2>
-        <p>Your order <strong>{order_number}</strong> has been confirmed.</p>
-        <p>We'll send you another email when your order ships.</p>
-        <hr style="margin: 30px 0;">
-        <p style="color: #999; font-size: 12px;">
-            {settings.APP_NAME} - Cosmetic E-commerce
-        </p>
-    </div>
+def send_order_confirmation_email(to_email: str, order_data: dict):
     """
+    Gửi email hóa đơn dùng template HTML.
+    order_data nhận vào từ Service cần có các key:
+    - full_name
+    - order_number
+    - items: List[{name, quantity, price}]
+    - total_amount
+    """
+    subject = f"Xác nhận đơn hàng #{order_data.get('order_number')}"
 
-    send_email_smtp(email, subject, html_body)
+    # Render ra HTML string từ file invoice.html
+    html_body = render_template("invoice.html", order_data)
+
+    if html_body:
+        send_email_smtp(to_email, subject, html_body)
+    else:
+        print("Failed to render invoice template")
 
 
 def send_welcome_email(email: str, full_name: str):
