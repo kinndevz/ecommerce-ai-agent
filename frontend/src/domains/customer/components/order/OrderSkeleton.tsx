@@ -41,3 +41,31 @@ export function OrderListSkeleton() {
     </Card>
   )
 }
+
+export function OrderDetailSkeleton() {
+  return (
+    <div className='container max-w-6xl px-4 py-8 space-y-6'>
+      <div className='flex justify-between'>
+        <Skeleton className='h-8 w-32' />
+        <Skeleton className='h-8 w-24' />
+      </div>
+      <div className='space-y-2'>
+        <Skeleton className='h-10 w-48' />
+        <Skeleton className='h-5 w-64' />
+      </div>
+      <div className='grid lg:grid-cols-12 gap-8'>
+        <div className='lg:col-span-8 space-y-6'>
+          <Skeleton className='h-64 w-full rounded-xl' />
+          <Skeleton className='h-32 w-full rounded-xl' />
+          <div className='grid grid-cols-2 gap-6'>
+            <Skeleton className='h-32 w-full' />
+            <Skeleton className='h-32 w-full' />
+          </div>
+        </div>
+        <div className='lg:col-span-4'>
+          <Skeleton className='h-64 w-full rounded-xl' />
+        </div>
+      </div>
+    </div>
+  )
+}
