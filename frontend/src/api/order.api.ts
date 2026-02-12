@@ -4,6 +4,7 @@ import type {
   ApiSuccessResponse,
   CreateOrderRequest,
   OrderDetail,
+  OrderHistoryItem,
   OrderListItem,
   OrderQueryParams,
   OrderStats,
@@ -33,8 +34,8 @@ export const orderAPI = {
    */
   getMyOrders: async (
     params?: OrderQueryParams
-  ): Promise<ApiSuccessResponse<OrderListItem[]>> => {
-    const { data } = await api.get<ApiSuccessResponse<OrderListItem[]>>(
+  ): Promise<ApiSuccessResponse<OrderHistoryItem[]>> => {
+    const { data } = await api.get<ApiSuccessResponse<OrderHistoryItem[]>>(
       API_ENDPOINT.GET_MY_ORDERS,
       { params }
     )
@@ -126,6 +127,7 @@ export type {
   ShippingAddress,
   OrderItem,
   OrderDetail,
+  OrderHistoryItem,
   OrderListItem,
   OrderStats,
   ApiSuccessResponse,

@@ -9,7 +9,7 @@ from app.schemas.orders import (
     CreateOrderRequest,
     UpdateOrderStatusRequest,
     OrderResponse,
-    OrderListResponse,
+    OrderHistoryListItemResponse,
     OrderStatsResponse, OrderListItemResponse
 )
 from app.schemas.common import APIResponse
@@ -39,7 +39,7 @@ def create_order(
     )
 
 
-@router.get("", response_model=APIResponse[List[OrderListItemResponse]])
+@router.get("", response_model=APIResponse[List[OrderHistoryListItemResponse]])
 def get_my_orders(
     page: int = Query(1, ge=1, description="Page number"),
     limit: int = Query(20, ge=1, le=100, description="Items per page"),

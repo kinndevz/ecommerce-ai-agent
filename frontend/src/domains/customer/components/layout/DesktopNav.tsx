@@ -140,7 +140,7 @@ export const DesktopNav = ({ categories, isLoading }: DesktopNavProps) => {
 
   return (
     <div className='hidden md:block bg-muted/40 border-y border-border/30'>
-      <div className='max-w-7xl mx-auto px-6 flex justify-center bg-background'>
+      <div className='max-w-full mx-auto px-6 flex justify-center bg-background'>
         {isLoading ? (
           <div className='flex gap-2 py-2'>
             {[...Array(8)].map((_, i) => (

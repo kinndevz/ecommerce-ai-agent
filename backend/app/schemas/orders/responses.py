@@ -69,6 +69,21 @@ class OrderListItemResponse(BaseModel):
         pass
 
 
+class OrderHistoryListItemResponse(BaseModel):
+    """Order list item (history)"""
+    id: str
+    order_number: str
+    status: str
+    payment_status: str
+    product_image: str
+    total: Decimal
+    total_items: int
+    created_at: datetime
+
+    class Config(BaseConfig):
+        pass
+
+
 class OrderListResponse(BaseModel):
     """Order list response with pagination"""
     orders: List[OrderListItemResponse]

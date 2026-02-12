@@ -4,7 +4,8 @@ from .responses import (
     OrderResponse,
     OrderListItemResponse,
     OrderListResponse,
-    OrderStatsResponse
+    OrderStatsResponse,
+    OrderHistoryListItemResponse
 )
 
 __all__ = [
@@ -16,4 +17,5 @@ __all__ = [
     "OrderListItemResponse",
     "OrderListResponse",
     "OrderStatsResponse",
+    "OrderHistoryListItemResponse"
 ]

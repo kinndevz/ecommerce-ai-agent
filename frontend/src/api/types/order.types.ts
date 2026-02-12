@@ -53,6 +53,10 @@ export interface OrderListItem {
   created_at: string
 }
 
+export interface OrderHistoryItem extends OrderListItem {
+  product_image: string
+}
+
 export interface OrderStats {
   total_orders: number
   pending_orders: number

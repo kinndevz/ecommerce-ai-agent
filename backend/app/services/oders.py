@@ -7,6 +7,7 @@ from fastapi import BackgroundTasks
 from app.models.order import Order, OrderItem
 from app.models.cart import Cart, CartItem
 from app.models.user import User
+from app.models.product import Product
 from app.utils.responses import ResponseHandler
 from app.core.enums import OrderStatus, PaymentStatus, PaymentMethod, NotificationType
 from app.core.constant import OrderConstants
@@ -49,6 +50,33 @@ class OrderService:
             "order_number": order.order_number,
             "status": order.status,
             "payment_status": order.payment_status,
+            "total": float(order.total),
+            "total_items": len(order.items),
+            "created_at": OrderService._safe_datetime(order.created_at)
+        }
+
+    @staticmethod
+    def _format_order_history_item(order: Order):
+        """Format order history view"""
+        first_item = order.items[0] if order.items else None
+        product_image = None
+
+        if first_item and first_item.product and first_item.product.images:
+            primary_image = next(
+                (img for img in first_item.product.images if img.is_primary),
+                None
+            )
+            product_image = (
+                primary_image.image_url if primary_image
+                else first_item.product.images[0].image_url
+            )
+
+        return {
+            "id": order.id,
+            "order_number": order.order_number,
+            "status": order.status,
+            "payment_status": order.payment_status,
+            "product_image": product_image,
             "total": float(order.total),
             "total_items": len(order.items),
             "created_at": OrderService._safe_datetime(order.created_at)
@@ -254,19 +282,26 @@ class OrderService:
 
         return ResponseHandler.create_success("Order", order.id, order_data)
 
-    @staticmethod
     def get_user_orders(db: Session, user_id: str, page: int = 1, limit: int = 20):
         """Get user's orders"""
 
-        query = db.query(Order).filter(Order.user_id == user_id)
+        from sqlalchemy.orm import joinedload
+
+        query = db.query(Order).filter(Order.user_id == user_id).options(
+            joinedload(Order.items)
+            .joinedload(OrderItem.product)
+            .joinedload(Product.images)
+        )
 
         total = query.count()
 
-        orders = query.order_by(desc(Order.created_at)).offset(
-            (page - 1) * limit).limit(limit).all()
+        orders = query.order_by(desc(Order.created_at))\
+            .offset((page - 1) * limit)\
+            .limit(limit)\
+            .all()
 
-        orders_data = [OrderService._format_order_list_item(
-            order) for order in orders]
+        orders_data = [OrderService._format_order_history_item(order)
+                       for order in orders]
 
         return ResponseHandler.get_list_success(
             resource_name="Orders",
