@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 from app.elastic.controller import init_elasticsearch
 from app.core.config import settings, close_checkpointer
-from app.routes import auth, account, users, role, brands, categories, products, tags, carts, orders, chat, media, chat_streaming, notifications, wishlist, reviews, analytics
+from app.routes import auth, account, users, role, brands, categories, products, tags, carts, orders, chat, media, chat_streaming, notifications, wishlist, reviews, analytics, payment
 from app.utils.exceptions import (
     http_exception_handler,
     validation_exception_handler,
@@ -97,6 +97,7 @@ app.include_router(notifications.router)
 app.include_router(wishlist.router)
 app.include_router(reviews.router)
 app.include_router(analytics.router)
+app.include_router(payment.router)
 
 
 @app.get("/")

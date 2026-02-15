@@ -85,6 +85,12 @@ class Settings(BaseSettings):
     REDIS_KEY_PREFIX: str
     REDIS_KEY_TTL: int
 
+    # VNPay
+    VNP_TMNCODE: str
+    VNP_HASHSECRET: str
+    VNP_PAYMENT_URL: str
+    VNP_RETURN_URL: str
+
     class Config:
         env_file = ".env"
         case_sensitive = True

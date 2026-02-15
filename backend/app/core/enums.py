@@ -160,3 +160,38 @@ class ProductBenefit(str, Enum):
     PROTECTIVE = "bảo vệ da"
     RECOVERY = "phục hồi da"
     TONE_UP = "nâng tông"
+
+
+class VNPaymentStatus(str, Enum):
+    SUCCESS = "00"
+    SUSPICIOUS = "07"
+    NOT_REGISTERED = "09"
+    AUTH_FAILED = "10"
+    EXPIRED = "11"
+    LOCKED = "12"
+    WRONG_OTP = "13"
+    USER_CANCELLED = "24"
+    INSUFFICIENT_FUNDS = "51"
+    LIMIT_EXCEEDED = "65"
+    BANK_MAINTENANCE = "75"
+    WRONG_PASSWORD = "79"
+    UNKNOWN_ERROR = "99"
+
+    @property
+    def message(self):
+        _messages = {
+            "00": "Giao dịch thành công",
+            "07": "Trừ tiền thành công. Giao dịch bị nghi ngờ",
+            "09": "Thẻ/Tài khoản chưa đăng ký InternetBanking",
+            "10": "Xác thực thông tin không đúng quá 3 lần",
+            "11": "Đã hết hạn chờ thanh toán",
+            "12": "Thẻ/Tài khoản bị khóa",
+            "13": "Nhập sai OTP",
+            "24": "Khách hàng hủy giao dịch",
+            "51": "Tài khoản không đủ số dư",
+            "65": "Vượt quá hạn mức giao dịch",
+            "75": "Ngân hàng bảo trì",
+            "79": "Nhập sai mật khẩu quá số lần quy định",
+            "99": "Lỗi không xác định"
+        }
+        return _messages.get(self.value, "Lỗi không xác định")

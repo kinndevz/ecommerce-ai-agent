@@ -28,31 +28,9 @@ class OrderConstants:
     # Cancellable statuses
     CANCELLABLE_STATUSES = ["pending", "processing"]
 
-
-class PaymentConstants:
-    """Payment-related constants"""
-
-    # VNPay
-    VNPAY_TIMEOUT = 900  # 15 minutes
-    VNPAY_VERSION = "2.1.0"
-
-    # Momo
-    MOMO_TIMEOUT = 300  # 5 minutes
-
-    # COD
-    COD_FEE = Decimal('0.00')  # No fee for COD
-
-
-# CART CONSTANTS
-class CartConstants:
-    """Cart-related constants"""
-
-    MAX_ITEMS_PER_CART = 50
-    MAX_QUANTITY_PER_ITEM = 99
-    CART_EXPIRY_DAYS = 30  # Auto-clear after 30 days
-
-
 # PRODUCT CONSTANTS
+
+
 class ProductConstants:
     """Product-related constants"""
 
