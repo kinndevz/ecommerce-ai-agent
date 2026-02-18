@@ -25,6 +25,11 @@ export const API_ENDPOINT = {
   UPDATE_CART_ITEM: (id: string) => `/cart/items/${id}`,
   REMOVE_CART_ITEM: (id: string) => `/cart/items/${id}`,
 
+  // VNPay
+  PAY: '/payment/vnpay/create',
+  RETURN_URL: '/payment/vnpay/return',
+  IPN: '/payment/vnpay/ipn',
+
   // Order Routes
   CREATE_ORDER: '/orders',
   GET_MY_ORDERS: '/orders',
