@@ -4,6 +4,7 @@ import WishlistPage from './pages/WishListPage'
 import CartPage from './pages/CartPage'
 import OrderHistoryPage from './pages/OrderHistoryPage'
 import OrderDetailPage from './pages/OrderDetailPage'
+import CheckoutPage from './pages/CheckoutPage'
 
 export const CustomerRoutes = () => {
   return (
@@ -13,6 +14,7 @@ export const CustomerRoutes = () => {
       <Route path='/cart' element={<CartPage />} />
       <Route path='/orders' element={<OrderHistoryPage />} />
       <Route path='/orders/:id' element={<OrderDetailPage />} />
+      <Route path='/checkout' element={<CheckoutPage />} />
     </Routes>
   )
 }

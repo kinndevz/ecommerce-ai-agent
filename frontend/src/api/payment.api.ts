@@ -18,9 +18,18 @@ export const paymentAPI = {
     return data
   },
 
-  returnUrl: async (): Promise<ApiSuccessResponse<PaymentReturnData>> => {
+  returnUrl: async (
+    queryParams: URLSearchParams
+  ): Promise<ApiSuccessResponse<PaymentReturnData>> => {
     const { data } = await api.get<ApiSuccessResponse<PaymentReturnData>>(
-      API_ENDPOINT.RETURN_URL
+      `${API_ENDPOINT.RETURN_URL}?${queryParams.toString()}`
+    )
+    return data
+  },
+
+  ipn: async (queryParams: URLSearchParams) => {
+    const { data } = await api.get(
+      `${API_ENDPOINT.IPN}?${queryParams.toString()}`
     )
     return data
   },

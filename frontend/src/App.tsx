@@ -13,6 +13,7 @@ import WishlistPage from './domains/customer/pages/WishListPage'
 import CartPage from './domains/customer/pages/CartPage'
 import OrderHistoryPage from './domains/customer/pages/OrderHistoryPage'
 import OrderDetailPage from './domains/customer/pages/OrderDetailPage'
+import CheckoutPage from './domains/customer/pages/CheckoutPage'
 
 function App() {
   const isMaintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === 'true'
@@ -47,6 +48,8 @@ function App() {
           <Route path='/orders' element={<OrderHistoryPage />} />
 
           <Route path='/orders/:id' element={<OrderDetailPage />} />
+
+          <Route path='/checkout' element={<CheckoutPage />} />
 
           {adminRoutes}
 
