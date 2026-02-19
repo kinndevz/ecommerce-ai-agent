@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Navbar } from '../components/layout/Navbar'
 import { useCart } from '@/hooks/useCarts'
 import { useCreateOrder } from '@/hooks/useOrders'
+import { useCreatePayment } from '@/hooks/usePayments'
 import { CheckoutForm } from '../components/checkout/CheckoutForm'
 import { CheckoutSummary } from '../components/checkout/CheckoutSummary'
 import { CheckoutSteps } from '../components/checkout/CheckoutSteps'
@@ -17,6 +18,8 @@ export default function CheckoutPage() {
   const navigate = useNavigate()
   const { data: cart, isLoading: isLoadingCart } = useCart()
   const { mutate: createOrder, isPending: isCreatingOrder } = useCreateOrder()
+  const { mutate: createPayment, isPending: isCreatingPayment } =
+    useCreatePayment()
 
   const [currentStep, setCurrentStep] = useState(1)
   const [shippingAddress, setShippingAddress] =
@@ -79,20 +82,26 @@ export default function CheckoutPage() {
       {
         onSuccess: (response) => {
           if (response.success && response.data) {
-            // Nếu là VNPay sẽ redirect đến payment URL (implement sau)
+            const orderId = response.data.id
+
+            // VNPay - Create payment URL
             if (paymentMethod === 'vnpay') {
-              // TODO: Redirect to VNPay payment URL
-              console.log('Redirect to VNPay')
-              toast.info('Chuyển hướng đến trang thanh toán VNPay...')
+              createPayment({
+                order_id: orderId,
+                language: 'vn',
+              })
+              // useCreatePayment will auto redirect to payment_url
             } else {
               // COD - redirect to order detail
-              navigate(`/orders/${response.data.id}`)
+              navigate(`/orders/${orderId}`)
             }
           }
         },
       }
     )
   }
+
+  const isProcessing = isCreatingOrder || isCreatingPayment
 
   return (
     <div className='min-h-screen bg-background'>
@@ -150,7 +159,7 @@ export default function CheckoutPage() {
                 isLoading={isLoadingCart}
                 currentStep={currentStep}
                 onPlaceOrder={handlePlaceOrder}
-                isPlacingOrder={isCreatingOrder}
+                isPlacingOrder={isProcessing}
               />
             </div>
           </div>

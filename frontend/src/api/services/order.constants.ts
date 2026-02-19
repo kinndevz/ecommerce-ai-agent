@@ -147,3 +147,18 @@ export const PAYMENT_STATUS_CONFIG: Record<
     className: 'bg-red-500/10 text-red-600 border-red-500/20',
   },
 }
+
+export const ERROR_MESSAGES: Record<string, string> = {
+  '07': 'Giao dịch bị nghi ngờ gian lận',
+  '09': 'Thẻ/Tài khoản chưa đăng ký dịch vụ Internet Banking',
+  '10': 'Xác thực thông tin không đúng quá số lần quy định',
+  '11': 'Đã hết hạn chờ thanh toán',
+  '12': 'Thẻ/Tài khoản bị khóa',
+  '13': 'Mật khẩu xác thực không đúng',
+  '24': 'Giao dịch bị hủy',
+  '51': 'Tài khoản không đủ số dư',
+  '65': 'Tài khoản đã vượt quá hạn mức giao dịch',
+  '75': 'Ngân hàng thanh toán đang bảo trì',
+  '79': 'Giao dịch vượt quá số lần thanh toán',
+  '99': 'Lỗi không xác định',
+}
