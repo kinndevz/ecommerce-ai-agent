@@ -9,3 +9,4 @@ from .product import Product
 from .brand import Brand
 from .category import Category
 from .notification import Notification
+from .document import Document, DocumentChunk

@@ -84,7 +84,7 @@ export type CreateOrderInput = z.infer<typeof CreateOrderInputSchema> &
 
 export const GetMyOrdersInputSchema = z.object({
   page: z.number().int().min(1).optional().default(1),
-  limit: z.number().int().min(1).optional().default(20),
+  limit: z.number().int().min(1).optional().default(6),
   __auth_token: z.string().optional().describe("Internal Auth Token"),
 });
 

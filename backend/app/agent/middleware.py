@@ -1,7 +1,7 @@
 from typing import Callable, Awaitable, Dict, Any
 from langchain.agents.middleware import wrap_model_call, wrap_tool_call, ModelRequest, ModelResponse
 from langchain.agents import AgentState
-from langchain_core.messages import SystemMessage, ToolMessage
+from langchain_core.messages import SystemMessage, ToolMessage, HumanMessage
 from pathlib import Path
 from functools import lru_cache
 import logging
@@ -62,9 +62,6 @@ def _build_system_prompt(request: ModelRequest, user_prefs: Dict[str, Any]) -> s
 
     profile_text = _format_user_profile(user_prefs)
 
-    # 2. Inject vào placeholder trong file markdown
-    # Nếu file md có chứa chuỗi "{user_profile_context}", nó sẽ được thay thế
-    # Nếu không, ta append vào cuối.
     if "{user_profile_context}" in base_prompt:
         prompt_content = base_prompt.replace(
             "{user_profile_context}", profile_text)
@@ -125,3 +122,35 @@ def _load_system_prompt() -> str:
     except FileNotFoundError:
         logger.warning("System prompt file not found, using default")
         return "You are a helpful Vietnamese cosmetics e-commerce consultant."
+
+
+@wrap_model_call
+async def enforce_plain_text(
+    request: ModelRequest,
+    handler: Callable[[ModelRequest], Awaitable[ModelResponse]]
+) -> ModelResponse:
+    """Inject plain-text reminder nếu turn hiện tại có tool results."""
+    messages = request.messages
+
+    last_human_idx = -1
+    for i in range(len(messages) - 1, -1, -1):
+        if isinstance(messages[i], HumanMessage):
+            last_human_idx = i
+            break
+
+    current_turn = messages[last_human_idx + 1:] if last_human_idx >= 0 else []
+    has_tool_results = any(isinstance(m, ToolMessage) for m in current_turn)
+
+    if not has_tool_results:
+        return await handler(request)
+    reminder = HumanMessage(content=(
+        "[SYSTEM REMINDER: Frontend đã render UI cho data trên. "
+        "Chỉ trả lời bằng 1 câu plain text ngắn, KHÔNG dùng markdown, "
+        "KHÔNG liệt kê lại bất kỳ thông tin nào từ data.]"
+    ))
+
+    modified_request = request.override(
+        messages=[*messages, reminder]
+    )
+
+    return await handler(modified_request)

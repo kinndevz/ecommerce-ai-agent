@@ -3,19 +3,24 @@ import { Card } from '@/shared/components/ui/card'
 
 export function OrderGridSkeleton() {
   return (
-    <Card className='overflow-hidden'>
+    <Card className='overflow-hidden border-0'>
+      <div className='absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-primary via-primary/50 to-transparent' />
       <Skeleton className='aspect-4/3 w-full' />
-      <div className='p-4 space-y-3'>
-        <div className='flex justify-between'>
-          <Skeleton className='h-5 w-24' />
+      <div className='p-5 space-y-4'>
+        <div className='space-y-2'>
+          <div className='flex justify-between items-center'>
+            <Skeleton className='h-5 w-28' />
+            <Skeleton className='h-4 w-20' />
+          </div>
+          <div className='flex gap-2'>
+            <Skeleton className='h-6 w-24' />
+            <Skeleton className='h-4 w-16' />
+          </div>
+        </div>
+        <div className='pt-4 border-t flex justify-between items-center'>
           <Skeleton className='h-4 w-16' />
+          <Skeleton className='h-7 w-24' />
         </div>
-        <Skeleton className='h-4 w-full' />
-        <div className='pt-2 flex justify-between items-end'>
-          <Skeleton className='h-4 w-20' />
-          <Skeleton className='h-7 w-28' />
-        </div>
-        <Skeleton className='h-9 w-full mt-2' />
       </div>
     </Card>
   )
@@ -23,19 +28,33 @@ export function OrderGridSkeleton() {
 
 export function OrderListSkeleton() {
   return (
-    <Card className='flex flex-col sm:flex-row overflow-hidden h-auto sm:h-40'>
-      <Skeleton className='w-full sm:w-48 h-40 shrink-0' />
-      <div className='flex-1 p-5 flex flex-col justify-between'>
-        <div className='flex justify-between'>
-          <div className='space-y-2'>
-            <Skeleton className='h-6 w-32' />
-            <Skeleton className='h-4 w-24' />
+    <Card className='overflow-hidden border-0'>
+      <div className='absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-primary via-primary/50 to-transparent' />
+      <div className='flex flex-col sm:flex-row'>
+        <Skeleton className='w-full sm:w-48 h-48 sm:h-40' />
+        <div className='flex-1 p-5 sm:p-6 flex flex-col'>
+          <div className='flex justify-between gap-4 flex-1'>
+            <div className='space-y-3 flex-1'>
+              <div className='space-y-2'>
+                <div className='flex items-center gap-3'>
+                  <Skeleton className='h-6 w-32' />
+                  <Skeleton className='h-6 w-20' />
+                </div>
+                <Skeleton className='h-4 w-28' />
+              </div>
+              <div className='flex gap-2'>
+                <Skeleton className='h-6 w-24' />
+                <Skeleton className='h-4 w-16' />
+              </div>
+            </div>
+            <div className='text-right'>
+              <Skeleton className='h-4 w-16 mb-2' />
+              <Skeleton className='h-8 w-24' />
+            </div>
           </div>
-          <Skeleton className='h-8 w-24' />
-        </div>
-        <div className='flex justify-between items-end border-t pt-4'>
-          <Skeleton className='h-4 w-32' />
-          <Skeleton className='h-9 w-24' />
+          <div className='mt-4 pt-4 border-t flex justify-end'>
+            <Skeleton className='h-9 w-28' />
+          </div>
         </div>
       </div>
     </Card>

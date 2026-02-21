@@ -10,7 +10,8 @@ from app.agent.mcp_manager import mcp_manager
 from app.agent.middleware import (
     AgentStateWithContext,
     cosmetics_middleware,
-    handle_tool_errors
+    handle_tool_errors,
+    enforce_plain_text
 )
 
 logger = logging.getLogger(__name__)
@@ -50,6 +51,7 @@ class UnifiedAgent:
                 middleware=[
                     handle_tool_errors,
                     cosmetics_middleware,
+                    enforce_plain_text,
                     SummarizationMiddleware(
                         model=ChatOpenAI(model="gpt-4o-mini",
                                          api_key=settings.OPENAI_API_KEY),
