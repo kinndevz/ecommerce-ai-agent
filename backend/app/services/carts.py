@@ -152,6 +152,7 @@ class CartService:
                 id=str(uuid.uuid4()),
                 cart_id=cart.id,
                 product_id=product_id,
+                product_slug=product.slug,
                 variant_id=variant_id,
                 quantity=quantity,
                 price=price,

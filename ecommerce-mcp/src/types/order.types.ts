@@ -15,6 +15,7 @@ export interface ShippingAddress {
 export interface OrderItem {
   id: string;
   product_id: string;
+  product_slug: string;
   variant_id: string | null;
   product_name: string;
   variant_name: string | null;
@@ -111,6 +112,7 @@ export type CancelOrderInput = z.infer<typeof CancelOrderInputSchema> &
 const OrderItemSchema = z.object({
   id: z.string(),
   product_id: z.string(),
+  product_slug: z.string(),
   variant_id: z.string().nullable().optional(),
   product_name: z.string(),
   variant_name: z.string().nullable().optional(),

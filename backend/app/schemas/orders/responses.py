@@ -12,6 +12,7 @@ class OrderItemResponse(BaseModel):
     """Order item response"""
     id: str
     product_id: str
+    product_slug: str
     variant_id: Optional[str]
     product_name: str
     variant_name: Optional[str]

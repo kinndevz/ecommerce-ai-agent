@@ -77,8 +77,10 @@ class Product(Base, AuditMixin):
                         back_populates="products")
     reviews = relationship(
         "Review", back_populates="product", cascade="all, delete-orphan")
-    cart_items = relationship("CartItem", back_populates="product")
-    order_items = relationship("OrderItem", back_populates="product")
+    cart_items = relationship(
+        "CartItem", back_populates="product", foreign_keys="[CartItem.product_id]")
+    order_items = relationship(
+        "OrderItem", back_populates="product", foreign_keys="[OrderItem.product_id]")
     wishlists = relationship("Wishlist", back_populates="product")
     product_views = relationship("ProductView", back_populates="product")
 

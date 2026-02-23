@@ -17,6 +17,7 @@ export interface ShippingAddress {
 export interface OrderItem {
   id: string
   product_id: string
+  product_slug: string
   variant_id?: string | null
   product_name: string
   variant_name?: string | null

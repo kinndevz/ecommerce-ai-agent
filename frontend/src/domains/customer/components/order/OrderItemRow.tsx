@@ -28,7 +28,7 @@ export function OrderItemRow({ item }: OrderItemRowProps) {
     <div className='flex flex-col gap-4 py-5 sm:flex-row sm:items-center group'>
       {/* Product Image */}
       <Link
-        to={`/products/${item.product_id}`}
+        to={`/products/${item.product_slug}`}
         className='relative h-24 w-24 shrink-0 overflow-hidden rounded-xl border-2 border-border group-hover:border-primary/50 transition-all duration-300 group-hover:shadow-md'
       >
         {itemImage ? (

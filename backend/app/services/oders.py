@@ -90,6 +90,7 @@ class OrderService:
             {
                 "id": item.id,
                 "product_id": item.product_id,
+                "product_slug": item.product_slug,
                 "variant_id": item.variant_id,
                 "product_name": item.product_name,
                 "variant_name": item.variant_name,
@@ -243,6 +244,7 @@ class OrderService:
                 id=str(uuid.uuid4()),
                 order_id=order.id,
                 product_id=cart_item.product_id,
+                product_slug=cart_item.product_slug,
                 variant_id=cart_item.variant_id,
                 product_name=cart_item.product.name,
                 variant_name=cart_item.variant.name if cart_item.variant else None,

@@ -54,6 +54,8 @@ class OrderItem(Base, TimestampMixin):
                       nullable=False, index=True)
     product_id = Column(String, ForeignKey("products.id"),
                         nullable=False, index=True)
+    product_slug = Column(String, ForeignKey("products.slug"),
+                          nullable=False, index=True)
     variant_id = Column(String, ForeignKey(
         "product_variants.id"), nullable=True)
 
@@ -66,7 +68,8 @@ class OrderItem(Base, TimestampMixin):
 
     # Relationships
     order = relationship("Order", back_populates="items")
-    product = relationship("Product", back_populates="order_items")
+    product = relationship(
+        "Product", back_populates="order_items", foreign_keys=[product_id])
     variant = relationship("ProductVariant", back_populates="order_items")
 
     def __repr__(self):
