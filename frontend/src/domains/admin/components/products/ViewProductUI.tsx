@@ -27,6 +27,7 @@ import { ProductPageHeader } from './ProductPageHeader'
 import { ProductDetailSkeleton } from './ProductDetailSkeleton'
 import { ProductNotFoundState } from './ProductNotFoundState'
 import { ProductImageGallery } from './ProductImageGallery'
+import { ProductReviews } from '../reviews/ProductReviews'
 
 export function ViewProductUI() {
   const { id } = useParams<{ id: string }>()
@@ -80,7 +81,7 @@ export function ViewProductUI() {
   const displaySKU = selectedVariant?.sku || product.sku
 
   return (
-    <div className='min-h-screen p-6 font-sans'>
+    <div className='min-h-screen p-4 sm:p-6 font-sans bg-gray-50/50'>
       <ProductPageHeader
         breadcrumbs={[
           { label: 'Products', onClick: () => navigate('/admin/products') },
@@ -109,11 +110,12 @@ export function ViewProductUI() {
         }
       />
 
-      <div className='mb-8'>
-        <h1 className='text-3xl font-bold tracking-tight text-foreground mb-3'>
+      {/* Product Header */}
+      <div className='mb-6 sm:mb-8'>
+        {/* <h1 className='text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-3'>
           {product.name}
         </h1>
-        <div className='flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground'>
+        <div className='flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-2 text-sm text-muted-foreground'>
           <div className='flex items-center gap-1.5'>
             <span className='font-semibold text-foreground'>Seller:</span>
             <span>{product.brand?.name || 'N/A'}</span>
@@ -131,21 +133,27 @@ export function ViewProductUI() {
               {displaySKU}
             </Badge>
           </div>
-        </div>
+        </div> */}
       </div>
 
-      <div className='grid grid-cols-12 gap-8 items-start'>
-        <ProductImageGallery
-          images={images}
-          currentIndex={currentImageIndex}
-          onSelect={setCurrentImageIndex}
-          onPrev={handlePrevImage}
-          onNext={handleNextImage}
-          productName={product.name}
-        />
+      {/* Main Content Grid */}
+      <div className='grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start'>
+        {/* Left: Image Gallery - Sticky on desktop, normal on mobile */}
+        <div className='lg:col-span-5 lg:sticky lg:top-6 lg:self-start'>
+          <ProductImageGallery
+            images={images}
+            currentIndex={currentImageIndex}
+            onSelect={setCurrentImageIndex}
+            onPrev={handlePrevImage}
+            onNext={handleNextImage}
+            productName={product.name}
+          />
+        </div>
 
-        <div className='col-span-12 lg:col-span-7 space-y-8'>
-          <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
+        {/* Right: Details & Reviews */}
+        <div className='lg:col-span-7 space-y-6 sm:space-y-8'>
+          {/* Stats Cards */}
+          <div className='grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4'>
             {[
               {
                 icon: DollarSign,
@@ -161,16 +169,16 @@ export function ViewProductUI() {
               { icon: Package, label: 'Revenue', value: '$45,938' },
             ].map((stat, i) => (
               <Card key={i} className='shadow-sm border bg-background'>
-                <CardContent className='p-4'>
-                  <div className='flex items-start gap-3'>
-                    <div className='p-2 bg-muted rounded-md shrink-0'>
-                      <stat.icon className='w-5 h-5 text-muted-foreground' />
+                <CardContent className='p-3 sm:p-4'>
+                  <div className='flex items-start gap-2 sm:gap-3'>
+                    <div className='p-1.5 sm:p-2 bg-muted rounded-md shrink-0'>
+                      <stat.icon className='w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground' />
                     </div>
-                    <div>
-                      <p className='text-xs font-medium text-muted-foreground mb-1'>
+                    <div className='min-w-0'>
+                      <p className='text-xs font-medium text-muted-foreground mb-1 truncate'>
                         {stat.label}
                       </p>
-                      <p className='text-lg font-bold text-foreground'>
+                      <p className='text-base sm:text-lg font-bold text-foreground truncate'>
                         {stat.value}
                       </p>
                     </div>
@@ -180,21 +188,23 @@ export function ViewProductUI() {
             ))}
           </div>
 
+          {/* Product Details Card */}
           <Card className='border bg-background shadow-sm'>
-            <CardContent className='p-6'>
-              <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
-                <div className='md:col-span-2 space-y-8 min-w-0'>
+            <CardContent className='p-4 sm:p-6'>
+              <div className='grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8'>
+                <div className='md:col-span-2 space-y-6 sm:space-y-8 min-w-0'>
+                  {/* Description */}
                   <div className='min-w-0'>
                     <h3 className='font-bold text-base text-foreground mb-3'>
                       Description:
                     </h3>
-                    <div className='text-sm text-muted-foreground leading-relaxed space-y-4 wrap-break-word'>
+                    <div className='text-sm text-muted-foreground leading-relaxed space-y-4'>
                       {product.short_description && (
                         <p>{product.short_description}</p>
                       )}
                       {product.description && (
                         <div
-                          className='prose prose-sm dark:prose-invert max-w-none wrap-break-word'
+                          className='prose prose-sm dark:prose-invert max-w-none'
                           dangerouslySetInnerHTML={{
                             __html: product.description,
                           }}
@@ -210,7 +220,7 @@ export function ViewProductUI() {
                         Key Features:
                       </h3>
                       <div
-                        className='text-sm text-muted-foreground prose prose-sm dark:prose-invert max-w-none [&_ul]:list-disc [&_ul]:pl-5 wrap-break-word'
+                        className='text-sm text-muted-foreground prose prose-sm dark:prose-invert max-w-none [&_ul]:list-disc [&_ul]:pl-5'
                         dangerouslySetInnerHTML={{ __html: product.how_to_use }}
                       />
                     </div>
@@ -218,13 +228,13 @@ export function ViewProductUI() {
 
                   <Separator />
 
-                  {/* Colors (Fix Unselect) */}
+                  {/* Colors */}
                   {uniqueColors.length > 0 && (
                     <div>
                       <h3 className='font-bold text-sm text-foreground mb-3'>
                         Colors:
                       </h3>
-                      <div className='flex flex-wrap gap-3'>
+                      <div className='flex flex-wrap gap-2 sm:gap-3'>
                         {uniqueColors.map((variant) => {
                           const isSelected = selectedVariant?.id === variant.id
                           const bgHex = variant.shade_name || '#e2e8f0'
@@ -232,7 +242,6 @@ export function ViewProductUI() {
                           return (
                             <button
                               key={variant.id}
-                              // Sửa logic onClick
                               onClick={() => handleVariantSelect(variant)}
                               className={cn(
                                 'w-8 h-8 rounded-full border shadow-sm transition-all',
@@ -249,6 +258,7 @@ export function ViewProductUI() {
                     </div>
                   )}
 
+                  {/* Sizes */}
                   {uniqueSizes.length > 0 && (
                     <div>
                       <h3 className='font-bold text-sm text-foreground mb-3'>
@@ -276,16 +286,18 @@ export function ViewProductUI() {
                     </div>
                   )}
 
-                  <div className='flex gap-3 pt-2'>
-                    <Button className='px-8 shadow-sm'>
-                      <ShoppingCart className='w-4 h-4 mr-2' /> Add to Card
+                  {/* Actions */}
+                  <div className='flex flex-col sm:flex-row gap-2 sm:gap-3 pt-2'>
+                    <Button className='w-full sm:w-auto px-8 shadow-sm'>
+                      <ShoppingCart className='w-4 h-4 mr-2' /> Add to Cart
                     </Button>
-                    <Button variant='outline'>
+                    <Button variant='outline' className='w-full sm:w-auto'>
                       <Heart className='w-4 h-4 mr-2' /> Wishlist
                     </Button>
                   </div>
                 </div>
 
+                {/* Right Info Panel */}
                 <div className='md:col-span-1'>
                   <div className='rounded-lg border border-border overflow-hidden text-sm shadow-sm'>
                     {[
@@ -326,6 +338,11 @@ export function ViewProductUI() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Reviews Section */}
+          <div className='border-t pt-6 sm:pt-8 bg-background rounded-lg p-4 sm:p-6 shadow-sm border'>
+            <ProductReviews productId={product.id} />
+          </div>
         </div>
       </div>
     </div>
