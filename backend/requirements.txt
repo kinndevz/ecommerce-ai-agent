@@ -49,3 +49,6 @@ langgraph-checkpoint-postgres
 psycopg[binary,pool]
 redis
 jinja2
+pypdf
+python-docx
+openpyxl

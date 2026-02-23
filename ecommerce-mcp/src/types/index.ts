@@ -11,3 +11,6 @@ export * from "./order.types";
 
 // Preferences Types
 export * from "./preferences.types";
+
+// FAQ types
+export * from "./cart.types";

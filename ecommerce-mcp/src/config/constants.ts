@@ -33,6 +33,11 @@ export const TOOL_METADATA = {
     category: "preferences",
     requires_auth: true,
   },
+  FAQ_SEARCH: {
+    agent: "faq",
+    category: "search",
+    requires_auth: false,
+  },
 } as const;
 
 export const HTTP_HEADERS = {
