@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Heart } from 'lucide-react'
+import { Heart, ShoppingCart } from 'lucide-react'
 import { Button } from '@/shared/components/ui/button'
 import { Badge } from '@/shared/components/ui/badge'
 import { cn } from '@/lib/utils'
+import { useAddToCart } from '@/hooks/useCarts'
+import { useToggleWishlist } from '@/hooks/useWishlist'
 import { formatCurrencyVnd } from '@/domains/customer/helpers/formatters'
 import type { ProductListItem } from '@/api/product.api'
 
@@ -69,12 +71,14 @@ export const calculateDiscount = (
 interface FavoriteButtonProps {
   isFavorite: boolean
   onToggle: () => void
+  isLoading?: boolean
   className?: string
 }
 
 export const FavoriteButton = ({
   isFavorite,
   onToggle,
+  isLoading,
   className,
 }: FavoriteButtonProps) => (
   <button
@@ -83,10 +87,12 @@ export const FavoriteButton = ({
       e.stopPropagation()
       onToggle()
     }}
+    disabled={isLoading}
     className={cn(
       'w-8 h-8 rounded-full flex items-center justify-center',
       'bg-white/90 backdrop-blur-sm shadow-sm border border-border/50',
       'hover:scale-110 transition-all duration-200',
+      'disabled:opacity-50 disabled:cursor-not-allowed',
       isFavorite && 'bg-red-50 border-red-200',
       className
     )}
@@ -105,30 +111,33 @@ export const ProductCard = ({
   product,
   variant = 'default',
   isFavorite = false,
-  onToggleFavorite,
-  onAddToCart,
   className,
 }: ProductCardProps) => {
   const [localFavorite, setLocalFavorite] = useState(isFavorite)
-  const [isAddingToCart, setIsAddingToCart] = useState(false)
 
-  const productUrl = `/products/${product.slug || product}`
+  const { mutate: addToCart, isPending: isAddingToCart } = useAddToCart()
+  const { toggle: toggleWishlist, isPending: isTogglingWishlist } =
+    useToggleWishlist()
+
+  const productUrl = `/products/${product.slug || product.id}`
 
   const handleToggleFavorite = () => {
-    setLocalFavorite(!localFavorite)
-    onToggleFavorite?.(product.id)
+    const newState = !localFavorite
+    setLocalFavorite(newState)
+    toggleWishlist(product.id, localFavorite)
   }
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    setIsAddingToCart(true)
-    onAddToCart?.(product.id)
-    // Simulate loading
-    setTimeout(() => setIsAddingToCart(false), 500)
+
+    addToCart({
+      product_id: product.id,
+      variant_id: null,
+      quantity: 1,
+    })
   }
 
-  // Format display name: "Brand - Product Name" or just "Product Name"
   const displayName = product.brand
     ? `${product.brand} - ${product.name}`
     : product.name
@@ -153,14 +162,13 @@ export const ProductCard = ({
           )}
 
           {/* Favorite Button - Show on Hover */}
-          {onToggleFavorite && (
-            <div className='absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200'>
-              <FavoriteButton
-                isFavorite={localFavorite}
-                onToggle={handleToggleFavorite}
-              />
-            </div>
-          )}
+          <div className='absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200'>
+            <FavoriteButton
+              isFavorite={localFavorite}
+              onToggle={handleToggleFavorite}
+              isLoading={isTogglingWishlist}
+            />
+          </div>
         </div>
 
         {/* Product Info */}
@@ -193,39 +201,49 @@ export const ProductCard = ({
           </div>
 
           {/* Add to Cart Button */}
-          {onAddToCart && (
-            <Button
-              variant='outline'
-              size='sm'
-              onClick={handleAddToCart}
-              disabled={isAddingToCart}
-              className='h-9 px-4 rounded-lg text-sm font-medium border-border hover:bg-foreground hover:text-background transition-colors'
-            >
-              {isAddingToCart ? 'Adding...' : 'Add to cart'}
-            </Button>
-          )}
+          <Button
+            variant='outline'
+            size='sm'
+            onClick={handleAddToCart}
+            disabled={isAddingToCart}
+            className='h-9 px-4 rounded-lg text-sm font-medium border-border hover:bg-foreground hover:text-background transition-colors'
+          >
+            {isAddingToCart ? (
+              <>
+                <div className='mr-2 h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent' />
+                Adding...
+              </>
+            ) : (
+              <>
+                <ShoppingCart className='w-3.5 h-3.5 mr-1.5' />
+                Add to cart
+              </>
+            )}
+          </Button>
         </div>
       </Link>
     </div>
   )
 }
 
-// COMPACT VARIANT - For smaller grids
+// COMPACT VARIANT
 
 export const ProductCardCompact = ({
   product,
   isFavorite = false,
-  onToggleFavorite,
-  onAddToCart,
   className,
 }: ProductCardProps) => {
   const [localFavorite, setLocalFavorite] = useState(isFavorite)
 
+  const { toggle: toggleWishlist, isPending: isTogglingWishlist } =
+    useToggleWishlist()
+
   const productUrl = `/products/${product.slug || product.id}`
 
   const handleToggleFavorite = () => {
-    setLocalFavorite(!localFavorite)
-    onToggleFavorite?.(product.id)
+    const newState = !localFavorite
+    setLocalFavorite(newState)
+    toggleWishlist(product.id, localFavorite)
   }
 
   return (
@@ -246,14 +264,13 @@ export const ProductCardCompact = ({
             </Badge>
           )}
 
-          {onToggleFavorite && (
-            <div className='absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity'>
-              <FavoriteButton
-                isFavorite={localFavorite}
-                onToggle={handleToggleFavorite}
-              />
-            </div>
-          )}
+          <div className='absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity'>
+            <FavoriteButton
+              isFavorite={localFavorite}
+              onToggle={handleToggleFavorite}
+              isLoading={isTogglingWishlist}
+            />
+          </div>
         </div>
 
         {/* Info */}

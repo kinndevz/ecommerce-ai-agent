@@ -8,16 +8,12 @@ import {
 
 interface TrendingSectionProps {
   products: ProductCardData[]
-  favorites: string[]
-  onToggleFavorite: (id: string) => void
-  onAddToCart: (id: string) => void
+  wishlistIds: Set<string>
 }
 
 export const TrendingSection = ({
   products,
-  favorites,
-  onToggleFavorite,
-  onAddToCart,
+  wishlistIds,
 }: TrendingSectionProps) => {
   if (products.length === 0) return null
 
@@ -49,9 +45,7 @@ export const TrendingSection = ({
           <ProductCardCompact
             key={product.id}
             product={product}
-            isFavorite={favorites.includes(product.id)}
-            onToggleFavorite={onToggleFavorite}
-            onAddToCart={onAddToCart}
+            isFavorite={wishlistIds.has(product.id)}
           />
         ))}
       </div>

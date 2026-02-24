@@ -1,6 +1,6 @@
-import { useState, useCallback } from 'react'
 import { Sparkles } from 'lucide-react'
 import { useFeaturedProducts, useTrendingProducts } from '@/hooks/useProducts'
+import { useWishlist } from '@/hooks/useWishlist'
 import {
   SectionHeader,
   ProductSkeleton,
@@ -11,25 +11,19 @@ import ProductCard, { normalizeProduct } from '../product/ProductCard'
 export const FeaturedProducts = () => {
   const { data, isLoading } = useFeaturedProducts(6)
   const { data: trendingData } = useTrendingProducts(30, 4)
+  const { data: wishlistData } = useWishlist()
 
   const featuredProducts = data?.data?.map(normalizeProduct) ?? []
   const trendingProducts = trendingData?.data?.map(normalizeProduct) ?? []
 
-  const [favorites, setFavorites] = useState<string[]>([])
-
-  const toggleFavorite = useCallback((id: string) => {
-    setFavorites((prev) =>
-      prev.includes(id) ? prev.filter((fav) => fav !== id) : [...prev, id]
-    )
-  }, [])
-
-  const handleAddToCart = useCallback((id: string) => {
-    console.log('Add to cart:', id)
-  }, [])
+  const wishlistIds = new Set(
+    wishlistData?.data?.map((item) => item.product_id) ?? []
+  )
 
   return (
     <section className='py-16 lg:py-24'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+        {/* Featured Section */}
         <SectionHeader
           badge={{
             icon: <Sparkles className='w-3.5 h-3.5 text-amber-500' />,
@@ -55,18 +49,15 @@ export const FeaturedProducts = () => {
             <ProductCard
               key={product.id}
               product={product}
-              isFavorite={favorites.includes(product.id)}
-              onToggleFavorite={toggleFavorite}
-              onAddToCart={handleAddToCart}
+              isFavorite={wishlistIds.has(product.id)}
             />
           ))}
         </div>
 
+        {/* Trending Section */}
         <TrendingSection
           products={trendingProducts}
-          favorites={favorites}
-          onToggleFavorite={toggleFavorite}
-          onAddToCart={handleAddToCart}
+          wishlistIds={wishlistIds}
         />
       </div>
     </section>

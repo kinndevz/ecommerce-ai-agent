@@ -37,7 +37,7 @@ export default function ProductDetailPage() {
         </div>
 
         <div className='border-t border-border/40'>
-          <ProductReviews productId={product.id} />
+          <ProductReviews productId={product.id} productName={product.name} />
         </div>
 
         <div className='container mx-auto'>
