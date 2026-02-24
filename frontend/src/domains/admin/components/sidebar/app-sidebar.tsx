@@ -11,6 +11,7 @@ import {
   IconUsers,
   IconUserShield,
   IconWorld,
+  IconFileText,
 } from '@tabler/icons-react'
 import { NavMain } from '@/domains/admin/components/sidebar/nav-main'
 import { NavSecondary } from '@/domains/admin/components/sidebar/nav-secondary'
@@ -34,39 +35,44 @@ const data = {
       icon: IconLayoutDashboard,
     },
     {
-      title: 'Products ',
+      title: 'Products',
       url: '/admin/products',
       icon: IconPackage,
     },
     {
-      title: 'Brands ',
+      title: 'Brands',
       url: '/admin/brands',
       icon: IconWorld,
     },
     {
-      title: 'Categories ',
+      title: 'Categories',
       url: '/admin/categories',
       icon: IconCategory2,
     },
     {
-      title: 'Orders ',
+      title: 'Orders',
       url: '/admin/orders',
       icon: IconTruckDelivery,
     },
     {
-      title: 'Notifications ',
+      title: 'Notifications',
       url: '/admin/notifications',
       icon: IconBell,
     },
     {
-      title: 'Users ',
+      title: 'Users',
       url: '/admin/users',
       icon: IconUsers,
     },
     {
-      title: 'Roles & Permissions ',
+      title: 'Roles & Permissions',
       url: '/admin/roles',
       icon: IconUserShield,
+    },
+    {
+      title: 'Documents',
+      url: '/admin/documents',
+      icon: IconFileText,
     },
   ],
   navSecondary: [

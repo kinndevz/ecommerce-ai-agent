@@ -10,7 +10,10 @@ import {
 } from '@tabler/icons-react'
 import { useNavigate } from 'react-router-dom'
 
-import type { NotificationItem, NotificationType } from '@/api/types/notification.types'
+import type {
+  NotificationItem,
+  NotificationType,
+} from '@/api/types/notification.types'
 import {
   ORDER_NOTIFICATION_TYPES,
   UPDATE_NOTIFICATION_TYPES,
@@ -28,11 +31,7 @@ import {
 import { ScrollArea } from '@/shared/components/ui/scroll-area'
 import { Separator } from '@/shared/components/ui/separator'
 import { Skeleton } from '@/shared/components/ui/skeleton'
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from '@/shared/components/ui/tabs'
+import { Tabs, TabsList, TabsTrigger } from '@/shared/components/ui/tabs'
 
 type NotificationTab = 'all' | 'orders' | 'updates'
 
@@ -194,7 +193,7 @@ export function NotificationPopover() {
         >
           <IconBell className='h-5 w-5' />
           {unreadCount > 0 && (
-            <Badge className='absolute -top-1 -right-1 h-5 min-w-[20px] px-1 text-[10px]'>
+            <Badge className='absolute -top-1 -right-1 h-5 min-w-5 px-1 text-[10px]'>
               {unreadCount > 99 ? '99+' : unreadCount}
             </Badge>
           )}
@@ -202,7 +201,7 @@ export function NotificationPopover() {
       </PopoverTrigger>
       <PopoverContent
         align='end'
-        className='w-[360px] p-0 shadow-xl'
+        className='w-90 p-0 shadow-xl'
         sideOffset={12}
       >
         <div className='flex items-center justify-between px-4 py-3'>
@@ -237,7 +236,10 @@ export function NotificationPopover() {
           </div>
         </div>
         <div className='px-4 pb-3'>
-          <Tabs value={tab} onValueChange={(value) => setTab(value as NotificationTab)}>
+          <Tabs
+            value={tab}
+            onValueChange={(value) => setTab(value as NotificationTab)}
+          >
             <TabsList className='grid w-full grid-cols-3'>
               <TabsTrigger value='all'>View All</TabsTrigger>
               <TabsTrigger value='orders'>New Order</TabsTrigger>
@@ -246,7 +248,7 @@ export function NotificationPopover() {
           </Tabs>
         </div>
         <Separator />
-        <ScrollArea className='h-[360px]'>
+        <ScrollArea className='h-90'>
           {isInitialLoading ? (
             <NotificationLoadingState />
           ) : filteredNotifications.length === 0 ? (

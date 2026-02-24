@@ -10,6 +10,7 @@ class DocumentBase(BaseModel):
     title: str
     description: Optional[str]
     file_type: str
+    file_size: Optional[int] = None  # Size in bytes
     s3_url: str
     document_group_id: UUID
     version: int

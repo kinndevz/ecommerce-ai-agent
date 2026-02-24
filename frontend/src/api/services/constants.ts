@@ -30,6 +30,11 @@ export const API_ENDPOINT = {
   RETURN_URL: '/payment/vnpay/return',
   IPN: '/payment/vnpay/ipn',
 
+  // Document
+  DOCUMENTS: '/documents',
+  DOCUMENT_DETAIL: (id: string) => `/documents/${id}`,
+  DOCUMENTS_SEARCH: '/documents/search',
+
   // Order Routes
   CREATE_ORDER: '/orders',
   GET_MY_ORDERS: '/orders',

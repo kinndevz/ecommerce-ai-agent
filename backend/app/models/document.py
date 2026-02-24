@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Text, Boolean, Integer, ForeignKey
+from sqlalchemy import BigInteger, Column, String, Text, Boolean, Integer, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import relationship
 from pgvector.sqlalchemy import Vector
@@ -14,6 +14,7 @@ class Document(Base, TimestampMixin):
     title = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
     file_type = Column(String(20), nullable=False)  # pdf, docx, xlsx
+    file_size = Column(BigInteger, nullable=True)
     # S3 key để download nếu cần
     s3_key = Column(String(500), nullable=False)
     s3_url = Column(String(1000), nullable=False)    # Public/presigned URL

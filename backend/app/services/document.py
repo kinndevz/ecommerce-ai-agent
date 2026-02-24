@@ -34,6 +34,7 @@ class DocumentService:
         file_type = filename.rsplit(".", 1)[-1].lower()
         content_type = mimetypes.guess_type(
             filename)[0] or "application/octet-stream"
+        file_size = len(file_bytes)
 
         # 1. Upload to S3
         s3_key = f"documents/{uuid.uuid4()}/{filename}"
@@ -59,6 +60,7 @@ class DocumentService:
             title=payload.title,
             description=payload.description,
             file_type=file_type,
+            file_size=file_size,
             s3_key=s3_key,
             s3_url=s3_url,
             document_group_id=document_group_id,
