@@ -21,6 +21,7 @@ import EditCategoryPage from './pages/category/EditCategoryPage'
 import OrdersPage from './pages/order/OrdersPage'
 import ViewOrderPage from './pages/order/ViewOrderPage'
 import NotificationsPage from './pages/notification/NotificationsPage'
+import { DocumentPage } from './pages/document/DocumentPage'
 
 export const adminRoutes = (
   <>
@@ -189,6 +190,14 @@ export const adminRoutes = (
       element={
         <ProtectedRoute>
           <NotificationsPage />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path='/admin/documents'
+      element={
+        <ProtectedRoute>
+          <DocumentPage />
         </ProtectedRoute>
       }
     />
