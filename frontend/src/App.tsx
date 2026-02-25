@@ -15,6 +15,7 @@ import OrderHistoryPage from './domains/customer/pages/OrderHistoryPage'
 import OrderDetailPage from './domains/customer/pages/OrderDetailPage'
 import CheckoutPage from './domains/customer/pages/CheckoutPage'
 import PaymentReturnPage from './domains/customer/pages/PaymentReturnPage'
+import { ProductsPage } from './domains/customer/pages/ProductsPage'
 
 function App() {
   const isMaintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === 'true'
@@ -53,6 +54,8 @@ function App() {
           <Route path='/checkout' element={<CheckoutPage />} />
 
           <Route path='/payment/return' element={<PaymentReturnPage />} />
+
+          <Route path='/products' element={<ProductsPage />} />
 
           {adminRoutes}
 

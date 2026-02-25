@@ -6,6 +6,7 @@ import OrderHistoryPage from './pages/OrderHistoryPage'
 import OrderDetailPage from './pages/OrderDetailPage'
 import CheckoutPage from './pages/CheckoutPage'
 import PaymentReturnPage from './pages/PaymentReturnPage'
+import { ProductsPage } from './pages/ProductsPage'
 
 export const CustomerRoutes = () => {
   return (
@@ -17,6 +18,7 @@ export const CustomerRoutes = () => {
       <Route path='/orders/:id' element={<OrderDetailPage />} />
       <Route path='/checkout' element={<CheckoutPage />} />
       <Route path='/payment/return' element={<PaymentReturnPage />} />
+      <Route path='/products' element={<ProductsPage />} />
     </Routes>
   )
 }

@@ -22,6 +22,13 @@ export interface SearchQueryParams {
   q?: string
   min_price?: number
   max_price?: number
+  brand?: string
+  category?: string
+  skin_types?: string[]
+  concerns?: string[]
+  benefits?: string[]
+  is_available?: boolean
+  tags?: string[]
   page?: number
   limit?: number
 }
@@ -88,7 +95,8 @@ export interface ProductImageUpdateRequest {
 
 export interface ProductVariantCreateRequest extends ProductVariantInput {}
 
-export interface ProductVariantUpdateRequest extends Partial<ProductVariantInput> {
+export interface ProductVariantUpdateRequest
+  extends Partial<ProductVariantInput> {
   is_available?: boolean | null
 }
 
