@@ -1,4 +1,5 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios'
+import qs from 'qs'
 import {
   getAccessToken,
   setAccessToken,
@@ -12,6 +13,13 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
   withCredentials: true,
+  paramsSerializer: (params) => {
+    return qs.stringify(params, {
+      arrayFormat: 'repeat', // ?key=val1&key=val2 (FastAPI format)
+      skipNulls: true,
+      encode: true,
+    })
+  },
 })
 
 api.interceptors.request.use(
@@ -25,6 +33,7 @@ api.interceptors.request.use(
     if (import.meta.env.DEV) {
       console.log(`[API] ${config.method?.toUpperCase()} ${config.url}`, {
         hasToken: !!accessToken,
+        params: config.params,
       })
     }
 

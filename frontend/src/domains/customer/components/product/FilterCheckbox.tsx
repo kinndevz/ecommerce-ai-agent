@@ -17,11 +17,11 @@ export function FilterCheckbox({
   indent = 0,
 }: FilterCheckboxProps) {
   return (
-    <div className='flex items-center space-x-2'>
+    <div className='flex items-center space-x-2.5 py-2 px-2 rounded-md hover:bg-muted/50 transition-colors'>
       <Checkbox id={id} checked={checked} onCheckedChange={onCheckedChange} />
       <Label
         htmlFor={id}
-        className='text-sm cursor-pointer'
+        className='text-sm cursor-pointer flex-1 leading-none'
         style={{ paddingLeft: `${indent}px` }}
       >
         {label}

@@ -27,10 +27,8 @@ export interface ProductCardData {
 
 export interface ProductCardProps {
   product: ProductCardData
-  variant?: 'default' | 'compact'
+  variant?: 'grid' | 'list' | 'compact'
   isFavorite?: boolean
-  onToggleFavorite?: (id: string) => void
-  onAddToCart?: (id: string) => void
   className?: string
 }
 
@@ -58,14 +56,6 @@ export const normalizeProduct = (product: ProductListItem): ProductCardData => {
   }
 }
 
-export const calculateDiscount = (
-  price: number,
-  originalPrice?: number
-): number => {
-  if (!originalPrice || originalPrice <= price) return 0
-  return Math.round(((originalPrice - price) / originalPrice) * 100)
-}
-
 // FAVORITE BUTTON
 
 interface FavoriteButtonProps {
@@ -89,7 +79,7 @@ export const FavoriteButton = ({
     }}
     disabled={isLoading}
     className={cn(
-      'w-8 h-8 rounded-full flex items-center justify-center',
+      'w-7 h-7 rounded-full flex items-center justify-center',
       'bg-white/90 backdrop-blur-sm shadow-sm border border-border/50',
       'hover:scale-110 transition-all duration-200',
       'disabled:opacity-50 disabled:cursor-not-allowed',
@@ -100,16 +90,17 @@ export const FavoriteButton = ({
   >
     <Heart
       className={cn(
-        'w-4 h-4 transition-colors',
+        'w-3.5 h-3.5 transition-colors',
         isFavorite ? 'fill-red-500 text-red-500' : 'text-muted-foreground'
       )}
     />
   </button>
 )
 
+// GRID/DEFAULT VARIANT
 export const ProductCard = ({
   product,
-  variant = 'default',
+  variant = 'grid',
   isFavorite = false,
   className,
 }: ProductCardProps) => {
@@ -142,27 +133,119 @@ export const ProductCard = ({
     ? `${product.brand} - ${product.name}`
     : product.name
 
+  // LIST VARIANT - Horizontal Layout
+  if (variant === 'list') {
+    return (
+      <div className={cn('group', className)}>
+        <Link
+          to={productUrl}
+          className='flex gap-4 p-4 rounded-lg border bg-card hover:shadow-md transition-shadow'
+        >
+          {/* Image - Fixed width */}
+          <div className='relative w-32 h-32 shrink-0 overflow-hidden rounded-lg bg-white border'>
+            <img
+              src={product.image}
+              alt={product.name}
+              className='absolute inset-0 w-full h-full object-contain transition-transform duration-500 group-hover:scale-105'
+              loading='lazy'
+              onError={(e) => {
+                const target = e.target as HTMLImageElement
+                target.src = FALLBACK_IMAGE
+              }}
+            />
+
+            {product.isSale && (
+              <Badge className='absolute top-1 right-1 bg-red-500 text-white text-[10px] font-medium px-1.5 py-0.5 rounded shadow-md z-10'>
+                Sale
+              </Badge>
+            )}
+
+            <div className='absolute top-1 left-1 opacity-0 group-hover:opacity-100 transition-opacity z-10'>
+              <FavoriteButton
+                isFavorite={localFavorite}
+                onToggle={handleToggleFavorite}
+                isLoading={isTogglingWishlist}
+              />
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className='flex flex-1 flex-col justify-between min-w-0'>
+            {/* Top Section */}
+            <div>
+              <h3 className='text-base font-semibold text-foreground leading-tight line-clamp-2 mb-2'>
+                {displayName}
+              </h3>
+              {product.description && (
+                <p className='text-sm text-muted-foreground line-clamp-2 mb-3'>
+                  {product.description}
+                </p>
+              )}
+            </div>
+
+            {/* Bottom Section - Price & Button */}
+            <div className='flex items-center justify-between gap-4'>
+              <div className='flex items-baseline gap-2'>
+                <span className='text-lg font-bold text-foreground'>
+                  {formatCurrencyVnd(product.price)}
+                </span>
+                {product.originalPrice && (
+                  <span className='text-sm text-muted-foreground line-through'>
+                    {formatCurrencyVnd(product.originalPrice)}
+                  </span>
+                )}
+              </div>
+
+              <Button
+                variant='outline'
+                size='sm'
+                onClick={handleAddToCart}
+                disabled={isAddingToCart}
+                className='shrink-0'
+              >
+                {isAddingToCart ? (
+                  <>
+                    <div className='mr-2 h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent' />
+                    Adding...
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart className='h-4 w-4 mr-2' />
+                    Add to cart
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </Link>
+      </div>
+    )
+  }
+
+  // GRID VARIANT - Vertical Layout
   return (
     <div className={cn('group', className)}>
-      <Link to={productUrl} className='block space-y-3'>
+      <Link to={productUrl} className='block space-y-2'>
         {/* Image Container */}
-        <div className='relative aspect-square overflow-hidden rounded-2xl bg-muted/30'>
+        <div className='relative aspect-4/5 w-full overflow-hidden rounded-lg bg-white border border-border'>
           <img
             src={product.image}
             alt={product.name}
-            className='w-full h-full object-cover transition-transform duration-500 group-hover:scale-105'
+            className='absolute inset-0 w-full h-full object-contain transition-transform duration-500 group-hover:scale-105'
             loading='lazy'
+            onError={(e) => {
+              const target = e.target as HTMLImageElement
+              target.src = FALLBACK_IMAGE
+            }}
           />
 
-          {/* Sale Badge */}
           {product.isSale && (
-            <Badge className='absolute top-3 right-3 bg-foreground text-background text-xs font-medium px-2.5 py-1 rounded-md'>
+            <Badge className='absolute top-2 right-2 bg-red-500 text-white text-[10px] font-medium px-2 py-0.5 rounded shadow-md z-10'>
               Sale
             </Badge>
           )}
 
-          {/* Favorite Button - Show on Hover */}
-          <div className='absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200'>
+          <div className='absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10'>
             <FavoriteButton
               isFavorite={localFavorite}
               onToggle={handleToggleFavorite}
@@ -172,62 +255,44 @@ export const ProductCard = ({
         </div>
 
         {/* Product Info */}
-        <div className='space-y-2'>
-          {/* Title */}
-          <h3 className='font-medium text-foreground leading-snug line-clamp-1'>
+        <div className='space-y-1.5'>
+          <h3 className='text-sm font-medium text-foreground leading-tight line-clamp-2 min-h-10'>
             {displayName}
           </h3>
 
-          {/* Description */}
-          {product.description && (
-            <p className='text-sm text-muted-foreground line-clamp-2 leading-relaxed'>
-              {product.description}
-            </p>
-          )}
-        </div>
-
-        {/* Price & Add to Cart */}
-        <div className='flex items-center justify-between gap-3 pt-1'>
-          {/* Price */}
-          <div className='flex items-baseline gap-2'>
-            <span className='text-base font-semibold text-foreground'>
-              {formatCurrencyVnd(product.price)}
-            </span>
-            {product.originalPrice && (
-              <span className='text-sm text-muted-foreground line-through'>
-                {formatCurrencyVnd(product.originalPrice)}
+          <div className='flex items-center justify-between gap-2'>
+            <div className='flex flex-col'>
+              <span className='text-base font-bold text-foreground'>
+                {formatCurrencyVnd(product.price)}
               </span>
-            )}
-          </div>
+              {product.originalPrice && (
+                <span className='text-xs text-muted-foreground line-through'>
+                  {formatCurrencyVnd(product.originalPrice)}
+                </span>
+              )}
+            </div>
 
-          {/* Add to Cart Button */}
-          <Button
-            variant='outline'
-            size='sm'
-            onClick={handleAddToCart}
-            disabled={isAddingToCart}
-            className='h-9 px-4 rounded-lg text-sm font-medium border-border hover:bg-foreground hover:text-background transition-colors'
-          >
-            {isAddingToCart ? (
-              <>
-                <div className='mr-2 h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent' />
-                Adding...
-              </>
-            ) : (
-              <>
-                <ShoppingCart className='w-3.5 h-3.5 mr-1.5' />
-                Add to cart
-              </>
-            )}
-          </Button>
+            <Button
+              variant='outline'
+              size='icon'
+              onClick={handleAddToCart}
+              disabled={isAddingToCart}
+              className='h-8 w-8 rounded-lg shrink-0 border-2'
+            >
+              {isAddingToCart ? (
+                <div className='h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent' />
+              ) : (
+                <ShoppingCart className='h-4 w-4' />
+              )}
+            </Button>
+          </div>
         </div>
       </Link>
     </div>
   )
 }
 
-// COMPACT VARIANT
-
+// COMPACT VARIANT (for trending section etc)
 export const ProductCardCompact = ({
   product,
   isFavorite = false,
@@ -248,23 +313,26 @@ export const ProductCardCompact = ({
 
   return (
     <div className={cn('group', className)}>
-      <Link to={productUrl} className='block space-y-2.5'>
-        {/* Image */}
-        <div className='relative aspect-square overflow-hidden rounded-xl bg-muted/30'>
+      <Link to={productUrl} className='block space-y-2'>
+        <div className='relative aspect-4/5 w-full overflow-hidden rounded-lg bg-white border border-border'>
           <img
             src={product.image}
             alt={product.name}
-            className='w-full h-full object-cover transition-transform duration-500 group-hover:scale-105'
+            className='absolute inset-0 w-full h-full object-contain transition-transform duration-500 group-hover:scale-105'
             loading='lazy'
+            onError={(e) => {
+              const target = e.target as HTMLImageElement
+              target.src = FALLBACK_IMAGE
+            }}
           />
 
           {product.isSale && (
-            <Badge className='absolute top-2 right-2 bg-foreground text-background text-[10px] font-medium px-2 py-0.5 rounded'>
+            <Badge className='absolute top-2 right-2 bg-red-500 text-white text-[10px] font-medium px-2 py-0.5 rounded shadow-md z-10'>
               Sale
             </Badge>
           )}
 
-          <div className='absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity'>
+          <div className='absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity z-10'>
             <FavoriteButton
               isFavorite={localFavorite}
               onToggle={handleToggleFavorite}
@@ -273,16 +341,15 @@ export const ProductCardCompact = ({
           </div>
         </div>
 
-        {/* Info */}
         <div className='space-y-1'>
-          <h4 className='text-sm font-medium text-foreground line-clamp-1'>
+          <h4 className='text-sm font-medium text-foreground line-clamp-2 leading-tight min-h-10'>
             {product.brand
               ? `${product.brand} - ${product.name}`
               : product.name}
           </h4>
 
           <div className='flex items-baseline gap-1.5'>
-            <span className='text-sm font-semibold'>
+            <span className='text-sm font-bold'>
               {formatCurrencyVnd(product.price)}
             </span>
             {product.originalPrice && (

@@ -52,3 +52,6 @@ jinja2
 pypdf
 python-docx
 openpyxl
+pytest
+pytest-asyncio
+pytest-cov

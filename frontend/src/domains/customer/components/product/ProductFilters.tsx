@@ -49,6 +49,7 @@ export function ProductFilters({
   }
 
   const toggleSkinType = (value: string) => {
+    console.log('skin type', value)
     const current = filters.skin_types || []
     const updated = current.includes(value as SkinType)
       ? current.filter((v) => v !== value)
@@ -85,142 +86,177 @@ export function ProductFilters({
   }
 
   return (
-    <div className='w-full space-y-6'>
-      {/* Header */}
-      <div className='flex items-center justify-between'>
-        <div className='flex items-center gap-2'>
-          <h2 className='text-lg font-bold'>BỘ LỌC</h2>
-          {activeCount > 0 && (
-            <Badge variant='secondary' className='rounded-full'>
-              {activeCount}
-            </Badge>
-          )}
-        </div>
-        {activeCount > 0 && (
-          <Button
-            variant='ghost'
-            size='sm'
-            onClick={onReset}
-            className='text-primary'
-          >
-            Xóa tất cả
-          </Button>
-        )}
-      </div>
-
-      <ScrollArea className='h-[calc(100vh-200px)]'>
-        <div className='space-y-6 pr-4'>
-          {/* In Stock Only */}
-          <div className='flex items-center justify-between py-3 border-b'>
-            <Label htmlFor='in-stock' className='font-medium cursor-pointer'>
-              Chỉ hiện hàng có sẵn
-            </Label>
-            <Switch
-              id='in-stock'
-              checked={filters.is_available || false}
-              onCheckedChange={(checked) =>
-                onFiltersChange({
-                  ...filters,
-                  is_available: checked || undefined,
-                })
-              }
-            />
-          </div>
-
-          {/* Price Range */}
-          <FilterSection title='Khoảng giá' defaultOpen>
-            <Slider
-              min={0}
-              max={5000000}
-              step={50000}
-              value={priceRange}
-              onValueChange={setPriceRange}
-              onValueCommit={handlePriceCommit}
-              className='w-full'
-            />
-            <div className='flex items-center justify-between text-sm'>
-              <span className='text-muted-foreground'>
-                {formatCurrencyVnd(priceRange[0])}
-              </span>
-              <span className='text-muted-foreground'>
-                {formatCurrencyVnd(priceRange[1])}
-              </span>
+    <div className='sticky top-6'>
+      <div className='rounded-xl border-2 border-border bg-card shadow-sm overflow-hidden'>
+        {/* Header */}
+        <div className='px-6 py-4 border-b bg-muted/30'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center gap-2'>
+              <h2 className='text-lg font-bold uppercase tracking-wide'>
+                Bộ lọc
+              </h2>
+              {activeCount > 0 && (
+                <Badge
+                  variant='default'
+                  className='rounded-full h-6 min-w-6 flex items-center justify-center'
+                >
+                  {activeCount}
+                </Badge>
+              )}
             </div>
-          </FilterSection>
-
-          {/* Categories */}
-          {flatCategories.length > 0 && (
-            <FilterSection title='Danh mục' defaultOpen>
-              {flatCategories.slice(0, 10).map((category) => (
-                <FilterCheckbox
-                  key={category.id}
-                  id={`cat-${category.id}`}
-                  label={category.name}
-                  checked={filters.category === category.name}
-                  onCheckedChange={() =>
-                    onFiltersChange({
-                      ...filters,
-                      category:
-                        filters.category === category.name
-                          ? undefined
-                          : category.name,
-                    })
-                  }
-                  indent={category.level * 12}
-                />
-              ))}
-            </FilterSection>
-          )}
-
-          {/* Skin Types */}
-          <FilterSection title='Loại da' defaultOpen>
-            {SKIN_TYPE_OPTIONS.map((option) => (
-              <FilterCheckbox
-                key={option.value}
-                id={`skin-${option.value}`}
-                label={option.label}
-                checked={
-                  filters.skin_types?.includes(option.value as SkinType) ||
-                  false
-                }
-                onCheckedChange={() => toggleSkinType(option.value)}
-              />
-            ))}
-          </FilterSection>
-
-          {/* Skin Concerns */}
-          <FilterSection title='Vấn đề da'>
-            {SKIN_CONCERN_OPTIONS.map((option) => (
-              <FilterCheckbox
-                key={option.value}
-                id={`concern-${option.value}`}
-                label={option.label}
-                checked={
-                  filters.concerns?.includes(option.value as SkinConcern) ||
-                  false
-                }
-                onCheckedChange={() => toggleConcern(option.value)}
-              />
-            ))}
-          </FilterSection>
-
-          {/* Benefits */}
-          <FilterSection title='Công dụng'>
-            {PRODUCT_BENEFIT_OPTIONS.map((option) => (
-              <FilterCheckbox
-                key={option.value}
-                id={`benefit-${option.value}`}
-                label={option.label}
-                checked={
-                  filters.benefits?.includes(option.value as ProductBenefit) ||
-                  false
-                }
-                onCheckedChange={() => toggleBenefit(option.value)}
-              />
-            ))}
-          </FilterSection>
+            {activeCount > 0 && (
+              <Button
+                variant='ghost'
+                size='sm'
+                onClick={onReset}
+                className='text-primary hover:text-primary hover:bg-primary/10'
+              >
+                Xóa tất cả
+              </Button>
+            )}
+          </div>
         </div>
-      </ScrollArea>
+
+        {/* Scrollable Content */}
+        <ScrollArea className='h-[calc(100vh-12rem)] max-h-200'>
+          <div className='space-y-6 p-6'>
+            {/* In Stock Only */}
+            <div className='flex items-center justify-between py-3 px-4 rounded-lg border bg-background hover:bg-muted/50 transition-colors'>
+              <Label
+                htmlFor='in-stock'
+                className='font-medium cursor-pointer text-sm'
+              >
+                Chỉ hiện hàng có sẵn
+              </Label>
+              <Switch
+                id='in-stock'
+                checked={filters.is_available || false}
+                onCheckedChange={(checked) =>
+                  onFiltersChange({
+                    ...filters,
+                    is_available: checked || undefined,
+                  })
+                }
+              />
+            </div>
+
+            {/* Price Range */}
+            <FilterSection title='Khoảng giá' defaultOpen>
+              <div className='space-y-6 pt-2'>
+                <Slider
+                  min={0}
+                  max={5000000}
+                  step={50000}
+                  value={priceRange}
+                  onValueChange={setPriceRange}
+                  onValueCommit={handlePriceCommit}
+                  className='w-full'
+                />
+                <div className='flex items-center justify-between'>
+                  <div className='flex flex-col'>
+                    <span className='text-xs text-muted-foreground mb-1'>
+                      Từ
+                    </span>
+                    <span className='text-sm font-semibold'>
+                      {formatCurrencyVnd(priceRange[0])}
+                    </span>
+                  </div>
+                  <div className='h-px flex-1 bg-border mx-4' />
+                  <div className='flex flex-col items-end'>
+                    <span className='text-xs text-muted-foreground mb-1'>
+                      Đến
+                    </span>
+                    <span className='text-sm font-semibold'>
+                      {formatCurrencyVnd(priceRange[1])}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </FilterSection>
+
+            {/* Categories */}
+            {flatCategories.length > 0 && (
+              <FilterSection title='Danh mục' defaultOpen>
+                <div className='space-y-1 pt-2'>
+                  {flatCategories.slice(0, 10).map((category) => (
+                    <FilterCheckbox
+                      key={category.id}
+                      id={`cat-${category.id}`}
+                      label={category.name}
+                      checked={filters.category === category.name}
+                      onCheckedChange={() =>
+                        onFiltersChange({
+                          ...filters,
+                          category:
+                            filters.category === category.name
+                              ? undefined
+                              : category.name,
+                        })
+                      }
+                      indent={category.level * 12}
+                    />
+                  ))}
+                </div>
+              </FilterSection>
+            )}
+
+            {/* Skin Types */}
+            <FilterSection title='Loại da' defaultOpen>
+              <div className='space-y-1 pt-2'>
+                {SKIN_TYPE_OPTIONS.map((option) => (
+                  <FilterCheckbox
+                    key={option.value}
+                    id={`skin-${option.value}`}
+                    label={option.label}
+                    checked={
+                      filters.skin_types?.includes(option.value as SkinType) ||
+                      false
+                    }
+                    onCheckedChange={() => toggleSkinType(option.value)}
+                  />
+                ))}
+              </div>
+            </FilterSection>
+
+            {/* Skin Concerns */}
+            <FilterSection title='Vấn đề da'>
+              <div className='space-y-1 pt-2'>
+                {SKIN_CONCERN_OPTIONS.map((option) => (
+                  <FilterCheckbox
+                    key={option.value}
+                    id={`concern-${option.value}`}
+                    label={option.label}
+                    checked={
+                      filters.concerns?.includes(option.value as SkinConcern) ||
+                      false
+                    }
+                    onCheckedChange={() => toggleConcern(option.value)}
+                  />
+                ))}
+              </div>
+            </FilterSection>
+
+            {/* Benefits */}
+            <FilterSection title='Công dụng'>
+              <div className='space-y-1 pt-2'>
+                {PRODUCT_BENEFIT_OPTIONS.map((option) => (
+                  <FilterCheckbox
+                    key={option.value}
+                    id={`benefit-${option.value}`}
+                    label={option.label}
+                    checked={
+                      filters.benefits?.includes(
+                        option.value as ProductBenefit
+                      ) || false
+                    }
+                    onCheckedChange={() => toggleBenefit(option.value)}
+                  />
+                ))}
+              </div>
+            </FilterSection>
+          </div>
+        </ScrollArea>
+      </div>
     </div>
   )
 }

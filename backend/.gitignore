@@ -1,4 +1,7 @@
 venv/
+.coverage
+.pytest_cache
+pytest.ini
 .idea
 .ipynb_checkpoints
 .mypy_cache

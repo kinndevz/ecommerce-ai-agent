@@ -18,14 +18,14 @@ export function FilterSection({
   children,
 }: FilterSectionProps) {
   return (
-    <Collapsible defaultOpen={defaultOpen}>
-      <CollapsibleTrigger className='flex items-center justify-between w-full py-3 border-b hover:text-primary transition-colors group'>
-        <span className='font-medium'>{title}</span>
-        <ChevronDown className='h-4 w-4 transition-transform group-data-[state=open]:rotate-180' />
+    <Collapsible defaultOpen={defaultOpen} className='space-y-3'>
+      <CollapsibleTrigger className='flex items-center justify-between w-full py-2 group'>
+        <span className='font-semibold text-sm uppercase tracking-wide text-foreground'>
+          {title}
+        </span>
+        <ChevronDown className='h-4 w-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180' />
       </CollapsibleTrigger>
-      <CollapsibleContent className='pt-4 space-y-3'>
-        {children}
-      </CollapsibleContent>
+      <CollapsibleContent>{children}</CollapsibleContent>
     </Collapsible>
   )
 }
