@@ -35,6 +35,16 @@ export const API_ENDPOINT = {
   DOCUMENT_DETAIL: (id: string) => `/documents/${id}`,
   DOCUMENTS_SEARCH: '/documents/search',
 
+  // Analytics
+  ANALYTICS_OVERVIEW: '/analytics/overview',
+  ANALYTICS_REVENUE: '/analytics/revenue',
+  ANALYTICS_ORDERS: '/analytics/orders',
+  ANALYTICS_TOP_SELLING: '/analytics/products/top-selling',
+  ANALYTICS_LOW_STOCK: '/analytics/products/low-stock',
+  ANALYTICS_CUSTOMERS: '/analytics/customers',
+  ANALYTICS_CATEGORIES: '/analytics/categories',
+  ANALYTICS_BRANDS: '/analytics/brands',
+
   // Order Routes
   CREATE_ORDER: '/orders',
   GET_MY_ORDERS: '/orders',
