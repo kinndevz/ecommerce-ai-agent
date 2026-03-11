@@ -70,15 +70,19 @@ class UnifiedAgent:
         message: str,
         conversation_id: str,
         auth_token: str,
-        preferences: Dict[str, Any] = None
+        preferences: Dict[str, Any] = None,
+        page_context: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         agent = await self.get_agent()
 
         input_payload = {
             "messages": [HumanMessage(content=message)],
-            "user_context": {"user_id": user_id,
-                             "auth_token": auth_token,
-                             "preferences": preferences or {}}
+            "user_context": {
+                "user_id": user_id,
+                "auth_token": auth_token,
+                "preferences": preferences or {},
+                "page_context": page_context or {},
+            }
         }
 
         config = {"configurable": {"thread_id": conversation_id}}
@@ -100,19 +104,15 @@ class UnifiedAgent:
         """Extract content and artifacts from agent result."""
         all_messages = result.get("messages", [])
 
-        # Find current turn messages (after last HumanMessage)
         current_turn = self._get_current_turn_messages(all_messages)
 
-        # Log tool usage
         called_tools = self._get_called_tools(current_turn)
         if called_tools:
             print(f"[{user_id}] Tools: {', '.join(called_tools)}")
             logger.info(f"[{user_id}] Tools: {', '.join(called_tools)}")
 
-        # Extract artifacts
         artifacts = self._extract_artifacts(current_turn)
 
-        # Get final AI response (prefer latest AIMessage)
         ai_content = ""
         for msg in reversed(all_messages):
             if isinstance(msg, AIMessage) and hasattr(msg, "content"):
@@ -148,7 +148,6 @@ class UnifiedAgent:
                 tools.extend(tc['name'] for tc in msg.tool_calls)
             elif isinstance(msg, ToolMessage):
                 tools.append(msg.name)
-        # Deduplicate while preserving order
         return list(dict.fromkeys(tools))
 
     def _extract_artifacts(self, messages: List) -> List[Dict]:

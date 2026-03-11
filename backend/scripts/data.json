@@ -60,745 +60,888 @@
   ],
   "products": [
     {
-      "brand": "cetaphil",
-      "category": "moisturizers",
-      "name": "Kem Dưỡng Ẩm Cetaphil Moisturizing Cream",
-      "slug": "cetaphil-moisturizing-cream-body",
-      "sku": "CETA-CREAM-BODY",
-      "price": "350000",
-      "stock": 180,
-      "desc": "Kem dưỡng ẩm chuyên sâu với dầu hạnh nhân ngọt, phục hồi màng ẩm tự nhiên trong 48 giờ.",
-      "skin_types": ["da khô", "da nhạy cảm", "da thường"],
-      "concerns": ["khô da", "tổn thương màng bảo vệ", "kích ứng"],
-      "benefits": ["dưỡng ẩm sâu", "phục hồi da"],
-      "tags": ["không hương liệu", "không paraben", "dược mỹ phẩm"],
-      "ingredients": {
-        "key": ["Sweet Almond Oil", "Vitamin E", "Niacinamide"],
-        "full": ["Water", "Glycerin", "Petrolatum"]
-      }
-    },
-    {
-      "brand": "some-by-mi",
-      "category": "cleansers",
-      "name": "Sữa Rửa Mặt Some By Mi Bye Bye Blackhead 30 Days Miracle Green Tea Tox",
-      "slug": "sbm-bye-bye-blackhead",
-      "sku": "SBM-CLEANSER-BBH",
-      "price": "290000",
-      "stock": 120,
-      "desc": "Sữa rửa mặt sủi bọt chiết xuất trà xanh giúp làm tan chảy và loại bỏ mụn đầu đen tận gốc.",
-      "skin_types": ["da dầu", "da hỗn hợp"],
-      "concerns": ["mụn đầu đen", "lỗ chân lông to", "đổ dầu nhiều"],
-      "benefits": ["làm sạch da", "thu nhỏ lỗ chân lông", "trị mụn"],
-      "tags": ["giảm mụn", "hàng mới về"],
-      "ingredients": {
-        "key": ["Green Tea Extract 24%", "BHA", "16 Tea Extracts"],
-        "full": ["Water", "Camellia Sinensis Leaf Water"]
-      }
-    },
-    {
-      "brand": "innisfree",
-      "category": "serums",
-      "name": "Tinh Chất Innisfree Green Tea Seed Hyaluronic Serum",
-      "slug": "innisfree-green-tea-serum",
-      "sku": "INNI-GT-SERUM",
-      "price": "550000",
-      "stock": 150,
-      "desc": "Serum cấp nước tức thì làm từ trà xanh Jeju và Hyaluronic Acid nang nano, khóa ẩm sâu.",
-      "skin_types": ["da khô", "da hỗn hợp", "da thường"],
-      "concerns": ["mất nước", "khô da", "da xỉn màu"],
-      "benefits": ["cấp nước", "dưỡng ẩm sâu", "nâng tông"],
-      "tags": ["thuần chay", "cấp ẩm sâu", "bán chạy nhất"],
-      "ingredients": {
-        "key": ["Beauty Green Tea", "Nano-capsulized Hyaluronic Acid"],
-        "full": ["Water", "Propanediol", "Glycerin"]
-      }
-    },
-    {
-      "brand": "hada-labo",
-      "category": "cleansers",
-      "name": "Sữa Rửa Mặt Hada Labo Gokujyun Face Wash",
-      "slug": "hada-labo-gokujyun-wash",
-      "sku": "HL-GOKU-WASH",
-      "price": "180000",
-      "stock": 250,
-      "desc": "Sữa rửa mặt tạo bọt mịn màng, làm sạch sâu bụi bẩn nhưng vẫn giữ lại màng ẩm bảo vệ da.",
-      "skin_types": ["da thường", "da khô", "da nhạy cảm"],
-      "concerns": ["khô da"],
-      "benefits": ["làm sạch da", "cấp nước"],
-      "tags": ["không hương liệu", "không cồn"],
-      "ingredients": {
-        "key": ["Super Hyaluronic Acid", "Cationic Hyaluronic Acid"],
-        "full": ["Water", "Glycerin", "Sodium Cocoyl Glycinate"]
-      }
-    },
-    {
-      "brand": "rohto",
-      "category": "toners",
-      "name": "Nước Hoa Hồng Rohto Melano CC Vitamin C Lotion",
-      "slug": "melano-cc-lotion",
-      "sku": "ROHTO-MEL-LOTION",
-      "price": "250000",
-      "stock": 170,
-      "desc": "Lotion Vitamin C thấm nhanh, ức chế melanin, ngừa thâm mụn và làm sáng da hiệu quả.",
-      "skin_types": ["da thường", "da dầu", "da hỗn hợp"],
-      "concerns": ["thâm nám", "da không đều màu", "da xỉn màu", "mụn"],
-      "benefits": ["dưỡng trắng", "cấp nước", "trị thâm"],
-      "tags": ["làm sáng da"],
-      "ingredients": {
-        "key": ["Ascorbic Acid", "Grapefruit Extract", "Lemon Extract"],
-        "full": ["Water", "Butylene Glycol", "Alcohol"]
-      }
-    },
-    {
-      "brand": "cerave",
-      "category": "cleansers",
-      "name": "Sữa Rửa Mặt Trị Mụn CeraVe Acne Foaming Cream Cleanser",
-      "slug": "cerave-acne-foaming-bp",
-      "sku": "CERAVE-ACNE-BP",
-      "price": "450000",
+      "brand": "paulas-choice",
+      "category": "body-care",
+      "name": "Sữa Dưỡng Thể Tẩy Da Chết Paula's Choice Weightless Body Treatment 2% BHA",
+      "slug": "pc-bha-body-treatment",
+      "sku": "PC-BODY-BHA2",
+      "price": "850000",
       "stock": 90,
-      "desc": "Sữa rửa mặt dạng kem tạo bọt chứa 4% Benzoyl Peroxide giúp dọn sạch mụn viêm sưng.",
+      "desc": "Kem dưỡng thể chứa 2% BHA, chân ái cho làn da cơ thể bị viêm nang lông, mụn lưng và mẩn đỏ sần sùi.",
       "skin_types": ["da dầu", "da hỗn hợp", "da thường"],
-      "concerns": ["mụn", "đổ dầu nhiều"],
-      "benefits": ["trị mụn", "làm sạch da", "phục hồi da"],
-      "tags": ["giảm mụn", "không hương liệu"],
+      "concerns": ["mụn", "lỗ chân lông to", "mẩn đỏ", "da không đều màu"],
+      "benefits": ["tẩy tế bào chết", "trị mụn", "cải thiện bề mặt da"],
+      "tags": ["không hương liệu", "bán chạy nhất"],
       "ingredients": {
-        "key": ["Benzoyl Peroxide 4%", "Ceramides", "Hyaluronic Acid"],
-        "full": ["Water", "Glycerin", "Propylene Glycol"]
-      }
-    },
-    {
-      "brand": "the-ordinary",
-      "category": "serums",
-      "name": "Tinh Chất The Ordinary Lactic Acid 10% + HA",
-      "slug": "to-lactic-acid-10",
-      "sku": "TO-LACTIC-10",
-      "price": "220000",
-      "stock": 140,
-      "desc": "Tẩy da chết hóa học AHA dịu nhẹ với Lactic Acid 10%, giúp làm mượt kết cấu và sáng da.",
-      "skin_types": ["da thường", "da khô", "da hỗn hợp"],
-      "concerns": ["da xỉn màu", "nếp nhăn", "da không đều màu"],
-      "benefits": ["tẩy tế bào chết", "dưỡng trắng", "chống lão hóa"],
-      "tags": ["thuần chay", "không cồn", "làm sáng da"],
-      "ingredients": {
-        "key": ["Lactic Acid 10%", "Tasmanian Pepperberry"],
-        "full": ["Aqua", "Lactic Acid", "Glycerin"]
-      }
-    },
-    {
-      "brand": "paulas-choice",
-      "category": "toners",
-      "name": "Nước Hoa Hồng Paula's Choice Enriched Calming Toner",
-      "slug": "pc-enriched-calming-toner",
-      "sku": "PC-ENRICH-TONER",
-      "price": "650000",
-      "stock": 60,
-      "desc": "Toner dạng sữa giàu dưỡng chất, cung cấp độ ẩm tức thì và làm dịu vùng da khô ráp tấy đỏ.",
-      "skin_types": ["da khô", "da nhạy cảm", "da thường"],
-      "concerns": ["khô da", "mẩn đỏ", "kích ứng", "lão hóa"],
-      "benefits": ["cấp nước", "làm dịu da", "phục hồi da"],
-      "tags": ["không hương liệu", "không paraben", "cấp ẩm sâu"],
-      "ingredients": {
-        "key": ["Evening Primrose Oil", "Antioxidants", "Peptides"],
-        "full": ["Water", "Cyclopentasiloxane", "Glycerin"]
-      }
-    },
-    {
-      "brand": "la-roche-posay",
-      "category": "serums",
-      "name": "Tinh Chất La Roche-Posay Effaclar Ultra Concentrated Serum",
-      "slug": "lrp-effaclar-serum",
-      "sku": "LRP-EFF-SERUM",
-      "price": "950000",
-      "stock": 80,
-      "desc": "Serum trị mụn chuyên biệt với phức hợp 3 loại Acid (LHA, Salicylic, Glycolic) và Niacinamide.",
-      "skin_types": ["da dầu", "da hỗn hợp"],
-      "concerns": ["mụn", "mụn đầu đen", "lỗ chân lông to", "thâm nám"],
-      "benefits": ["trị mụn", "tẩy tế bào chết", "thu nhỏ lỗ chân lông"],
-      "tags": ["giảm mụn", "dược mỹ phẩm"],
-      "ingredients": {
-        "key": ["AHA", "BHA", "LHA", "Niacinamide"],
-        "full": ["Aqua", "Alcohol Denat", "Propanediol"]
-      }
-    },
-    {
-      "brand": "cosrx",
-      "category": "moisturizers",
-      "name": "Kem Dưỡng COSRX Advanced Snail 92 All in One Cream",
-      "slug": "cosrx-snail-92-cream",
-      "sku": "COSRX-SNAIL-92",
-      "price": "450000",
-      "stock": 130,
-      "desc": "Kem dưỡng đa năng chứa 92% dịch ốc sên, chữa lành tổn thương và dưỡng ẩm căng mướt da.",
-      "skin_types": ["da khô", "da nhạy cảm", "da thường", "da hỗn hợp"],
-      "concerns": ["khô da", "tổn thương màng bảo vệ", "mẩn đỏ", "nếp nhăn"],
-      "benefits": ["phục hồi da", "cấp nước", "chống lão hóa"],
-      "tags": ["không thử nghiệm trên động vật", "bán chạy nhất"],
-      "ingredients": {
-        "key": ["Snail Secretion Filtrate 92%", "Hyaluronic Acid"],
-        "full": ["Snail Secretion Filtrate", "Betaine"]
-      }
-    },
-    {
-      "brand": "bioderma",
-      "category": "moisturizers",
-      "name": "Kem Dưỡng Bioderma Sébium Sensitive",
-      "slug": "bioderma-sebium-sensitive",
-      "sku": "BIO-SEB-SENS",
-      "price": "420000",
-      "stock": 75,
-      "desc": "Kem dưỡng ẩm và làm dịu chuyên biệt dành cho da dầu mụn đang trong quá trình điều trị dễ bị bong tróc.",
-      "skin_types": ["da dầu", "da nhạy cảm"],
-      "concerns": ["mụn", "kích ứng", "mẩn đỏ", "mất nước", "đổ dầu nhiều"],
-      "benefits": ["dưỡng ẩm", "làm dịu da", "trị mụn"],
-      "tags": ["dược mỹ phẩm", "giảm mụn"],
-      "ingredients": {
-        "key": ["SeboRestore technology", "Glycerin"],
-        "full": ["Aqua", "Glycerin", "Methyl Methacrylate Crosspolymer"]
-      }
-    },
-    {
-      "brand": "skin1004",
-      "category": "masks",
-      "name": "Mặt Nạ Đất Sét Skin1004 Madagascar Centella Poremizing Quick Clay Stick Mask",
-      "slug": "skin1004-clay-stick",
-      "sku": "SKIN1004-CLAY-S",
-      "price": "350000",
-      "stock": 100,
-      "desc": "Mặt nạ đất sét dạng thỏi tiện dụng, làm sạch sâu lỗ chân lông và đánh bay bã nhờn mà không bẩn tay.",
-      "skin_types": ["da dầu", "da hỗn hợp", "da thường"],
-      "concerns": ["lỗ chân lông to", "mụn đầu đen", "đổ dầu nhiều"],
-      "benefits": ["thu nhỏ lỗ chân lông", "kiềm dầu", "làm sạch da"],
-      "tags": ["thuần chay", "không thử nghiệm trên động vật", "hàng mới về"],
-      "ingredients": {
-        "key": ["Pink Himalayan Salt", "Kaolin Clay", "Centella Asiatica"],
-        "full": ["Water", "Kaolin", "Glycerin"]
-      }
-    },
-    {
-      "brand": "kiehls",
-      "category": "serums",
-      "name": "Tinh Chất Ban Đêm Kiehl's Midnight Recovery Concentrate",
-      "slug": "kiehls-midnight-recovery",
-      "sku": "KIEHLS-MID-REC",
-      "price": "1450000",
-      "stock": 50,
-      "desc": "Dầu dưỡng ban đêm huyền thoại với tinh dầu hoa oải hương, phục hồi sinh khí cho da sáng khỏe sáng hôm sau.",
-      "skin_types": ["da khô", "da thường", "da hỗn hợp"],
-      "concerns": ["khô da", "da xỉn màu", "lão hóa", "mất nước"],
-      "benefits": ["phục hồi da", "dưỡng ẩm sâu", "chống lão hóa"],
-      "tags": ["không paraben", "cấp ẩm sâu", "bán chạy nhất"],
-      "ingredients": {
-        "key": ["Lavender Essential Oil", "Evening Primrose Oil", "Squalane"],
-        "full": ["Caprylic/Capric Triglyceride", "Dicaprylyl Carbonate"]
-      }
-    },
-    {
-      "brand": "estee-lauder",
-      "category": "eye-care",
-      "name": "Kem Mắt Estée Lauder Advanced Night Repair Eye Supercharged",
-      "slug": "estee-anr-eye",
-      "sku": "EL-ANR-EYE",
-      "price": "1950000",
-      "stock": 45,
-      "desc": "Kem mắt bảo vệ khỏi ánh sáng xanh, làm sáng quầng thâm và phục hồi đa tổn thương vùng quanh mắt.",
-      "skin_types": ["da thường", "da khô", "da hỗn hợp", "da nhạy cảm"],
-      "concerns": ["quầng thâm mắt", "nếp nhăn", "lão hóa", "khô da"],
-      "benefits": ["chống lão hóa", "dưỡng ẩm", "nâng tông"],
-      "tags": ["đã kiểm nghiệm nhãn khoa", "bán chạy nhất"],
-      "ingredients": {
-        "key": ["ChronoluxCB™ Technology", "Hyaluronic Acid"],
-        "full": ["Water", "Dimethicone", "Bifida Ferment Lysate"]
-      }
-    },
-    {
-      "brand": "neutrogena",
-      "category": "cleansers",
-      "name": "Sữa Rửa Mặt Neutrogena Deep Clean Facial Cleanser",
-      "slug": "neutrogena-deep-clean",
-      "sku": "NEUT-DEEP-CL",
-      "price": "220000",
-      "stock": 160,
-      "desc": "Gel rửa mặt làm sạch sâu tận lỗ chân lông, loại bỏ tế bào chết bề mặt cho làn da tươi sáng.",
-      "skin_types": ["da thường", "da hỗn hợp", "da dầu"],
-      "concerns": ["lỗ chân lông to", "đổ dầu nhiều", "da xỉn màu"],
-      "benefits": ["làm sạch da", "kiềm dầu"],
-      "tags": ["không dầu", "không cồn"],
-      "ingredients": {
-        "key": ["Hydroxy Acid"],
-        "full": ["Water", "Sodium Laureth Sulfate", "Glycerin"]
-      }
-    },
-    {
-      "brand": "vichy",
-      "category": "serums",
-      "name": "Tinh Chất Khoáng Vichy Minéral 89 Probiotic Fractions",
-      "slug": "vichy-mineral-89-probiotic",
-      "sku": "VICHY-MIN-PRO",
-      "price": "950000",
-      "stock": 65,
-      "desc": "Serum tăng cường sức đề kháng với lợi khuẩn Probiotic, phục hồi màng bảo vệ da đang căng thẳng mệt mỏi.",
-      "skin_types": ["da nhạy cảm", "da khô", "da thường", "da hỗn hợp"],
-      "concerns": [
-        "tổn thương màng bảo vệ",
-        "kích ứng",
-        "da xỉn màu",
-        "lão hóa"
-      ],
-      "benefits": ["phục hồi da", "làm dịu da", "chống lão hóa"],
-      "tags": ["không hương liệu", "không cồn", "dược mỹ phẩm"],
-      "ingredients": {
-        "key": [
-          "Probiotic Fractions",
-          "Vichy Volcanic Water 80%",
-          "Niacinamide"
-        ],
-        "full": ["Aqua", "Glycerin", "Niacinamide"]
-      }
-    },
-    {
-      "brand": "klairs",
-      "category": "serums",
-      "name": "Tinh Chất Klairs Freshly Juiced Vitamin Drop",
-      "slug": "klairs-vit-c-drop",
-      "sku": "KLAIRS-VITC-DROP",
-      "price": "380000",
-      "stock": 110,
-      "desc": "Serum Vitamin C 5% tinh khiết siêu dịu nhẹ dành cho người mới bắt đầu hoặc da nhạy cảm muốn làm sáng thâm.",
-      "skin_types": ["da nhạy cảm", "da thường", "da hỗn hợp"],
-      "concerns": ["thâm nám", "da xỉn màu", "da không đều màu"],
-      "benefits": ["dưỡng trắng", "chống lão hóa"],
-      "tags": ["làm sáng da", "không thử nghiệm trên động vật"],
-      "ingredients": {
-        "key": ["Ascorbic Acid 5%", "Centella Asiatica"],
-        "full": ["Water", "Propylene Glycol", "Ascorbic Acid"]
-      }
-    },
-    {
-      "brand": "laneige",
-      "category": "toners",
-      "name": "Nước Hoa Hồng Dưỡng Ẩm Laneige Cream Skin Refiner",
-      "slug": "laneige-cream-skin",
-      "sku": "LAN-CREAM-SKIN",
-      "price": "650000",
-      "stock": 85,
-      "desc": "Phép màu 2 trong 1: Một chai nước hoa hồng có chứa trọn vẹn sức mạnh dưỡng ẩm của một hũ kem.",
-      "skin_types": ["da khô", "da nhạy cảm", "da thường"],
-      "concerns": ["khô da", "mất nước", "tổn thương màng bảo vệ"],
-      "benefits": ["cấp nước", "dưỡng ẩm sâu", "phục hồi da"],
-      "tags": ["cấp ẩm sâu", "không hương liệu"],
-      "ingredients": {
-        "key": ["White Leaf Tea Water", "Meadowfoam Seed Oil"],
-        "full": ["Water", "Butylene Glycol", "Glycerin"]
-      }
-    },
-    {
-      "brand": "the-inkey-list",
-      "category": "moisturizers",
-      "name": "Kem Dưỡng The Inkey List Omega Water Cream",
-      "slug": "inkey-omega-water",
-      "sku": "INKEY-OMEGA-WC",
-      "price": "290000",
-      "stock": 130,
-      "desc": "Kem dưỡng dạng nước siêu mỏng nhẹ không dầu, cấp nước tối ưu bằng phức hợp Omega Ceramide.",
-      "skin_types": ["da dầu", "da hỗn hợp", "da thường", "da nhạy cảm"],
-      "concerns": ["đổ dầu nhiều", "mất nước", "tổn thương màng bảo vệ"],
-      "benefits": ["cấp nước", "kiềm dầu", "phục hồi da"],
-      "tags": ["thuần chay", "không dầu", "không hương liệu"],
-      "ingredients": {
-        "key": ["Omega Ceramide Complex", "Glycerin 5%", "Niacinamide"],
-        "full": ["Water", "Dicaprylyl Carbonate", "Glycerin"]
-      }
-    },
-    {
-      "brand": "dr-jart",
-      "category": "masks",
-      "name": "Mặt Nạ Giấy Dr.Jart+ Dermask Water Jet Vital Hydra Solution",
-      "slug": "dr-jart-vital-hydra-mask",
-      "sku": "DRJ-MASK-HYDRA",
-      "price": "85000",
-      "stock": 400,
-      "desc": "Mặt nạ giấy cứu tinh cấp nước cấp tốc từ Hàn Quốc, sử dụng Aquaxyl và Hyaluronic Acid hồi sinh da khô khốc.",
-      "skin_types": ["da khô", "da thường", "da hỗn hợp"],
-      "concerns": ["khô da", "mất nước"],
-      "benefits": ["cấp nước", "phục hồi da"],
-      "tags": ["cấp ẩm sâu"],
-      "ingredients": {
-        "key": ["Aquaxyl", "Super Vital Complex", "Hyaluronic Acid"],
-        "full": ["Water", "Glycerin", "Butylene Glycol"]
-      }
-    },
-    {
-      "brand": "beauty-of-joseon",
-      "category": "cleansers",
-      "name": "Sáp Tẩy Trang Beauty of Joseon Radiance Cleansing Balm",
-      "slug": "boj-cleansing-balm",
-      "sku": "BOJ-BALM",
-      "price": "350000",
-      "stock": 140,
-      "desc": "Sáp tẩy trang tan chảy như bơ, cuốn trôi hoàn toàn lớp trang điểm chống nước và sợi bã nhờn.",
-      "skin_types": ["da thường", "da khô", "da hỗn hợp"],
-      "concerns": ["khô da", "lỗ chân lông to"],
-      "benefits": ["làm sạch da", "cấp nước"],
-      "tags": [
-        "không thử nghiệm trên động vật",
-        "thuần chay",
-        "không hương liệu"
-      ],
-      "ingredients": {
-        "key": ["Rice Bran Water", "Grain Extract"],
-        "full": ["Cetyl Ethylhexanoate", "PEG-20 Glyceryl Triisostearate"]
-      }
-    },
-    {
-      "brand": "anua",
-      "category": "serums",
-      "name": "Tinh Chất Anua Heartleaf 80% Soothing Ampoule",
-      "slug": "anua-heartleaf-ampoule",
-      "sku": "ANUA-AMP-80",
-      "price": "480000",
-      "stock": 110,
-      "desc": "Tinh chất đậm đặc 80% chiết xuất diếp cá giúp làm dịu mụn sưng viêm và hạ nhiệt mẩn đỏ thần tốc.",
-      "skin_types": ["da nhạy cảm", "da dầu", "da hỗn hợp"],
-      "concerns": ["mụn", "mẩn đỏ", "kích ứng"],
-      "benefits": ["làm dịu da", "trị mụn", "cấp nước"],
-      "tags": ["thuần chay", "giảm mụn"],
-      "ingredients": {
-        "key": ["Houttuynia Cordata Extract 80%", "Panthenol"],
-        "full": ["Houttuynia Cordata Extract", "Butylene Glycol"]
-      }
-    },
-    {
-      "brand": "eucerin",
-      "category": "cleansers",
-      "name": "Sữa Rửa Mặt Eucerin ProAcne Cleansing Gel",
-      "slug": "eucerin-proacne-gel",
-      "sku": "EUC-PROACNE-GEL",
-      "price": "380000",
-      "stock": 120,
-      "desc": "Gel rửa mặt làm sạch sâu, điều tiết bã nhờn, được bác sĩ da liễu khuyên dùng cho làn da dễ nổi mụn.",
-      "skin_types": ["da dầu", "da hỗn hợp", "da nhạy cảm"],
-      "concerns": ["mụn", "đổ dầu nhiều", "lỗ chân lông to"],
-      "benefits": ["làm sạch da", "kiềm dầu", "trị mụn"],
-      "tags": ["dược mỹ phẩm", "không xà phòng", "không hương liệu"],
-      "ingredients": {
-        "key": ["Ampho-Tenside 6%", "Salicylic Acid"],
-        "full": ["Aqua", "Sodium Cocoamphoacetate", "Propylene Glycol"]
-      }
-    },
-    {
-      "brand": "obagi",
-      "category": "exfoliators",
-      "name": "Dung Dịch Tẩy Da Chết Obagi Medical BHA Clenziderm MD Pore Therapy",
-      "slug": "obagi-bha-pore",
-      "sku": "OBAGI-BHA-PT",
-      "price": "980000",
-      "stock": 40,
-      "desc": "Nước hoa hồng chứa BHA 2% y khoa, làm sạch sâu lỗ chân lông, đẩy lùi mụn ẩn và mụn viêm cứng đầu.",
-      "skin_types": ["da dầu", "da hỗn hợp"],
-      "concerns": ["mụn", "mụn đầu đen", "lỗ chân lông to", "đổ dầu nhiều"],
-      "benefits": ["trị mụn", "tẩy tế bào chết", "thu nhỏ lỗ chân lông"],
-      "tags": ["dược mỹ phẩm", "giảm mụn"],
-      "ingredients": {
-        "key": ["Salicylic Acid 2%", "Menthol"],
-        "full": [
-          "Benzyl Alcohol",
-          "Chamomilla Recutita (Matricaria) Flower Extract"
-        ]
-      }
-    },
-    {
-      "brand": "paulas-choice",
-      "category": "moisturizers",
-      "name": "Kem Dưỡng Paula's Choice Resist Anti-Aging Clear Skin Hydrator",
-      "slug": "pc-resist-clear-hydrator",
-      "sku": "PC-RESIST-HYD",
-      "price": "950000",
-      "stock": 50,
-      "desc": "Kem dưỡng chống lão hóa dạng gel-lotion độc đáo, cấp ẩm không nhờn và cải thiện thâm mụn, lỗ chân lông.",
-      "skin_types": ["da dầu", "da hỗn hợp", "da thường"],
-      "concerns": ["lão hóa", "nếp nhăn", "lỗ chân lông to", "thâm nám", "mụn"],
-      "benefits": ["chống lão hóa", "dưỡng ẩm", "thu nhỏ lỗ chân lông"],
-      "tags": ["không hương liệu", "không thử nghiệm trên động vật"],
-      "ingredients": {
-        "key": ["Niacinamide", "Vitamin C", "Green Tea"],
-        "full": ["Water", "Cyclopentasiloxane", "Octyldodecyl Neopentanoate"]
-      }
-    },
-    {
-      "brand": "la-roche-posay",
-      "category": "toners",
-      "name": "Nước Xịt Khoáng La Roche-Posay Thermal Spring Water",
-      "slug": "lrp-thermal-water",
-      "sku": "LRP-THERMAL",
-      "price": "350000",
-      "stock": 250,
-      "desc": "Nước khoáng tinh khiết làm dịu da tức thì, giảm bỏng rát và chống oxy hóa nhờ hàm lượng Selenium cao.",
-      "skin_types": [
-        "da nhạy cảm",
-        "da thường",
-        "da khô",
-        "da dầu",
-        "da hỗn hợp"
-      ],
-      "concerns": ["kích ứng", "mẩn đỏ", "khô da"],
-      "benefits": ["làm dịu da", "cấp nước", "bảo vệ da"],
-      "tags": ["không chất bảo quản", "dược mỹ phẩm"],
-      "ingredients": {
-        "key": ["Thermal Spring Water", "Selenium"],
-        "full": ["Aqua / Water"]
-      }
-    },
-    {
-      "brand": "the-ordinary",
-      "category": "serums",
-      "name": "Tinh Chất The Ordinary Alpha Arbutin 2% + HA",
-      "slug": "to-alpha-arbutin",
-      "sku": "TO-ALPHA-ARB",
-      "price": "290000",
-      "stock": 140,
-      "desc": "Serum chứa Alpha Arbutin nồng độ cao 2% kết hợp Hyaluronic Acid, làm mờ nám, tàn nhang và thâm sạm cực mạnh.",
-      "skin_types": ["da thường", "da hỗn hợp", "da khô"],
-      "concerns": ["thâm nám", "da không đều màu", "da xỉn màu"],
-      "benefits": ["dưỡng trắng", "cấp nước"],
-      "tags": ["thuần chay", "làm sáng da"],
-      "ingredients": {
-        "key": ["Alpha Arbutin 2%", "Hyaluronic Acid"],
-        "full": ["Aqua", "Alpha-Arbutin", "Polyacrylate Crosspolymer-6"]
+        "key": ["Salicylic Acid 2%", "Vitamin E", "Melon Extract"],
+        "full": ["Water", "Butylene Glycol", "Cetyl Alcohol", "Salicylic Acid"]
       }
     },
     {
       "brand": "cerave",
       "category": "body-care",
-      "name": "Sữa Tắm CeraVe Hydrating Body Wash",
-      "slug": "cerave-body-wash",
-      "sku": "CERAVE-BW-HYD",
-      "price": "390000",
-      "stock": 100,
-      "desc": "Sữa tắm dạng bọt dịu nhẹ, chứa Ceramides và HA làm sạch cơ thể mà không tước đi hàng rào độ ẩm tự nhiên.",
-      "skin_types": ["da khô", "da nhạy cảm", "da thường"],
-      "concerns": ["khô da", "kích ứng", "tổn thương màng bảo vệ"],
-      "benefits": ["làm sạch da", "dưỡng ẩm sâu", "phục hồi da"],
-      "tags": ["không xà phòng", "không hương liệu", "không paraben"],
+      "name": "Kem Dưỡng Giảm Ngứa CeraVe Itch Relief Moisturizing Cream",
+      "slug": "cerave-itch-relief-cream",
+      "sku": "CERAVE-ITCH-CR",
+      "price": "550000",
+      "stock": 60,
+      "desc": "Kem dưỡng thể y tế chứa Pramoxine Hydrochloride, giảm ngứa tức thì do chàm, côn trùng cắn hoặc da quá khô ráp.",
+      "skin_types": ["da khô", "da nhạy cảm"],
+      "concerns": ["kích ứng", "khô da", "tổn thương màng bảo vệ", "mẩn đỏ"],
+      "benefits": ["làm dịu da", "nuôi dưỡng sâu", "phục hồi da"],
+      "tags": ["dược mỹ phẩm", "không chứa steroid"],
       "ingredients": {
-        "key": ["Ceramides", "Hyaluronic Acid"],
-        "full": ["Water", "Cocamidopropyl Betaine", "White Petrolatum"]
-      }
-    },
-    {
-      "brand": "cosrx",
-      "category": "moisturizers",
-      "name": "Kem Dưỡng Ẩm COSRX Oil-Free Ultra-Moisturizing Lotion (with Birch Sap)",
-      "slug": "cosrx-oil-free-lotion",
-      "sku": "COSRX-OF-LOTION",
-      "price": "420000",
-      "stock": 90,
-      "desc": "Lotion dưỡng ẩm mỏng nhẹ không dầu với 70% nhựa cây Bạch Dương, cấp nước và làm dịu da mụn hiệu quả.",
-      "skin_types": ["da dầu", "da hỗn hợp", "da nhạy cảm"],
-      "concerns": ["đổ dầu nhiều", "mụn", "mất nước", "mẩn đỏ"],
-      "benefits": ["cấp nước", "kiềm dầu", "làm dịu da"],
-      "tags": ["không dầu", "thuần chay", "giảm mụn"],
-      "ingredients": {
-        "key": ["Betula Alba (Birch Sap) Juice 70%"],
-        "full": ["Betula Platyphylla Japonica Juice", "Butylene Glycol"]
-      }
-    },
-    {
-      "brand": "skin1004",
-      "category": "moisturizers",
-      "name": "Kem Chống Nắng Tích Hợp Skin1004 Madagascar Centella Tone Brightening Tone-Up Sunscreen",
-      "slug": "skin1004-tone-up-sun",
-      "sku": "SKIN1004-TONE-SUN",
-      "price": "350000",
-      "stock": 120,
-      "desc": "Kem chống nắng nâng tông tự nhiên làm sáng da xỉn màu, chứa Niacinamide dưỡng trắng dài lâu.",
-      "skin_types": ["da thường", "da hỗn hợp", "da xỉn màu"],
-      "concerns": ["chống nắng", "da xỉn màu", "da không đều màu"],
-      "benefits": ["bảo vệ da", "nâng tông", "dưỡng trắng"],
-      "tags": ["làm sáng da", "thuần chay"],
-      "ingredients": {
-        "key": ["Centella Asiatica", "Madecassoside", "Niacinamide"],
-        "full": ["Water", "Dibutyl Adipate", "Titanium Dioxide"]
-      }
-    },
-    {
-      "brand": "laneige",
-      "category": "moisturizers",
-      "name": "Kem Dưỡng Ẩm Laneige Radian-C Cream",
-      "slug": "laneige-radian-c",
-      "sku": "LAN-RAD-C",
-      "price": "1150000",
-      "stock": 45,
-      "desc": "Kem dưỡng ẩm Vitamin C công nghệ Radian-C Super Blend, xóa mờ những đốm nâu vi mô chưa kịp hiện trên da.",
-      "skin_types": ["da thường", "da khô", "da hỗn hợp"],
-      "concerns": ["da xỉn màu", "thâm nám", "da không đều màu"],
-      "benefits": ["dưỡng trắng", "dưỡng ẩm sâu", "chống lão hóa"],
-      "tags": ["làm sáng da", "đã kiểm nghiệm da liễu"],
-      "ingredients": {
-        "key": ["Vitamin C Derivative 8.5%", "Vitamin E", "Melasolv™"],
-        "full": ["Water", "3-O-Ethyl Ascorbic Acid", "Glycerin"]
-      }
-    },
-    {
-      "brand": "kiehls",
-      "category": "masks",
-      "name": "Mặt Nạ Kiehl's Calendula Petal-Infused Calming Mask",
-      "slug": "kiehls-calendula-mask",
-      "sku": "KIEHLS-CAL-MASK",
-      "price": "1250000",
-      "stock": 40,
-      "desc": "Mặt nạ dạng gel dịu mát chứa cánh hoa cúc thật, cấp ẩm và giảm nhiệt, giảm mẩn đỏ cho da ngay trong 5 phút.",
-      "skin_types": ["da nhạy cảm", "da thường", "da hỗn hợp", "da khô"],
-      "concerns": ["mẩn đỏ", "kích ứng", "mất nước"],
-      "benefits": ["làm dịu da", "cấp nước"],
-      "tags": ["cấp ẩm sâu"],
-      "ingredients": {
-        "key": ["Calendula Petals", "Aloe Vera"],
-        "full": ["Aqua", "Glycerin", "Aloe Barbadensis Leaf Juice"]
-      }
-    },
-    {
-      "brand": "estee-lauder",
-      "category": "toners",
-      "name": "Nước Thần Estée Lauder Micro Essence Skin Activating Treatment Lotion",
-      "slug": "estee-micro-essence",
-      "sku": "EL-MICRO-ESS",
-      "price": "2850000",
-      "stock": 35,
-      "desc": "Nước thần lên men sinh học, củng cố nền tảng da, mang lại làn da pha lê trong suốt, căng mịn và trẻ trung.",
-      "skin_types": ["da thường", "da khô", "da hỗn hợp"],
-      "concerns": ["lão hóa", "da xỉn màu", "tổn thương màng bảo vệ", "khô da"],
-      "benefits": ["chống lão hóa", "dưỡng trắng", "phục hồi da"],
-      "tags": ["không hương liệu", "bán chạy nhất"],
-      "ingredients": {
-        "key": ["Micro-Nutrient Bio-Ferment", "Bifida Ferment Lysate"],
-        "full": ["Water", "Bifida Ferment Lysate", "PEG-75"]
-      }
-    },
-    {
-      "brand": "neutrogena",
-      "category": "sunscreens",
-      "name": "Kem Chống Nắng Neutrogena Ultra Sheer Dry-Touch SPF 70",
-      "slug": "neutrogena-ultra-sheer-70",
-      "sku": "NEUT-SUN-70",
-      "price": "280000",
-      "stock": 160,
-      "desc": "Kem chống nắng bảo vệ siêu cao SPF 70, công nghệ Dry-Touch khô thoáng nhanh, không bóng dầu.",
-      "skin_types": ["da thường", "da hỗn hợp", "da dầu"],
-      "concerns": ["chống nắng"],
-      "benefits": ["bảo vệ da", "kiềm dầu", "chống nước"],
-      "tags": ["không gây bít tắc lỗ chân lông", "không PABA"],
-      "ingredients": {
-        "key": ["Helioplex Technology"],
-        "full": ["Avobenzone 3%", "Homosalate 15%", "Water"]
-      }
-    },
-    {
-      "brand": "vichy",
-      "category": "serums",
-      "name": "Tinh Chất Vichy Neovadiol Meno 5 Bi-Serum",
-      "slug": "vichy-neovadiol-serum",
-      "sku": "VICHY-NEO-SERUM",
-      "price": "1450000",
-      "stock": 30,
-      "desc": "Serum hai pha chuyên sâu bù đắp 5 dấu hiệu lão hóa da do tiền mãn kinh: chảy xệ, khô sạm, nếp nhăn.",
-      "skin_types": ["da lão hóa", "da khô", "da thường"],
-      "concerns": ["lão hóa", "nếp nhăn", "khô da", "thâm nám"],
-      "benefits": ["chống lão hóa", "săn chắc da", "dưỡng ẩm sâu"],
-      "tags": ["dược mỹ phẩm"],
-      "ingredients": {
-        "key": ["Proxylane", "Cassia Extract", "Vitamins B3-C-E", "Omegas"],
-        "full": ["Aqua", "Isopropyl Isostearate", "Dicaprylyl Ether"]
-      }
-    },
-    {
-      "brand": "klairs",
-      "category": "cleansers",
-      "name": "Dầu Tẩy Trang Klairs Gentle Black Deep Cleansing Oil",
-      "slug": "klairs-cleansing-oil",
-      "sku": "KLAIRS-OIL",
-      "price": "380000",
-      "stock": 95,
-      "desc": "Dầu tẩy trang kết hợp các loại dầu thực vật đen, làm sạch lớp makeup đậm và mụn cám nhẹ nhàng không cay mắt.",
-      "skin_types": ["da nhạy cảm", "da thường", "da khô", "da hỗn hợp"],
-      "concerns": ["mụn đầu đen", "lỗ chân lông to", "khô da"],
-      "benefits": ["làm sạch da", "cấp nước", "thu nhỏ lỗ chân lông"],
-      "tags": ["thuần chay", "không thử nghiệm trên động vật"],
-      "ingredients": {
-        "key": ["Black Bean Oil", "Black Sesame Oil", "Black Currant Seed Oil"],
-        "full": ["Caprylic/Capric Triglyceride", "Cetyl Ethylhexanoate"]
-      }
-    },
-    {
-      "brand": "dr-jart",
-      "category": "serums",
-      "name": "Tinh Chất Dr.Jart+ Ceramidin Serum",
-      "slug": "dr-jart-ceramidin-serum",
-      "sku": "DRJ-CERA-SERUM",
-      "price": "850000",
-      "stock": 65,
-      "desc": "Serum siêu dưỡng ẩm cô đặc với phức hợp 5-Cera Complex, trám kín những vết nứt nẻ của màng bảo vệ da.",
-      "skin_types": ["da khô", "da nhạy cảm", "da thường"],
-      "concerns": ["khô da", "mất nước", "tổn thương màng bảo vệ", "kích ứng"],
-      "benefits": ["phục hồi da", "dưỡng ẩm sâu", "cấp nước"],
-      "tags": ["cấp ẩm sâu", "không paraben"],
-      "ingredients": {
-        "key": ["5-Cera Complex", "Panthenol"],
-        "full": ["Water", "Dipropylene Glycol", "Glycerin"]
-      }
-    },
-    {
-      "brand": "bioderma",
-      "category": "moisturizers",
-      "name": "Kem Dưỡng Bioderma Cicabio Crème",
-      "slug": "bioderma-cicabio",
-      "sku": "BIO-CICA",
-      "price": "350000",
-      "stock": 105,
-      "desc": "Kem dưỡng siêu phục hồi giúp chữa lành da tổn thương sau nặn mụn, peel da, laser hoặc trầy xước.",
-      "skin_types": ["da nhạy cảm", "da khô", "da thường", "da hỗn hợp"],
-      "concerns": ["tổn thương màng bảo vệ", "kích ứng", "mẩn đỏ"],
-      "benefits": ["phục hồi da", "làm dịu da", "bảo vệ da"],
-      "tags": ["dược mỹ phẩm", "không hương liệu"],
-      "ingredients": {
-        "key": ["Antalgicine™", "Centella Asiatica (Madecassic Acid)", "Zinc"],
-        "full": ["Aqua", "Glycerin", "Ethylhexyl Palmitate"]
-      }
-    },
-    {
-      "brand": "rohto",
-      "category": "moisturizers",
-      "name": "Kem Chống Nắng Tích Hợp Skin Aqua Tone Up UV Essence",
-      "slug": "skin-aqua-tone-up-uv",
-      "sku": "ROHTO-SKIN-AQUA",
-      "price": "220000",
-      "stock": 250,
-      "desc": "Kem chống nắng ánh tím lavender giúp triệt sắc vàng, nâng tông da trong veo và tỏa sáng rạng rỡ.",
-      "skin_types": ["da thường", "da hỗn hợp", "da khô"],
-      "concerns": ["chống nắng", "da xỉn màu", "da không đều màu"],
-      "benefits": ["bảo vệ da", "nâng tông", "dưỡng trắng"],
-      "tags": ["bán chạy nhất", "làm sáng da"],
-      "ingredients": {
-        "key": ["Hyaluronic Acid", "Vitamin C", "Pearl Powder"],
-        "full": ["Water", "Alcohol", "Ethylhexyl Methoxycinnamate"]
+        "key": ["Pramoxine Hydrochloride 1%", "Ceramides"],
+        "full": ["Active: Pramoxine Hydrochloride 1%", "Water", "Glycerin"]
       }
     },
     {
       "brand": "the-inkey-list",
       "category": "eye-care",
-      "name": "Kem Mắt The Inkey List Retinol Eye Cream",
-      "slug": "inkey-retinol-eye",
-      "sku": "INKEY-RET-EYE",
+      "name": "Kem Mắt Làm Sáng The Inkey List Brighten-i Eye Cream",
+      "slug": "inkey-brighten-i-eye",
+      "sku": "INKEY-BRIGHT-EYE",
+      "price": "320000",
+      "stock": 110,
+      "desc": "Kem mắt tích hợp đầu bôi kim loại làm mát, chứa BRIGHTENYL™ sáng gấp 4 lần Vitamin C, làm sáng vùng dưới mắt ngay lập tức.",
+      "skin_types": ["da thường", "da khô", "da hỗn hợp"],
+      "concerns": ["quầng thâm mắt", "da xỉn màu", "da không đều màu"],
+      "benefits": ["dưỡng trắng", "nâng tông", "cấp nước"],
+      "tags": ["thuần chay"],
+      "ingredients": {
+        "key": ["BRIGHTENYL™ 2%", "Mica Blend 1%"],
+        "full": ["Aqua", "Cyclopentasiloxane", "Glycerin"]
+      }
+    },
+    {
+      "brand": "skin1004",
+      "category": "sunscreens",
+      "name": "Kem Chống Nắng Vật Lý Skin1004 Madagascar Centella Air-Fit Suncream Plus",
+      "slug": "skin1004-airfit-suncream",
+      "sku": "SKIN1004-AIR-SUN",
+      "price": "350000",
+      "stock": 200,
+      "desc": "Chống nắng vật lý 100% Zinc Oxide kết hợp rau má, cực kỳ êm dịu cho da mụn, kết cấu bột xốp kiềm dầu xuất sắc.",
+      "skin_types": ["da nhạy cảm", "da dầu", "da hỗn hợp"],
+      "concerns": ["chống nắng", "mẩn đỏ", "đổ dầu nhiều", "kích ứng"],
+      "benefits": ["bảo vệ da", "làm dịu da", "kiềm dầu", "nâng tông"],
+      "tags": ["chống nắng vật lý", "thuần chay"],
+      "ingredients": {
+        "key": ["Zinc Oxide", "Centella Asiatica 35.8%"],
+        "full": [
+          "Centella Asiatica Extract",
+          "Cyclopentasiloxane",
+          "Zinc Oxide"
+        ]
+      }
+    },
+    {
+      "brand": "klairs",
+      "category": "masks",
+      "name": "Mặt Nạ Ngủ Klairs Freshly Juiced Vitamin E Mask",
+      "slug": "klairs-vitamin-e-mask",
+      "sku": "KLAIRS-VITE-MASK",
+      "price": "450000",
+      "stock": 90,
+      "desc": "Mặt nạ ngủ dạng pudding độc đáo chứa Vitamin E liều cao, hoạt động như một chất tăng cường tác dụng cho Vitamin C.",
+      "skin_types": ["da khô", "da thường"],
+      "concerns": ["lão hóa", "da xỉn màu", "khô da"],
+      "benefits": ["nuôi dưỡng sâu", "chống lão hóa", "dưỡng trắng"],
+      "tags": ["thuần chay"],
+      "ingredients": {
+        "key": ["Vitamin E (Tocopherol)", "Niacinamide", "Adenosine"],
+        "full": ["Aqua", "Glycerin", "Tocopheryl Acetate"]
+      }
+    },
+    {
+      "brand": "the-ordinary",
+      "category": "exfoliators",
+      "name": "Dung Dịch Tẩy Da Chết The Ordinary Mandelic Acid 10% + HA",
+      "slug": "to-mandelic-acid-10",
+      "sku": "TO-MANDELIC-10",
+      "price": "230000",
+      "stock": 130,
+      "desc": "AHA phân tử lớn nhất, tẩy da chết cực kỳ nhẹ nhàng mà không thâm nhập quá sâu, an toàn tuyệt đối cho da dễ kích ứng.",
+      "skin_types": ["da nhạy cảm", "da khô", "da thường"],
+      "concerns": ["da không đều màu", "da xỉn màu", "mụn"],
+      "benefits": ["tẩy tế bào chết", "cải thiện bề mặt da", "dưỡng trắng"],
+      "tags": ["thuần chay", "không cồn"],
+      "ingredients": {
+        "key": ["Mandelic Acid 10%", "Hyaluronic Acid"],
+        "full": ["Propanediol", "Aqua", "Mandelic Acid"]
+      }
+    },
+    {
+      "brand": "neutrogena",
+      "category": "serums",
+      "name": "Tinh Chất Neutrogena Hydro Boost Hydrating Hyaluronic Acid Serum",
+      "slug": "neutrogena-hydro-serum",
+      "sku": "NEUT-HYDRO-SERUM",
+      "price": "420000",
+      "stock": 150,
+      "desc": "Serum cấp nước thẩm thấu siêu tốc, giải cơn khát cho mọi loại da, tái tạo bề mặt da mịn màng để makeup không mốc.",
+      "skin_types": ["da khô", "da thường", "da dầu", "da hỗn hợp"],
+      "concerns": ["mất nước", "khô da", "nếp nhăn"],
+      "benefits": ["cấp nước", "dưỡng ẩm", "cải thiện bề mặt da"],
+      "tags": ["không gây bít tắc lỗ chân lông"],
+      "ingredients": {
+        "key": ["Hyaluronic Acid", "Vitamin B5", "Glycerin"],
+        "full": ["Water", "Glycerin", "Dimethicone"]
+      }
+    },
+    {
+      "brand": "dr-jart",
+      "category": "toners",
+      "name": "Nước Hoa Hồng Dr.Jart+ Teatreement Toner",
+      "slug": "dr-jart-teatreement-toner",
+      "sku": "DRJ-TEA-TONER",
+      "price": "650000",
+      "stock": 75,
+      "desc": "Toner làm sạch làm dịu chứa tràm trà, khôi phục độ pH tối ưu ở mức 5.5, dập tắt môi trường sinh sôi của vi khuẩn mụn.",
+      "skin_types": ["da dầu", "da hỗn hợp", "da nhạy cảm"],
+      "concerns": ["mụn", "đổ dầu nhiều", "lỗ chân lông to"],
+      "benefits": ["trị mụn", "kiềm dầu", "thu nhỏ lỗ chân lông"],
+      "tags": ["ít gây kích ứng"],
+      "ingredients": {
+        "key": ["Tea Tree Extract 10,000ppm", "Salicylic Acid", "Vitamin B3"],
+        "full": ["Water", "Melaleuca Alternifolia Leaf Extract", "Niacinamide"]
+      }
+    },
+    {
+      "brand": "eucerin",
+      "category": "moisturizers",
+      "name": "Kem Dưỡng Eucerin Lipo-Balance",
+      "slug": "eucerin-lipo-balance",
+      "sku": "EUC-LIPO-BAL",
       "price": "350000",
       "stock": 80,
-      "desc": "Kem mắt chứa Retinol được tinh chỉnh đặc biệt an toàn cho vùng da mắt mỏng manh, giảm nếp nhăn và rãnh cười.",
-      "skin_types": ["da thường", "da khô", "da hỗn hợp", "da lão hóa"],
-      "concerns": ["nếp nhăn", "lão hóa", "quầng thâm mắt"],
-      "benefits": ["chống lão hóa", "săn chắc da"],
-      "tags": ["không thử nghiệm trên động vật", "không hương liệu"],
+      "desc": "Kem dưỡng phục hồi lipid tự nhiên cho da cực khô ráp sần sùi, cải thiện tình trạng căng rát nứt nẻ chỉ sau vài lần dùng.",
+      "skin_types": ["da khô", "da nhạy cảm"],
+      "concerns": ["khô da", "tổn thương màng bảo vệ", "kích ứng"],
+      "benefits": ["phục hồi da", "nuôi dưỡng sâu", "dưỡng ẩm"],
+      "tags": ["dược mỹ phẩm", "không hương liệu"],
       "ingredients": {
-        "key": ["Vitalease™ (Retinol)", "Shea Butter"],
-        "full": ["Aqua", "Caprylic/Capric Triglyceride", "Glycerin"]
+        "key": ["Ceramide-3", "Biotin"],
+        "full": [
+          "Aqua",
+          "Glycerin",
+          "Dicaprylyl Ether",
+          "Butyrospermum Parkii Butter"
+        ]
+      }
+    },
+    {
+      "brand": "kiehls",
+      "category": "cleansers",
+      "name": "Sữa Rửa Mặt Kiehl's Blue Herbal Acne Cleanser Treatment",
+      "slug": "kiehls-blue-herbal",
+      "sku": "KIEHLS-BLUE-CL",
+      "price": "850000",
+      "stock": 50,
+      "desc": "Sữa rửa mặt dạng gel thảo dược chứa Salicylic Acid, thanh lọc lỗ chân lông cực mạnh dành riêng cho da đang bùng mụn.",
+      "skin_types": ["da dầu", "da hỗn hợp"],
+      "concerns": ["mụn", "lỗ chân lông to", "đổ dầu nhiều"],
+      "benefits": ["trị mụn", "kiềm dầu", "tẩy tế bào chết"],
+      "tags": ["thảo mộc"],
+      "ingredients": {
+        "key": ["Salicylic Acid 1.5%", "Ginger Root Extract", "Frankincense"],
+        "full": ["Water", "Coco-Betaine", "Propylene Glycol"]
+      }
+    },
+    {
+      "brand": "la-roche-posay",
+      "category": "serums",
+      "name": "Kem Trị Mụn La Roche-Posay Effaclar A.I. Targeted Breakout Corrector",
+      "slug": "lrp-effaclar-ai",
+      "sku": "LRP-EFF-AI",
+      "price": "450000",
+      "stock": 110,
+      "desc": "Kem chấm mụn sưng viêm cực êm, gom cồi nhanh, tiêu diệt vi khuẩn P.Acnes tại chỗ và ngăn ngừa để lại sẹo thâm.",
+      "skin_types": ["da dầu", "da hỗn hợp", "da nhạy cảm"],
+      "concerns": ["mụn", "mẩn đỏ"],
+      "benefits": ["trị mụn", "làm dịu da", "phục hồi da"],
+      "tags": ["dược mỹ phẩm", "ít gây kích ứng"],
+      "ingredients": {
+        "key": ["Niacinamide", "Piroctone Olamine", "LHA"],
+        "full": ["Aqua", "Water", "Isohexadecane", "Propylene Glycol"]
+      }
+    },
+    {
+      "brand": "vichy",
+      "category": "toners",
+      "name": "Nước Hoa Hồng Vichy Normaderm Purifying Pore-Tightening Lotion",
+      "slug": "vichy-normaderm-toner",
+      "sku": "VICHY-NORM-TN",
+      "price": "550000",
+      "stock": 70,
+      "desc": "Nước hoa hồng chứa AHA/BHA thanh lọc lỗ chân lông, tạo cảm giác the mát sảng khoái tức thì cho làn da dầu ngày hè.",
+      "skin_types": ["da dầu", "da hỗn hợp"],
+      "concerns": ["lỗ chân lông to", "đổ dầu nhiều", "mụn"],
+      "benefits": ["thu nhỏ lỗ chân lông", "kiềm dầu", "cải thiện bề mặt da"],
+      "tags": ["làm mát da"],
+      "ingredients": {
+        "key": ["Salicylic Acid", "Glycolic Acid", "Vichy Volcanic Water"],
+        "full": ["Aqua", "Alcohol Denat", "Glycerin"]
+      }
+    },
+    {
+      "brand": "obagi",
+      "category": "eye-care",
+      "name": "Tinh Chất Mắt Obagi ELASTIderm Eye Serum",
+      "slug": "obagi-elastiderm-eye",
+      "sku": "OBAGI-ELAST-EYE",
+      "price": "2850000",
+      "stock": 25,
+      "desc": "Serum mắt cao cấp với đầu bi lăn công nghệ Bi-Mineral Contour Complex, đặc trị da mắt chùng nhão, phục hồi độ đàn hồi.",
+      "skin_types": ["da lão hóa", "da thường", "da khô"],
+      "concerns": ["nếp nhăn", "lão hóa", "quầng thâm mắt"],
+      "benefits": ["săn chắc da", "chống lão hóa", "phục hồi da"],
+      "tags": ["dược mỹ phẩm"],
+      "ingredients": {
+        "key": ["Bi-Mineral Contour Complex™", "Caffeine"],
+        "full": ["Water", "Dipropylene Glycol", "Ethoxydiglycol", "Caffeine"]
+      }
+    },
+    {
+      "brand": "eltamd",
+      "category": "sunscreens",
+      "name": "Kem Chống Nắng EltaMD UV Elements Tinted Broad-Spectrum SPF 44",
+      "slug": "eltamd-uv-elements",
+      "sku": "ELTA-UV-ELEM",
+      "price": "1050000",
+      "stock": 40,
+      "desc": "Chống nắng vật lý 100% có màu (Tinted) che phủ nhẹ khuyết điểm mẩn đỏ, kết hợp HA cấp ẩm êm dịu cho da sau điều trị.",
+      "skin_types": ["da nhạy cảm", "da khô", "da thường"],
+      "concerns": ["chống nắng", "mất nước", "mẩn đỏ", "da không đều màu"],
+      "benefits": ["bảo vệ da", "cấp nước", "nâng tông"],
+      "tags": ["có màu che khuyết điểm", "chống nắng vật lý"],
+      "ingredients": {
+        "key": ["Zinc Oxide 10%", "Titanium Dioxide 5.5%", "Hyaluronic Acid"],
+        "full": ["Water", "Cyclopentasiloxane", "Dimethicone"]
+      }
+    },
+    {
+      "brand": "laneige",
+      "category": "toners",
+      "name": "Nước Cân Bằng Laneige Radian-C Advanced Effector",
+      "slug": "laneige-radian-c-toner",
+      "sku": "LAN-RAD-TN",
+      "price": "850000",
+      "stock": 65,
+      "desc": "Tinh chất dạng nước nền tảng, chứa Super Berry Extract và Vitamin C, lau đi sự xỉn màu và tiếp năng lượng cho da bừng sáng.",
+      "skin_types": ["da thường", "da hỗn hợp", "da xỉn màu"],
+      "concerns": ["da xỉn màu", "da không đều màu", "cải thiện bề mặt da"],
+      "benefits": ["dưỡng trắng", "cải thiện bề mặt da", "cấp nước"],
+      "tags": ["làm sáng da"],
+      "ingredients": {
+        "key": ["Super Berry Complex 94%", "Vitamin C Derivative"],
+        "full": [
+          "Malpighia Emarginata Fruit Extract",
+          "Euterpe Oleracea Fruit Extract",
+          "Propanediol"
+        ]
+      }
+    },
+    {
+      "brand": "anua",
+      "category": "serums",
+      "name": "Tinh Chất Anua Peach 70% Niacinamide Serum",
+      "slug": "anua-peach-niacin",
+      "sku": "ANUA-PEACH-SR",
+      "price": "450000",
+      "stock": 140,
+      "desc": "Serum chiết xuất 70% trái đào tươi và Niacinamide 5%, mang lại làn da trắng hồng, ẩm mịn mọng nước như trái đào.",
+      "skin_types": ["da thường", "da khô", "da hỗn hợp"],
+      "concerns": ["da xỉn màu", "lỗ chân lông to", "mất nước"],
+      "benefits": ["dưỡng trắng", "cấp nước", "thu nhỏ lỗ chân lông"],
+      "tags": ["làm sáng da", "thuần chay"],
+      "ingredients": {
+        "key": [
+          "Prunus Persica (Peach) Fruit Extract 70%",
+          "Niacinamide 5%",
+          "Desert Yeast Oil"
+        ],
+        "full": ["Prunus Persica Fruit Extract", "Glycerin", "Niacinamide"]
+      }
+    },
+    {
+      "brand": "beauty-of-joseon",
+      "category": "serums",
+      "name": "Tinh Chất Beauty of Joseon Plum Plumping Serum",
+      "slug": "boj-plum-plumping",
+      "sku": "BOJ-PLUM-SR",
+      "price": "380000",
+      "stock": 115,
+      "desc": "Serum cấp nước phục hồi da với chiết xuất Nước mận xanh và BHA tự nhiên, mang lại bề mặt da căng mọng, mịn màng không tì vết.",
+      "skin_types": ["da khô", "da thường", "da hỗn hợp"],
+      "concerns": ["mất nước", "khô da", "cải thiện bề mặt da"],
+      "benefits": ["cấp nước", "cải thiện bề mặt da", "dưỡng ẩm"],
+      "tags": ["không thử nghiệm trên động vật"],
+      "ingredients": {
+        "key": ["Green Plum Water 66%", "AHA/BHA (Vegan)"],
+        "full": ["Prunus Mume Fruit Water", "Aqua", "Butylene Glycol"]
+      }
+    },
+    {
+      "brand": "some-by-mi",
+      "category": "body-care",
+      "name": "Sữa Tắm Some By Mi AHA-BHA-PHA 30 Days Miracle Acne Clear Body Cleanser",
+      "slug": "sbm-miracle-body-wash",
+      "sku": "SBM-BODY-WASH",
+      "price": "350000",
+      "stock": 160,
+      "desc": "Sữa tắm trị mụn lưng thần thánh, làm sạch sâu bã nhờn, tẩy tế bào chết cơ thể với 3 loại Acid và làm dịu nhờ Truecica.",
+      "skin_types": ["da dầu", "da hỗn hợp"],
+      "concerns": ["mụn", "đổ dầu nhiều", "cải thiện bề mặt da"],
+      "benefits": ["trị mụn", "tẩy tế bào chết", "làm sạch da"],
+      "tags": ["giảm mụn", "bán chạy nhất"],
+      "ingredients": {
+        "key": ["AHA, BHA, PHA", "Truecica", "Eucalyptus"],
+        "full": ["Water", "Glycerin", "Lauric Acid", "Cocamidopropyl Betaine"]
+      }
+    },
+    {
+      "brand": "hada-labo",
+      "category": "cleansers",
+      "name": "Dầu Tẩy Trang Hada Labo Advanced Nourish Hyaluron Cleansing Oil",
+      "slug": "hada-labo-cleansing-oil",
+      "sku": "HL-OIL-CLEANSER",
+      "price": "280000",
+      "stock": 210,
+      "desc": "Dầu tẩy trang tinh khiết từ dầu Olive, nhũ hóa dễ dàng lớp mascara chống nước cứng đầu nhất, trả lại làn da ẩm mượt.",
+      "skin_types": ["da thường", "da khô", "da hỗn hợp"],
+      "concerns": ["khô da", "lỗ chân lông to"],
+      "benefits": ["làm sạch da", "dưỡng ẩm", "thu nhỏ lỗ chân lông"],
+      "tags": ["không cồn", "không hương liệu"],
+      "ingredients": {
+        "key": ["Pure Olive Oil", "Super Hyaluronic Acid"],
+        "full": [
+          "Olea Europaea (Olive) Fruit Oil",
+          "Water",
+          "PEG-20 Glyceryl Triisostearate"
+        ]
+      }
+    },
+    {
+      "brand": "innisfree",
+      "category": "cleansers",
+      "name": "Sữa Rửa Mặt Innisfree Bija Trouble Facial Foam",
+      "slug": "innisfree-bija-trouble-foam",
+      "sku": "INNI-BIJA-FOAM",
+      "price": "220000",
+      "stock": 180,
+      "desc": "Sữa rửa mặt tạo bọt chứa dầu hạt Bija đảo Jeju, kháng khuẩn sát viêm mạnh mẽ, là dũng sĩ cứu tinh cho làn da sưng mụn.",
+      "skin_types": ["da dầu", "da hỗn hợp", "da mụn"],
+      "concerns": ["mụn", "đổ dầu nhiều", "lỗ chân lông to"],
+      "benefits": ["trị mụn", "làm sạch da", "kiềm dầu"],
+      "tags": ["chứa Salicylic Acid"],
+      "ingredients": {
+        "key": ["Bija Seed Oil", "Salicylic Acid", "Rose Extract"],
+        "full": ["Water", "Glycerin", "Myristic Acid", "Stearic Acid"]
+      }
+    },
+    {
+      "brand": "rohto",
+      "category": "moisturizers",
+      "name": "Gel Dưỡng Trắng Rohto Melano CC Vitamin C Brightening Gel",
+      "slug": "rohto-melano-cc-gel",
+      "sku": "ROHTO-MEL-GEL",
+      "price": "350000",
+      "stock": 140,
+      "desc": "Gel dưỡng ẩm mát lạnh thẩm thấu cực nhanh, khóa ẩm, kết hợp Vitamin C và E đánh bật vết thâm sạm sau mụn.",
+      "skin_types": ["da thường", "da dầu", "da hỗn hợp"],
+      "concerns": ["thâm nám", "da xỉn màu", "da không đều màu"],
+      "benefits": ["dưỡng trắng", "cấp nước", "cải thiện bề mặt da"],
+      "tags": ["làm sáng da"],
+      "ingredients": {
+        "key": ["Vitamin C Derivative", "Vitamin E", "Alpinia Seed Extract"],
+        "full": ["Water", "Butylene Glycol", "Pentylene Glycol", "Glycerin"]
+      }
+    },
+    {
+      "brand": "cetaphil",
+      "category": "cleansers",
+      "name": "Sữa Rửa Mặt Cetaphil Daily Facial Cleanser",
+      "slug": "cetaphil-daily-facial-cleanser",
+      "sku": "CETA-DAILY-CL",
+      "price": "340000",
+      "stock": 250,
+      "desc": "Sữa rửa mặt hằng ngày dạng gel lỏng ít bọt, nhẹ nhàng lấy đi bụi bẩn và dầu thừa mà không làm khô mốc bề mặt da.",
+      "skin_types": ["da thường", "da hỗn hợp", "da dầu"],
+      "concerns": ["đổ dầu nhiều", "lỗ chân lông to"],
+      "benefits": ["làm sạch da", "bảo vệ da", "kiềm dầu"],
+      "tags": ["dược mỹ phẩm", "bán chạy nhất"],
+      "ingredients": {
+        "key": ["Glycerin", "Niacinamide", "Panthenol"],
+        "full": ["Water", "Glycerin", "Cocamidopropyl Betaine"]
+      }
+    },
+    {
+      "brand": "estee-lauder",
+      "category": "eye-care",
+      "name": "Kem Mắt Estée Lauder Revitalizing Supreme+ Youth Power Eye Balm",
+      "slug": "estee-supreme-eye-balm",
+      "sku": "EL-SUPREME-EYE",
+      "price": "1950000",
+      "stock": 35,
+      "desc": "Sáp dưỡng mắt đa năng vừa làm kem mắt vừa làm mặt nạ mắt, nâng cơ tức thì và xóa nhòa dấu vết thời gian quanh mắt.",
+      "skin_types": ["da lão hóa", "da khô", "da thường"],
+      "concerns": ["nếp nhăn", "lão hóa", "khô da", "quầng thâm mắt"],
+      "benefits": ["săn chắc da", "chống lão hóa", "nuôi dưỡng sâu"],
+      "tags": ["cao cấp"],
+      "ingredients": {
+        "key": ["Hibiscus Morning Bloom Extract", "Moringa Extract"],
+        "full": ["Water", "Dimethicone", "Glycerin", "Isohexadecane"]
+      }
+    },
+    {
+      "brand": "paulas-choice",
+      "category": "body-care",
+      "name": "Xịt Trị Mụn Lưng Paula's Choice Clear Acne Body Spray 2% BHA",
+      "slug": "pc-clear-body-spray",
+      "sku": "PC-BODY-SPRAY",
+      "price": "850000",
+      "stock": 80,
+      "desc": "Dung dịch trị mụn cơ thể dạng xịt tiện lợi, xoay 360 độ xịt mọi ngóc ngách, với BHA 2% làm tan cồi mụn sưng viêm nhanh chóng.",
+      "skin_types": ["da dầu", "da hỗn hợp", "da thường"],
+      "concerns": ["mụn", "mẩn đỏ", "đổ dầu nhiều", "lỗ chân lông to"],
+      "benefits": ["trị mụn", "kiềm dầu", "tẩy tế bào chết"],
+      "tags": ["tiện lợi", "không hương liệu"],
+      "ingredients": {
+        "key": [
+          "Salicylic Acid 2%",
+          "Licorice Root Extract",
+          "Sodium Hyaluronate"
+        ],
+        "full": ["Water", "Dipropylene Glycol", "Salicylic Acid"]
+      }
+    },
+    {
+      "brand": "the-inkey-list",
+      "category": "serums",
+      "name": "Tinh Chất The Inkey List Tranexamic Acid Serum",
+      "slug": "inkey-tranexamic-acid",
+      "sku": "INKEY-TRANEX-SR",
+      "price": "390000",
+      "stock": 120,
+      "desc": "Huyết thanh trị nám chuyên trị sắc tố cứng đầu như nám nội tiết, tàn nhang, đốm đồi mồi với 2% Tranexamic Acid an toàn.",
+      "skin_types": ["da thường", "da hỗn hợp", "da khô"],
+      "concerns": ["thâm nám", "da không đều màu", "da xỉn màu"],
+      "benefits": ["dưỡng trắng", "cải thiện bề mặt da", "phục hồi da"],
+      "tags": ["làm sáng da", "thuần chay"],
+      "ingredients": {
+        "key": ["Tranexamic Acid 2%", "Vitamin C 2%", "Acai Berry Extract"],
+        "full": ["Aqua", "Butylene Glycol", "Glycerin", "Ascorbyl Glucoside"]
+      }
+    },
+    {
+      "brand": "cosrx",
+      "category": "exfoliators",
+      "name": "Dung Dịch Tẩy Da Chết COSRX Two In One Poreless Power Liquid",
+      "slug": "cosrx-poreless-liquid",
+      "sku": "COSRX-PORE-LIQ",
+      "price": "450000",
+      "stock": 95,
+      "desc": "Dung dịch 2-trong-1 vừa làm mát làm sạch lỗ chân lông bằng BHA tự nhiên, vừa săn chắc se khít lỗ chân lông như thủy tinh.",
+      "skin_types": ["da dầu", "da hỗn hợp", "da nhạy cảm"],
+      "concerns": ["lỗ chân lông to", "đổ dầu nhiều", "mụn đầu đen"],
+      "benefits": ["thu nhỏ lỗ chân lông", "tẩy tế bào chết", "kiềm dầu"],
+      "tags": ["không chứa cồn"],
+      "ingredients": {
+        "key": ["Salix Alba (Willow) Bark Water 88%", "Betaine Salicylate"],
+        "full": [
+          "Salix Alba (Willow) Bark Water",
+          "Butylene Glycol",
+          "Hydroxypropyl Cyclodextrin"
+        ]
+      }
+    },
+    {
+      "brand": "skin1004",
+      "category": "masks",
+      "name": "Mặt Nạ Ngủ Skin1004 Madagascar Centella Hyalu-Cica Sleeping Pack",
+      "slug": "skin1004-hyalu-cica-mask",
+      "sku": "SKIN1004-HC-MASK",
+      "price": "420000",
+      "stock": 105,
+      "desc": "Mặt nạ ngủ cấp nước dạng gel tươi mát, bổ sung Melatonin và Ceramide sinh học, giúp da thư giãn và phục hồi nhịp sinh học ban đêm.",
+      "skin_types": ["da khô", "da hỗn hợp", "da nhạy cảm", "da thường"],
+      "concerns": ["mất nước", "khô da", "tổn thương màng bảo vệ"],
+      "benefits": ["cấp nước", "phục hồi da", "làm dịu da"],
+      "tags": ["cấp ẩm sâu", "không thử nghiệm trên động vật"],
+      "ingredients": {
+        "key": ["Centella Asiatica", "Hyaluronic Acid", "Melatonin"],
+        "full": ["Centella Asiatica Extract", "Water", "Butylene Glycol"]
+      }
+    },
+    {
+      "brand": "bioderma",
+      "category": "toners",
+      "name": "Nước Hoa Hồng Bioderma Sébium Lotion",
+      "slug": "bioderma-sebium-lotion",
+      "sku": "BIO-SEB-LOTION",
+      "price": "390000",
+      "stock": 85,
+      "desc": "Nước cân bằng chuyên biệt cho da dầu mụn, điều tiết tuyến bã nhờn, cân bằng pH giữ độ ẩm lên đến 8 giờ đồng hồ.",
+      "skin_types": ["da dầu", "da hỗn hợp"],
+      "concerns": ["đổ dầu nhiều", "lỗ chân lông to", "mụn"],
+      "benefits": ["kiềm dầu", "thu nhỏ lỗ chân lông", "cấp nước"],
+      "tags": ["dược mỹ phẩm"],
+      "ingredients": {
+        "key": ["Fluidactiv™", "Zinc Gluconate", "Vitamin B6"],
+        "full": ["Aqua", "PEG-11 Methyl Ether Dimethicone", "Butylene Glycol"]
+      }
+    },
+    {
+      "brand": "laneige",
+      "category": "moisturizers",
+      "name": "Kem Dưỡng Laneige Bouncy & Firm Sleeping Mask",
+      "slug": "laneige-bouncy-firm-mask",
+      "sku": "LAN-BOUNCY-MASK",
+      "price": "850000",
+      "stock": 70,
+      "desc": "Phiên bản nâng cấp mới tinh từ Laneige: Mặt nạ ngủ hoa mẫu đơn, nhắm đến phục hồi độ căng mọng, săn chắc và xóa mờ dấu hiệu mệt mỏi.",
+      "skin_types": ["da lão hóa", "da thường", "da khô"],
+      "concerns": ["lão hóa", "nếp nhăn", "da xỉn màu", "mất nước"],
+      "benefits": [
+        "săn chắc da",
+        "chống lão hóa",
+        "nuôi dưỡng sâu",
+        "phục hồi da"
+      ],
+      "tags": ["hàng mới về"],
+      "ingredients": {
+        "key": ["Peony & Collagen Complex™", "Hydro-Melt Glow Capsules"],
+        "full": ["Water", "Butylene Glycol", "Glycerin", "Dimethicone"]
+      }
+    },
+    {
+      "brand": "dr-jart",
+      "category": "serums",
+      "name": "Tinh Chất Dr.Jart+ Vital Hydra Solution Biome Night Therapy Mask",
+      "slug": "dr-jart-biome-night-mask",
+      "sku": "DRJ-BIOME-NIGHT",
+      "price": "650000",
+      "stock": 50,
+      "desc": "Huyết thanh cô đặc dạng mặt nạ ngủ, nuôi dưỡng hệ vi sinh vật trên da (Microbiome) giúp màng bảo vệ da tự khỏe lên từ bên trong.",
+      "skin_types": ["da khô", "da nhạy cảm", "da hỗn hợp"],
+      "concerns": ["mất nước", "tổn thương màng bảo vệ", "khô da"],
+      "benefits": ["phục hồi da", "cấp nước", "nuôi dưỡng sâu"],
+      "tags": ["men vi sinh"],
+      "ingredients": {
+        "key": ["Moisture Biome™", "Prebiotics", "Hyaluronic Acid"],
+        "full": ["Water", "Glycerin", "Dipropylene Glycol", "Cetearyl Alcohol"]
+      }
+    },
+    {
+      "brand": "eucerin",
+      "category": "cleansers",
+      "name": "Nước Tẩy Trang Eucerin ProAcne Micellar Water",
+      "slug": "eucerin-proacne-micellar",
+      "sku": "EUC-PROACNE-MIC",
+      "price": "350000",
+      "stock": 130,
+      "desc": "Tẩy trang nước kết hợp phức hợp APG cực dịu nhẹ, cuốn trôi bã nhờn sâu trong nang lông mà không kích hoạt phản ứng sưng viêm của mụn.",
+      "skin_types": ["da dầu", "da hỗn hợp", "da nhạy cảm"],
+      "concerns": ["mụn", "đổ dầu nhiều", "kích ứng"],
+      "benefits": ["làm sạch da", "kiềm dầu", "làm dịu da"],
+      "tags": ["không cồn", "dược mỹ phẩm"],
+      "ingredients": {
+        "key": ["APG Complex", "Hyaluronic Acid"],
+        "full": ["Aqua", "Poloxamer 124", "Glyceryl Glucoside", "Glycerin"]
+      }
+    },
+    {
+      "brand": "anua",
+      "category": "cleansers",
+      "name": "Dầu Tẩy Trang Anua Heartleaf Pore Control Cleansing Oil",
+      "slug": "anua-pore-cleansing-oil",
+      "sku": "ANUA-OIL-CL",
+      "price": "420000",
+      "stock": 180,
+      "desc": "Dầu tẩy trang diếp cá siêu lỏng nhẹ, khắc tinh của mụn đầu đen và sợi bã nhờn, được đánh giá top 1 Olive Young Hàn Quốc liên tục.",
+      "skin_types": ["da dầu", "da hỗn hợp", "da thường"],
+      "concerns": ["lỗ chân lông to", "mụn đầu đen", "đổ dầu nhiều"],
+      "benefits": ["làm sạch da", "thu nhỏ lỗ chân lông", "kiềm dầu"],
+      "tags": ["bán chạy nhất", "không gây bít tắc lỗ chân lông"],
+      "ingredients": {
+        "key": [
+          "Houttuynia Cordata Extract",
+          "Jojoba Seed Oil",
+          "Macadamia Seed Oil"
+        ],
+        "full": [
+          "Ethylhexyl Palmitate",
+          "Sorbeth-30 Tetraoleate",
+          "Sorbitan Sesquioleate"
+        ]
+      }
+    },
+    {
+      "brand": "beauty-of-joseon",
+      "category": "sunscreens",
+      "name": "Sáp Chống Nắng Beauty of Joseon Matte Sun Stick: Mugwort + Camelia",
+      "slug": "boj-matte-sun-stick",
+      "sku": "BOJ-SUN-STICK",
+      "price": "350000",
+      "stock": 160,
+      "desc": "Sáp chống nắng dạng thỏi (Sun stick) cực tiện lợi để apply lại trong ngày, finish lì mịn như nhung, kiểm soát dầu siêu tốt bằng bột ngải cứu.",
+      "skin_types": ["da dầu", "da hỗn hợp"],
+      "concerns": ["chống nắng", "đổ dầu nhiều"],
+      "benefits": ["bảo vệ da", "kiềm dầu"],
+      "tags": ["tiện lợi", "không bóng nhờn"],
+      "ingredients": {
+        "key": ["Mugwort Extract", "Camelia Seed Oil", "Silica Powder"],
+        "full": [
+          "Methyl Methacrylate Crosspolymer",
+          "Synthetic Wax",
+          "Coco-Caprylate/Caprate"
+        ]
+      }
+    },
+    {
+      "brand": "kiehls",
+      "category": "moisturizers",
+      "name": "Kem Dưỡng Kiehl's Rosa Arctica Youth Regenerating Cream",
+      "slug": "kiehls-rosa-arctica",
+      "sku": "KIEHLS-ROSA-CR",
+      "price": "1650000",
+      "stock": 30,
+      "desc": "Kem dưỡng chống lão hóa cực mạnh mẽ chiết xuất từ Hoa Hồng Tuyết vùng Balkan, đánh thức sự tươi trẻ cho làn da khô cằn lão hóa sâu.",
+      "skin_types": ["da lão hóa", "da khô", "da thường"],
+      "concerns": ["lão hóa", "nếp nhăn", "khô da"],
+      "benefits": ["chống lão hóa", "săn chắc da", "nuôi dưỡng sâu"],
+      "tags": ["cao cấp"],
+      "ingredients": {
+        "key": ["Haberlea Rhodopensis (Resurrection Flower)"],
+        "full": ["Aqua", "Glycerin", "Caprylic/Capric Triglyceride", "Squalane"]
+      }
+    },
+    {
+      "brand": "la-roche-posay",
+      "category": "cleansers",
+      "name": "Nước Tẩy Trang La Roche-Posay Micellar Water Ultra for Oily Skin",
+      "slug": "lrp-micellar-water-oily",
+      "sku": "LRP-MIC-OILY",
+      "price": "420000",
+      "stock": 140,
+      "desc": "Nước tẩy trang Micellar công nghệ đột phá có bổ sung ZinC PCA, vừa làm sạch sâu 99% makeup vừa hỗ trợ thu nhỏ lỗ chân lông.",
+      "skin_types": ["da dầu", "da hỗn hợp", "da nhạy cảm"],
+      "concerns": ["đổ dầu nhiều", "lỗ chân lông to", "mụn"],
+      "benefits": ["làm sạch da", "kiềm dầu", "thu nhỏ lỗ chân lông"],
+      "tags": ["dược mỹ phẩm", "không chứa paraben"],
+      "ingredients": {
+        "key": ["ZinC PCA", "Thermal Spring Water", "Glycerin"],
+        "full": ["Aqua", "PEG-7 Caprylic/Capric Glycerides", "Poloxamer 124"]
+      }
+    },
+    {
+      "brand": "vichy",
+      "category": "serums",
+      "name": "Tinh Chất Vichy Liftactiv B3 Anti-Dark Spots Serum",
+      "slug": "vichy-liftactiv-b3-serum",
+      "sku": "VICHY-LIFT-B3",
+      "price": "1250000",
+      "stock": 55,
+      "desc": "Huyết thanh đa chiều chứa 13% phức hợp Niacinamide, Glycolic Acid & Peptides lột xác làn da thâm nám do lão hóa và tác động của tia UV.",
+      "skin_types": ["da thường", "da hỗn hợp", "da lão hóa"],
+      "concerns": ["thâm nám", "da không đều màu", "lão hóa", "da xỉn màu"],
+      "benefits": ["dưỡng trắng", "chống lão hóa", "cải thiện bề mặt da"],
+      "tags": ["dược mỹ phẩm", "làm sáng da"],
+      "ingredients": {
+        "key": ["Niacinamide (B3)", "Glycolic Acid (AHA)", "Peptides"],
+        "full": [
+          "Aqua",
+          "Butylene Glycol",
+          "Niacinamide",
+          "Hydroxyethylpiperazine Ethane Sulfonic Acid"
+        ]
+      }
+    },
+    {
+      "brand": "the-ordinary",
+      "category": "serums",
+      "name": "Dầu Dưỡng The Ordinary 100% Organic Cold-Pressed Rose Hip Seed Oil",
+      "slug": "to-rose-hip-oil",
+      "sku": "TO-ROSE-HIP",
+      "price": "280000",
+      "stock": 170,
+      "desc": "Dầu nụ tầm xuân ép lạnh hữu cơ 100%, cực kỳ giàu Linoleic Acid và Pro-Vitamin A tự nhiên, chữa lành thâm mụn và chống nhăn siêu xịn.",
+      "skin_types": ["da khô", "da thường", "da hỗn hợp", "da lão hóa"],
+      "concerns": ["khô da", "thâm nám", "nếp nhăn", "tổn thương màng bảo vệ"],
+      "benefits": ["phục hồi da", "chống lão hóa", "dưỡng trắng"],
+      "tags": ["hữu cơ", "thuần chay"],
+      "ingredients": {
+        "key": ["100% Rose Hip Seed Oil"],
+        "full": ["Rosa Canina Seed Oil"]
+      }
+    },
+    {
+      "brand": "obagi",
+      "category": "cleansers",
+      "name": "Sữa Rửa Mặt Obagi Nuderm Gentle Cleanser",
+      "slug": "obagi-nuderm-gentle",
+      "sku": "OBAGI-NUDERM-GENTLE",
+      "price": "950000",
+      "stock": 45,
+      "desc": "Sữa rửa mặt dạng lỏng như nước, làm sạch mọi cặn bẩn bám dính nhưng tôn trọng tuyệt đối lớp rào bảo vệ mỏng manh của da treatment.",
+      "skin_types": ["da khô", "da nhạy cảm", "da thường"],
+      "concerns": ["kích ứng", "khô da", "mẩn đỏ"],
+      "benefits": ["làm sạch da", "làm dịu da", "bảo vệ da"],
+      "tags": ["dược mỹ phẩm", "chuẩn y khoa"],
+      "ingredients": {
+        "key": ["Oat Amino Acids", "Panthenol", "Aloe Vera"],
+        "full": [
+          "Purified Water",
+          "Cocamidopropyl Betaine",
+          "Sodium Lauroyl Oat Amino Acids"
+        ]
+      }
+    },
+    {
+      "brand": "cosrx",
+      "category": "cleansers",
+      "name": "Sữa Rửa Mặt COSRX AC Collection Calming Foam Cleanser",
+      "slug": "cosrx-ac-collection-foam",
+      "sku": "COSRX-AC-FOAM",
+      "price": "350000",
+      "stock": 110,
+      "desc": "Bản nâng cấp bọt rửa mặt cho da mụn: Bổ sung hợp chất CentellAC-Rx tối tân nhất, giúp làm dịu nốt mụn sưng cực kỳ thần thánh.",
+      "skin_types": ["da dầu", "da mụn", "da hỗn hợp", "da nhạy cảm"],
+      "concerns": ["mụn", "đổ dầu nhiều", "mẩn đỏ"],
+      "benefits": ["trị mụn", "làm sạch da", "làm dịu da"],
+      "tags": ["giảm mụn"],
+      "ingredients": {
+        "key": ["CentellAC-Rx Complex", "Salicylic Acid 0.5%"],
+        "full": ["Water", "Glycerin", "Stearic Acid", "Myristic Acid"]
+      }
+    },
+    {
+      "brand": "cetaphil",
+      "category": "body-care",
+      "name": "Kem Dưỡng Cetaphil PRO AD Derma Skin Restoring Moisturizer",
+      "slug": "cetaphil-pro-ad-derma",
+      "sku": "CETA-PRO-AD",
+      "price": "550000",
+      "stock": 80,
+      "desc": "Kem dưỡng thể y tế sinh ra để điều trị viêm da cơ địa (Eczema), chấm dứt cơn ngứa ngáy và bong tróc nhờ công nghệ Filaggrin.",
+      "skin_types": ["da nhạy cảm", "da khô"],
+      "concerns": ["khô da", "kích ứng", "mẩn đỏ", "tổn thương màng bảo vệ"],
+      "benefits": ["phục hồi da", "làm dịu da", "nuôi dưỡng sâu"],
+      "tags": ["dược mỹ phẩm", "không chứa steroid"],
+      "ingredients": {
+        "key": ["Ceramides", "Filaggrin Technology"],
+        "full": [
+          "Aqua",
+          "Glycerin",
+          "Caprylic/Capric Triglyceride",
+          "Helianthus Annuus Seed Oil"
+        ]
+      }
+    },
+    {
+      "brand": "klairs",
+      "category": "moisturizers",
+      "name": "Kem Dưỡng Klairs Rich Moist Soothing Cream",
+      "slug": "klairs-rich-moist-cream",
+      "sku": "KLAIRS-RM-CREAM",
+      "price": "380000",
+      "stock": 125,
+      "desc": "Kem dưỡng ẩm cơ bản bán chạy nhất của Klairs, kết cấu xốp nhẹ như mây, cấp ẩm lành tính không gây bí tắc cho da mẫn cảm nhất.",
+      "skin_types": ["da khô", "da thường", "da nhạy cảm", "da hỗn hợp"],
+      "concerns": ["khô da", "mất nước", "kích ứng"],
+      "benefits": ["dưỡng ẩm", "làm dịu da", "cấp nước"],
+      "tags": ["thuần chay", "không thử nghiệm trên động vật"],
+      "ingredients": {
+        "key": ["Beta-Glucan", "Jojoba Seed Oil", "Ceramide 3"],
+        "full": [
+          "Water",
+          "Caprylic/Capric Triglyceride",
+          "Glycerin",
+          "Cetyl Alcohol"
+        ]
+      }
+    },
+    {
+      "brand": "skin1004",
+      "category": "toners",
+      "name": "Nước Cân Bằng Skin1004 Madagascar Centella Tone Brightening Boosting Toner",
+      "slug": "skin1004-tone-brightening-toner",
+      "sku": "SKIN1004-TONE-BR-TN",
+      "price": "390000",
+      "stock": 95,
+      "desc": "Toner dưỡng sáng dạng nước tinh khiết, tẩy da chết siêu vi mô nhờ đu đủ và táo, làm bước đệm hoàn hảo để mở khóa da xỉn màu.",
+      "skin_types": ["da thường", "da hỗn hợp", "da xỉn màu"],
+      "concerns": ["da xỉn màu", "da không đều màu", "thâm nám"],
+      "benefits": ["dưỡng trắng", "nâng tông", "cải thiện bề mặt da"],
+      "tags": ["làm sáng da", "thuần chay"],
+      "ingredients": {
+        "key": ["Madecassoside", "Niacinamide", "Singreen (Fruit extracts)"],
+        "full": [
+          "Centella Asiatica Extract",
+          "Water",
+          "1,2-Hexanediol",
+          "Niacinamide"
+        ]
+      }
+    },
+    {
+      "brand": "paulas-choice",
+      "category": "eye-care",
+      "name": "Kem Mắt Paula's Choice C5 Super Boost Eye Cream",
+      "slug": "pc-c5-eye-cream",
+      "sku": "PC-C5-EYE",
+      "price": "1150000",
+      "stock": 45,
+      "desc": "Kem mắt Vitamin C thế hệ mới (5%), đập tan vòng tròn thâm quầng mệt mỏi, kết hợp Peptides làm đầy vùng da dưới mắt trũng sâu.",
+      "skin_types": ["da thường", "da khô", "da hỗn hợp"],
+      "concerns": ["quầng thâm mắt", "da xỉn màu", "nếp nhăn"],
+      "benefits": ["dưỡng trắng", "săn chắc da", "chống lão hóa"],
+      "tags": ["làm sáng da"],
+      "ingredients": {
+        "key": ["Vitamin C 5%", "Peptides", "Hyaluronic Acid"],
+        "full": ["Water", "Glycerin", "Ascorbyl Glucoside", "Cetearyl Alcohol"]
+      }
+    },
+    {
+      "brand": "innisfree",
+      "category": "masks",
+      "name": "Mặt Nạ Innisfree Super Volcanic Peel Off Mask 2X",
+      "slug": "innisfree-volcanic-peel-off",
+      "sku": "INNI-VOL-PEEL",
+      "price": "250000",
+      "stock": 130,
+      "desc": "Mặt nạ lột mụn chứa tro núi lửa Jeju 2X siêu hút dầu, lột sạch sẽ mụn cám, lông tơ và lớp da chết thô sần trên bề mặt.",
+      "skin_types": ["da dầu", "da hỗn hợp"],
+      "concerns": [
+        "mụn đầu đen",
+        "lỗ chân lông to",
+        "đổ dầu nhiều",
+        "cải thiện bề mặt da"
+      ],
+      "benefits": ["tẩy tế bào chết", "thu nhỏ lỗ chân lông", "kiềm dầu"],
+      "tags": ["tẩy tế bào chết vật lý"],
+      "ingredients": {
+        "key": ["Jeju Volcanic Clusters 2X"],
+        "full": ["Water", "Polyvinyl Alcohol", "Alcohol", "Volcanic Ash"]
+      }
+    },
+    {
+      "brand": "dr-jart",
+      "category": "moisturizers",
+      "name": "Kem Dưỡng Dr.Jart+ V7 VitaLaser 2.1",
+      "slug": "dr-jart-v7-vitalaser",
+      "sku": "DRJ-V7-VITAL",
+      "price": "850000",
+      "stock": 55,
+      "desc": "Kem dưỡng đặc trị (Ointment) chứa 7 loại Vitamin hàm lượng cao, bôi trực tiếp lên vết thâm mụn, đốm nâu để xóa sổ chúng nhanh chóng.",
+      "skin_types": ["da thường", "da hỗn hợp", "da khô"],
+      "concerns": ["thâm nám", "da không đều màu", "da xỉn màu"],
+      "benefits": ["dưỡng trắng", "phục hồi da", "cải thiện bề mặt da"],
+      "tags": ["dược mỹ phẩm", "làm sáng da"],
+      "ingredients": {
+        "key": ["V7 Complex (Vitamin B3, B5, B12, C, E, F, H)"],
+        "full": ["Water", "Glycerin", "Panthenol", "Niacinamide"]
       }
     }
   ]

@@ -37,3 +37,15 @@ class ProductRatingSummary(BaseModel):
 
     class Config(BaseConfig):
         pass
+
+
+class ReviewSummaryResponse(BaseModel):
+    """AI-generated review summary"""
+    slug: str
+    summary: str
+    average_rating: float
+    review_count: int
+    source: str  # "cache" | "generated"
+
+    class Config(BaseConfig):
+        pass

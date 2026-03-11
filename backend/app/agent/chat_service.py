@@ -1,13 +1,12 @@
 import uuid
 import logging
 from datetime import datetime, timezone
+from typing import Optional, Dict, Any
 from sqlalchemy.orm import Session, joinedload
 from app.models.conversation import Conversation, Message
 from app.utils.responses import ResponseHandler
 from app.agent.agent import get_unified_agent
 from app.services.preferences import PreferenceService
-from app.schemas.preferences import UpdateUserPreferenceRequest
-
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +19,8 @@ class ChatService:
         message_content: str,
         conversation_id: str = None,
         auth_token: str = None,
-        is_active: bool = True
+        is_active: bool = True,
+        page_context: Optional[Dict[str, Any]] = None,
     ):
         # Create or get conversation
         if conversation_id:
@@ -65,7 +65,8 @@ class ChatService:
             message=message_content,
             conversation_id=conversation.thread_id,
             auth_token=auth_token or "",
-            preferences=user_prefs_dict
+            preferences=user_prefs_dict,
+            page_context=page_context or {},
         )
 
         artifacts = result.get("artifacts", [])
@@ -86,7 +87,6 @@ class ChatService:
         db.commit()
         db.refresh(ai_message)
 
-        # Return response with artifacts
         return ResponseHandler.success(
             message="Message sent",
             data={
@@ -104,21 +104,14 @@ class ChatService:
         )
 
     @staticmethod
-    def get_conversations(
-        db: Session,
-        user_id: str,
-        page: int = 1,
-        limit: int = 20
-    ):
-        """Get user's conversations"""
+    def get_conversations(db: Session,
+                          user_id: str,
+                          page: int = 1,
+                          limit: int = 20):
         from sqlalchemy import desc
 
-        query = db.query(Conversation).filter(
-            Conversation.user_id == user_id
-        )
-
+        query = db.query(Conversation).filter(Conversation.user_id == user_id)
         total = query.count()
-
         conversations = query.order_by(
             desc(Conversation.updated_at)
         ).offset((page - 1) * limit).limit(limit).all()
@@ -147,12 +140,7 @@ class ChatService:
         )
 
     @staticmethod
-    def get_conversation_detail(
-        db: Session,
-        user_id: str,
-        conversation_id: str
-    ):
-        """Get conversation with all messages"""
+    def get_conversation_detail(db: Session, user_id: str, conversation_id: str):
         conversation = db.query(Conversation).options(
             joinedload(Conversation.messages)
         ).filter(
@@ -163,7 +151,6 @@ class ChatService:
         if not conversation:
             return ResponseHandler.not_found_error("Conversation", conversation_id)
 
-        # Only return active messages for UI rendering
         active_messages = [
             msg for msg in conversation.messages if msg.is_active]
 
@@ -194,7 +181,6 @@ class ChatService:
 
     @staticmethod
     def delete_conversation(db: Session, user_id: str, conversation_id: str):
-        """Delete a conversation"""
         conversation = db.query(Conversation).filter(
             Conversation.id == conversation_id,
             Conversation.user_id == user_id
@@ -203,12 +189,10 @@ class ChatService:
         if not conversation:
             return ResponseHandler.not_found_error("Conversation", conversation_id)
 
-        # Delete all messages first
         db.query(Message).filter(
             Message.conversation_id == conversation_id
         ).delete()
 
-        # Delete conversation
         db.delete(conversation)
         db.commit()
 

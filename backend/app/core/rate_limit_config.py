@@ -32,7 +32,7 @@ class RateLimitConfig:
         "/auth/register": "3/minute",
         "/auth/forgot-password": "3/minute",
         "/change-password": "3/minute",
-        "/products": "100/minute",
+        "/products/*": None,
         "/categories": "100/minute",
         "/brands": "100/minute",
         "/orders": "20/minute",

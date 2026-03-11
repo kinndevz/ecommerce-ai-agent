@@ -7,6 +7,7 @@ import {
   registerPreferencesTools,
   registerFAQTools,
 } from "./tools";
+import { registerReviewTools } from "./tools/review.tools";
 
 /**
  * Main MCP Agent Class
@@ -41,6 +42,9 @@ export class EcommerceMCP extends McpAgent {
 
     registerFAQTools(this.server);
     console.log("✅ FAQ tools registered (1 tool)");
+
+    registerReviewTools(this.server);
+    console.log("✅ Review tools registered (2 tool)");
 
     console.log("🎉 Ecommerce MCP Server ready!");
   }

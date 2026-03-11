@@ -6,6 +6,18 @@ class BaseConfig:
     from_attributes = True
 
 
+class PageContext(BaseModel):
+    """Current page context from frontend."""
+    type: str = Field(..., description="Page type: product_detail | cart | orders | order_detail | home | other")
+    slug: Optional[str] = Field(
+        None, description="Product slug — present when type == product_detail")
+    order_id: Optional[str] = Field(
+        None, description="Order ID — present when type == order_detail")
+
+    class Config(BaseConfig):
+        pass
+
+
 class ChatRequest(BaseModel):
     """Chat message request"""
     message: str = Field(..., min_length=1, max_length=2000,
@@ -14,6 +26,8 @@ class ChatRequest(BaseModel):
         None, description="Existing conversation ID (optional for new conversation)")
     is_active: bool = Field(
         True, description="If False, message will be hidden from UI (used for system-triggered prompts)")
+    page_context: Optional[PageContext] = Field(
+        None, description="Current page context from frontend for agent awareness")
 
     class Config(BaseConfig):
         pass

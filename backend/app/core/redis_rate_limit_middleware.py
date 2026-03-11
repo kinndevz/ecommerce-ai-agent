@@ -61,6 +61,12 @@ class RedisRateLimitMiddleware(BaseHTTPMiddleware):
         if path in RateLimitConfig.ENDPOINT_LIMITS:
             return RateLimitConfig.ENDPOINT_LIMITS[path]
 
+        for endpoint, limit in RateLimitConfig.ENDPOINT_LIMITS.items():
+            if endpoint.endswith("/*"):
+                base_path = endpoint[:-2]
+                if path == base_path or path.startswith(base_path + "/"):
+                    return limit
+
         tier = RateLimitConfig.METHOD_TIERS.get(
             request.method,
             RateLimitConfig.DEFAULT_TIER

@@ -11,7 +11,8 @@ from app.schemas.reviews import (
     CreateReviewRequest,
     UpdateReviewRequest,
     ReviewResponse,
-    ProductRatingSummary
+    ProductRatingSummary,
+    ReviewSummaryResponse
 )
 
 router = APIRouter(tags=["Reviews"])
@@ -62,3 +63,27 @@ def delete_review(
     current_user: User = Depends(get_current_user)
 ):
     return ReviewService.delete_review(db, current_user.id, review_id)
+
+
+@router.get("/products/slug/{slug}/reviews", response_model=APIResponse[List[ReviewResponse]])
+def list_reviews_by_slug(
+    slug: str,
+    page: int = Query(1, ge=1),
+    limit: int = Query(20, ge=1, le=100),
+    db: Session = Depends(get_db)
+):
+    """List reviews by product slug — used by MCP tool and frontend product detail page."""
+    return ReviewService.get_reviews_by_slug(db, slug, page, limit)
+
+
+@router.get("/products/slug/{slug}/reviews/summary", response_model=APIResponse[ReviewSummaryResponse])
+def get_review_summary_by_slug(
+    slug: str,
+    db: Session = Depends(get_db)
+):
+    """
+    Get AI-generated review summary by product slug.
+    Returns cached result if available, otherwise generates on-the-fly.
+    No auth required — called by MCP tool and frontend.
+    """
+    return ReviewService.get_summary_by_slug(db, slug)
