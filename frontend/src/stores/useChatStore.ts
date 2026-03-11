@@ -5,6 +5,7 @@ import {
   type ConversationSummary,
   type MessageResponse,
   type Artifact,
+  type PageContext,
 } from '@/api/chat.api'
 import { toast } from 'sonner'
 import { StreamingClient } from '@/api/services/streaming'
@@ -22,19 +23,22 @@ interface ChatState {
   sendMessage: (message: string) => Promise<void>
   sendMessageStreaming: (
     message: string,
-    options?: { suppressUserMessage?: boolean; isActive?: boolean }
+    options?: {
+      suppressUserMessage?: boolean
+      isActive?: boolean
+      pageContext?: PageContext
+    }
   ) => Promise<void>
   startNewConversation: () => void
   fetchConversationDetail: (id: string) => Promise<void>
   reset: () => void
 }
 
-const sortMessagesByDate = (messages: MessageResponse[]) => {
-  return messages.sort(
+const sortMessagesByDate = (messages: MessageResponse[]) =>
+  messages.sort(
     (a, b) =>
       new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
   )
-}
 
 const createTempMessage = (
   role: 'user' | 'assistant',
@@ -48,9 +52,7 @@ const createTempMessage = (
   created_at: new Date().toISOString(),
 })
 
-const hasRealConversationId = (id?: string): boolean => {
-  return !!id && id !== 'temp-id'
-}
+const hasRealConversationId = (id?: string): boolean => !!id && id !== 'temp-id'
 
 const createEmptyConversation = (
   messages: MessageResponse[]
@@ -75,7 +77,9 @@ const updateConversationMessages = (
   conversation: ConversationDetail | null,
   updater: (messages: MessageResponse[]) => MessageResponse[]
 ): ConversationDetail | null =>
-  conversation ? { ...conversation, messages: updater(conversation.messages) } : null
+  conversation
+    ? { ...conversation, messages: updater(conversation.messages) }
+    : null
 
 const updateMessageById = (
   messages: MessageResponse[],
@@ -120,7 +124,6 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
   fetchConversationDetail: async (id: string) => {
     set({ isLoading: true })
-
     try {
       const detail = await chatAPI.getConversationDetail(id)
       detail.messages = sortMessagesByDate(detail.messages)
@@ -145,9 +148,10 @@ export const useChatStore = create<ChatState>((set, get) => ({
     const userMsg = createTempMessage('user', message)
 
     set((state) => ({
-      currentConversation: appendMessagesToConversation(state.currentConversation, [
-        userMsg,
-      ]),
+      currentConversation: appendMessagesToConversation(
+        state.currentConversation,
+        [userMsg]
+      ),
     }))
 
     try {
@@ -155,7 +159,6 @@ export const useChatStore = create<ChatState>((set, get) => ({
         message,
         conversation_id: currentConversation?.id,
       })
-
       set((state) => ({
         currentConversation: {
           ...appendMessagesToConversation(state.currentConversation, [
@@ -170,7 +173,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
     }
   },
 
-  sendMessageStreaming: async (message: string, options) => {
+  sendMessageStreaming: async (message, options) => {
     const { currentConversation } = get()
 
     const shouldShowUserMessage = !options?.suppressUserMessage
@@ -180,10 +183,10 @@ export const useChatStore = create<ChatState>((set, get) => ({
     const aiMsg = createTempMessage('assistant')
 
     set((state) => ({
-      currentConversation: appendMessagesToConversation(state.currentConversation, [
-        ...(userMsg ? [userMsg] : []),
-        aiMsg,
-      ]),
+      currentConversation: appendMessagesToConversation(
+        state.currentConversation,
+        [...(userMsg ? [userMsg] : []), aiMsg]
+      ),
     }))
     set({ streamingStatus: 'thinking', currentToolCall: null })
 
@@ -193,88 +196,93 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
     try {
       const client = new StreamingClient()
-      const isActive = options?.isActive ?? true
 
-      await client.streamMessage(message, conversationId, {
-        onStatus: (statusMessage) => {
-          set((state) => ({
-            streamingStatus: state.currentToolCall ? null : statusMessage,
-          }))
-        },
+      await client.streamMessage(
+        message,
+        conversationId,
+        {
+          onStatus: (statusMessage) => {
+            set((state) => ({
+              streamingStatus: state.currentToolCall ? null : statusMessage,
+            }))
+          },
 
-        onToolCall: (toolName) => {
-          set({ currentToolCall: `Using tool: ${toolName}...` })
-        },
+          onToolCall: (toolName) => {
+            set({ currentToolCall: `Using tool: ${toolName}...` })
+          },
 
-        onArtifact: (artifact: Artifact) => {
-          set((state) => ({
-            currentConversation: updateConversationMessages(
-              state.currentConversation,
-              (messages) =>
-                updateMessageById(messages, aiMsg.id, (msg) => ({
-                  ...msg,
-                  artifacts: [...(msg.artifacts || []), artifact],
-                  message_metadata: {
-                    ...msg.message_metadata,
-                    has_artifacts: true,
-                  },
-                }))
-            ),
-            currentToolCall: `Used tool: ${artifact.tool_name}`,
-            streamingStatus: null,
-          }))
-        },
-
-        onContent: (chunk) => {
-          set((state) => ({
-            streamingStatus: state.currentToolCall ? null : 'Typing...',
-            currentConversation: {
-              ...state.currentConversation!,
-              messages: updateMessageById(
-                state.currentConversation!.messages,
-                aiMsg.id,
-                (msg) => ({ ...msg, content: msg.content + chunk })
+          onArtifact: (artifact: Artifact) => {
+            set((state) => ({
+              currentConversation: updateConversationMessages(
+                state.currentConversation,
+                (messages) =>
+                  updateMessageById(messages, aiMsg.id, (msg) => ({
+                    ...msg,
+                    artifacts: [...(msg.artifacts || []), artifact],
+                    message_metadata: {
+                      ...msg.message_metadata,
+                      has_artifacts: true,
+                    },
+                  }))
               ),
-            },
-          }))
-        },
+              currentToolCall: `Used tool: ${artifact.tool_name}`,
+              streamingStatus: null,
+            }))
+          },
 
-        onDone: (messageId, conversationId, threadId) => {
-          set((state) => ({
-            streamingStatus: null,
-            currentToolCall: null,
-            currentConversation: {
-              ...state.currentConversation!,
-              id: conversationId || state.currentConversation!.id,
-              thread_id: threadId || state.currentConversation!.thread_id,
-              messages: updateMessageById(
-                state.currentConversation!.messages,
-                aiMsg.id,
-                (msg) => ({ ...msg, id: messageId })
-              ),
-            },
-          }))
-        },
+          onContent: (chunk) => {
+            set((state) => ({
+              streamingStatus: state.currentToolCall ? null : 'Typing...',
+              currentConversation: {
+                ...state.currentConversation!,
+                messages: updateMessageById(
+                  state.currentConversation!.messages,
+                  aiMsg.id,
+                  (msg) => ({ ...msg, content: msg.content + chunk })
+                ),
+              },
+            }))
+          },
 
-        onError: (error) => {
-          toast.error(error)
+          onDone: (messageId, conversationId, threadId) => {
+            set((state) => ({
+              streamingStatus: null,
+              currentToolCall: null,
+              currentConversation: {
+                ...state.currentConversation!,
+                id: conversationId || state.currentConversation!.id,
+                thread_id: threadId || state.currentConversation!.thread_id,
+                messages: updateMessageById(
+                  state.currentConversation!.messages,
+                  aiMsg.id,
+                  (msg) => ({ ...msg, id: messageId })
+                ),
+              },
+            }))
+          },
 
-          set((state) => ({
-            streamingStatus: null,
-            currentToolCall: null,
-            currentConversation: {
-              ...state.currentConversation!,
-              messages: removeMessageById(
-                state.currentConversation!.messages,
-                aiMsg.id
-              ),
-            },
-          }))
+          onError: (error) => {
+            toast.error(error)
+            set((state) => ({
+              streamingStatus: null,
+              currentToolCall: null,
+              currentConversation: {
+                ...state.currentConversation!,
+                messages: removeMessageById(
+                  state.currentConversation!.messages,
+                  aiMsg.id
+                ),
+              },
+            }))
+          },
         },
-      }, { isActive })
+        {
+          isActive: options?.isActive ?? true,
+          pageContext: options?.pageContext,
+        }
+      )
     } catch (error: any) {
       toast.error(error.message || 'Streaming failed')
-
       set((state) => ({
         streamingStatus: null,
         currentToolCall: null,

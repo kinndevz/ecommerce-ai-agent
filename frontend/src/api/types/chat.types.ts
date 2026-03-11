@@ -53,11 +53,17 @@ export interface MessageResponse {
   created_at: string
 }
 
+export interface PageContext {
+  type: 'product_detail' | 'cart' | 'orders' | 'order_detail' | 'home' | 'other'
+  slug?: string
+  order_id?: string
+}
+
 export interface ChatMessageRequest {
   message: string
   conversation_id?: string
-  /** If false, message will be hidden from UI (used for system-triggered prompts like create_order) */
   is_active?: boolean
+  page_context?: PageContext
 }
 
 export interface ChatResponse {

@@ -16,6 +16,7 @@ import OrderDetailPage from './domains/customer/pages/OrderDetailPage'
 import CheckoutPage from './domains/customer/pages/CheckoutPage'
 import PaymentReturnPage from './domains/customer/pages/PaymentReturnPage'
 import { ProductsPage } from './domains/customer/pages/ProductsPage'
+import { ChatPopup } from './domains/customer/components/chatbot/popup/ChatPopup'
 
 function App() {
   const isMaintenanceMode = import.meta.env.VITE_MAINTENANCE_MODE === 'true'
@@ -65,6 +66,7 @@ function App() {
           {/* 404 - Must be last */}
           <Route path='*' element={<NotFoundPage />} />
         </Routes>
+        <ChatPopup />
       </AuthProvider>
     </ThemeProvider>
   )

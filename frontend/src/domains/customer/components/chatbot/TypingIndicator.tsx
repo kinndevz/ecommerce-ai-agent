@@ -1,14 +1,12 @@
 import { Avatar, AvatarImage } from '@/shared/components/ui/avatar'
+import { COMPANY_LOGO_SRC } from './ChatMessage'
 
 export const TypingIndicator = () => {
   return (
     <div className='flex gap-3 mb-5 animate-in fade-in slide-in-from-bottom-2 duration-400'>
       {/* AI Avatar */}
       <Avatar className='w-9 h-9 shrink-0 ring-2 ring-background shadow-sm'>
-        <AvatarImage
-          src={'src/assets/company-logo.svg'}
-          className='object-cover'
-        />
+        <AvatarImage src={COMPANY_LOGO_SRC} className='object-cover' />
       </Avatar>
 
       {/* Typing Bubble */}

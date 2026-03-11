@@ -1,4 +1,4 @@
-import type { Artifact } from '@/api/chat.api'
+import type { Artifact, PageContext } from '@/api/chat.api'
 import { API_ENDPOINT } from '../constants'
 import { getAccessToken } from '../token.service'
 
@@ -27,6 +27,11 @@ interface StreamEvent {
   total_artifacts?: number
 }
 
+interface StreamOptions {
+  isActive?: boolean
+  pageContext?: PageContext
+}
+
 export class StreamingClient {
   private readonly baseURL: string
 
@@ -38,7 +43,7 @@ export class StreamingClient {
     message: string,
     conversationId: string | null,
     callbacks: StreamCallbacks,
-    options?: { isActive?: boolean }
+    options?: StreamOptions
   ): Promise<void> {
     const accessToken = getAccessToken()
 
@@ -60,6 +65,7 @@ export class StreamingClient {
           message,
           conversation_id: conversationId,
           is_active: options?.isActive ?? true,
+          page_context: options?.pageContext ?? null,
         }),
       })
 
@@ -90,7 +96,6 @@ export class StreamingClient {
           try {
             const jsonStr = line.slice(6)
             const event: StreamEvent = JSON.parse(jsonStr)
-
             this.handleEvent(event, callbacks)
           } catch (err) {
             console.error('Parse error:', err, 'Line:', line)
@@ -106,16 +111,11 @@ export class StreamingClient {
   private handleEvent(event: StreamEvent, callbacks: StreamCallbacks): void {
     switch (event.type) {
       case 'status':
-        if (event.message) {
-          callbacks.onStatus?.(event.message)
-        }
+        if (event.message) callbacks.onStatus?.(event.message)
         break
 
       case 'artifact':
-        if (event.tool_name) {
-          callbacks.onToolCall?.(event.tool_name)
-        }
-
+        if (event.tool_name) callbacks.onToolCall?.(event.tool_name)
         if (event.data) {
           const artifact: Artifact = {
             success: event.success ?? true,
@@ -128,9 +128,7 @@ export class StreamingClient {
         break
 
       case 'content':
-        if (event.chunk) {
-          callbacks.onContent?.(event.chunk)
-        }
+        if (event.chunk) callbacks.onContent?.(event.chunk)
         break
 
       case 'done':
@@ -144,9 +142,7 @@ export class StreamingClient {
         break
 
       case 'error':
-        if (event.message) {
-          callbacks.onError?.(event.message)
-        }
+        if (event.message) callbacks.onError?.(event.message)
         break
     }
   }

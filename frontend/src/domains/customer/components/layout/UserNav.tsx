@@ -1,5 +1,13 @@
 import { useNavigate } from 'react-router-dom'
-import { User, LogOut, Package, Heart, Settings, Bot } from 'lucide-react'
+import {
+  User,
+  LogOut,
+  Package,
+  Heart,
+  Settings,
+  Bot,
+  LayoutDashboard,
+} from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -89,6 +97,17 @@ export const UserNav = ({ user, isLoading, onLogout }: UserNavProps) => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator className='my-2' />
+        {user?.role?.name === 'ADMIN' && (
+          <DropdownMenuItem
+            onClick={() => navigate('/admin/dashboard')}
+            className='gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all focus:bg-indigo-500/15 dark:focus:bg-indigo-900/40 hover:scale-[1.02] dark:focus:text-white'
+          >
+            <div className='w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center'>
+              <LayoutDashboard className='w-4 h-4 text-indigo-600 dark:text-indigo-400' />
+            </div>
+            <span className='font-medium'>Dashboard</span>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem
           onClick={() => navigate('/profile')}
           className='gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all focus:bg-blue-500/15 dark:focus:bg-blue-900/40 hover:scale-[1.02] dark:focus:text-white'

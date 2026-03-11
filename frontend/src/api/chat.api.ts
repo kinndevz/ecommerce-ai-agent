@@ -13,6 +13,7 @@ import type {
   MessageResponse,
   ProductData,
   ProductMeta,
+  PageContext,
 } from './types/chat.types'
 
 // CHAT API METHODS
@@ -92,6 +93,7 @@ export type {
   ProductData,
   ProductMeta,
   ApiSuccessResponse,
+  PageContext,
 } from './types/chat.types'
 
 export type {

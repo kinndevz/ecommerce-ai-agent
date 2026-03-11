@@ -62,11 +62,11 @@ export function ProductGallery({ images }: ProductGalleryProps) {
         )}
       </div>
 
-      <div className='relative flex-1 aspect-3/4 md:aspect-auto overflow-hidden rounded-lg bg-secondary/20'>
+      <div className='relative flex-1 aspect-square md:aspect-4/5 max-h-125 md:max-h-150 overflow-hidden rounded-lg bg-secondary/20 flex items-center justify-center p-4'>
         <img
           src={activeImage}
           alt='Product main'
-          className='h-full w-full object-cover object-center'
+          className='max-h-full max-w-full object-contain object-center mix-blend-multiply'
         />
         <Badge
           variant='secondary'

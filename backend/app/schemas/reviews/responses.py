@@ -42,7 +42,7 @@ class ProductRatingSummary(BaseModel):
 class ReviewSummaryResponse(BaseModel):
     """AI-generated review summary"""
     slug: str
-    summary: str
+    summary: Optional[str] = None
     average_rating: float
     review_count: int
     source: str  # "cache" | "generated"
