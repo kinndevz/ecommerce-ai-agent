@@ -18,6 +18,12 @@ from app.utils.exceptions import (
 from app.agent.mcp_manager import mcp_manager
 from app.agent.agent import get_unified_agent
 from app.core.redis_rate_limit_middleware import RedisRateLimitMiddleware
+import logging
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s %(levelname)s %(name)s - %(message)s"
+)
 
 load_dotenv()
 
