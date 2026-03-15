@@ -26,6 +26,7 @@ import {
 import { formatShortDate } from '../../helpers/formatters'
 
 import CompanyLogo from '@/assets/company-logo.svg'
+import { Markdown } from './Markdown'
 export const COMPANY_LOGO_SRC = CompanyLogo
 
 export interface Message {
@@ -40,6 +41,7 @@ export interface Message {
 interface ChatMessageProps {
   message: Message
   userAvatar?: string | null
+  isStreaming?: boolean
 }
 
 //  Avatar
@@ -154,7 +156,11 @@ function ArtifactSection({
 
 //  Main Component
 
-export function ChatMessage({ message, userAvatar }: ChatMessageProps) {
+export function ChatMessage({
+  message,
+  userAvatar,
+  isStreaming,
+}: ChatMessageProps) {
   const [selectedProduct, setSelectedProduct] = useState<ProductData | null>(
     null
   )
@@ -176,9 +182,10 @@ export function ChatMessage({ message, userAvatar }: ChatMessageProps) {
   }
 
   return (
-    <div className='flex flex-col gap-1.5 mb-5 group animate-in fade-in slide-in-from-bottom-1 duration-300 max-w-full'>
-      {/* Sender row */}
-      <div className='flex items-center gap-2 select-none'>
+    // THAY ĐỔI: Đổi flex flex-col thành block w-full
+    <div className='block w-full mb-5 group animate-in fade-in slide-in-from-bottom-1 duration-300'>
+      {/* Sender row (Vẫn giữ flex cho hàng ngang này) */}
+      <div className='flex items-center gap-2 select-none mb-1.5'>
         <MessageAvatar isAI={isAI} userAvatar={userAvatar} />
         <span className='text-xs font-semibold text-foreground'>
           {isAI ? 'AI Assistant' : 'You'}
@@ -189,38 +196,44 @@ export function ChatMessage({ message, userAvatar }: ChatMessageProps) {
       </div>
 
       {/* Content */}
-      <div className='pl-9 w-full min-w-0 overflow-hidden'>
+      <div className='block pl-9 w-full'>
         {isAI ? (
-          <div className='w-full min-w-0'>
+          <div className='block w-full'>
             {message.content && (
               <div
                 className={cn(
-                  'text-sm text-muted-foreground leading-relaxed wrap-break-word overflow-hidden',
-                  '[&>p]:mb-2 [&>p:last-child]:mb-0',
-                  '[&>ul]:ml-4 [&>ul]:list-disc [&>ul]:space-y-0.5',
-                  '[&>ol]:ml-4 [&>ol]:list-decimal [&>ol]:space-y-0.5',
-                  '*:max-w-full'
+                  'text-sm text-foreground leading-relaxed w-full break-words whitespace-pre-wrap',
+                  isStreaming &&
+                    "after:content-['▋'] after:ml-1 after:animate-pulse after:text-primary"
                 )}
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(message.content),
-                }}
-              />
+              >
+                <Markdown content={message.content} />
+              </div>
             )}
 
-            <div className='w-full min-w-0 overflow-hidden'>
-              <ArtifactSection
-                message={message}
-                onViewProduct={(p) => {
-                  setSelectedProduct(p)
-                  setIsSheetOpen(true)
-                }}
-              />
-            </div>
+            {message.artifacts && message.artifacts.length > 0 && (
+              <div
+                className={cn(
+                  'block w-full transition-all duration-700 ease-out mt-3',
+                  isStreaming
+                    ? 'opacity-0 translate-y-4 pointer-events-none absolute -z-10'
+                    : 'opacity-100 translate-y-0 animate-in fade-in slide-in-from-bottom-4 duration-700 relative z-0'
+                )}
+              >
+                <ArtifactSection
+                  message={message}
+                  onViewProduct={(p) => {
+                    setSelectedProduct(p)
+                    setIsSheetOpen(true)
+                  }}
+                />
+              </div>
+            )}
 
             <AIActionBar onCopy={handleCopy} />
           </div>
         ) : (
-          <p className='text-sm font-medium text-foreground leading-relaxed wrap-break-word whitespace-pre-wrap'>
+          <p className='text-sm font-medium text-foreground leading-relaxed w-full break-words whitespace-pre-wrap'>
             {message.content}
           </p>
         )}

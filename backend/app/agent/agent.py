@@ -100,6 +100,56 @@ class UnifiedAgent:
                 "metadata": {"error": str(e)}
             }
 
+    async def stream_chat(
+        self,
+        user_id: str,
+        message: str,
+        conversation_id: str,
+        auth_token: str,
+        preferences: Dict[str, Any] = None,
+        page_context: Optional[Dict[str, Any]] = None,
+    ):
+        agent = await self.get_agent()
+
+        input_payload = {
+            "messages": [HumanMessage(content=message)],
+            "user_context": {
+                "user_id": user_id,
+                "auth_token": auth_token,
+                "preferences": preferences or {},
+                "page_context": page_context or {},
+            }
+        }
+
+        config = {"configurable": {"thread_id": conversation_id}}
+        context = RuntimeContext(user_id=user_id, auth_token=auth_token)
+
+        async for event in agent.astream_events(input_payload, config=config, context=context, version="v2"):
+            kind = event["event"]
+
+            if kind == "on_chat_model_stream":
+                chunk = event["data"]["chunk"]
+                if hasattr(chunk, "content") and chunk.content and isinstance(chunk.content, str):
+                    yield {"type": "content", "chunk": chunk.content}
+
+            elif kind == "on_tool_start":
+                yield {"type": "status", "message": f"Đang sử dụng công cụ...", "stage": "processing"}
+                yield {"type": "artifact", "tool_name": event["name"]}
+
+            elif kind == "on_tool_end":
+                output = event["data"].get("output")
+                if hasattr(output, "artifact"):
+                    raw = output.artifact
+                    data_mcp = raw.get("structured_content",
+                                       raw) if isinstance(raw, dict) else raw
+                    yield {
+                        "type": "artifact",
+                        "tool_name": event["name"],
+                        "tool_call_id": getattr(output, "tool_call_id", ""),
+                        "data": data_mcp,
+                        "success": getattr(output, "status", None) != "error"
+                    }
+
     def _process_result(self, result: Dict, user_id: str) -> Dict[str, Any]:
         """Extract content and artifacts from agent result."""
         all_messages = result.get("messages", [])

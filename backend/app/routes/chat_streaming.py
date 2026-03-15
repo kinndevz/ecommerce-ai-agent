@@ -65,40 +65,24 @@ async def stream_new_conversation(
     db: Session = Depends(get_db)
 ):
     user, token = user_and_token
-
-    conversation_id = data.conversation_id
-
-    if conversation_id:
-        conversation = db.query(Conversation).filter(
-            Conversation.id == conversation_id,
-            Conversation.user_id == user.id
-        ).first()
-
-        if not conversation:
-            ResponseHandler.not_found_error(
-                resource_name="Conversation",
-                resource_id=conversation_id
-            )
-
     chat_service = ChatService()
-    streaming_service = get_streaming_service()
+
+    generator = await chat_service.send_message_stream(
+        db=db,
+        user_id=user.id,
+        message_content=data.message,
+        conversation_id=data.conversation_id,
+        auth_token=token,
+        is_active=data.is_active,
+        page_context=data.page_context.model_dump() if data.page_context else {}
+    )
 
     return StreamingResponse(
-        streaming_service.stream_response(
-            db=db,
-            user_id=user.id,
-            conversation_id=conversation_id,
-            message_content=data.message,
-            chat_service=chat_service,
-            auth_token=token,
-            is_active=data.is_active,
-            page_context=data.page_context.model_dump() if data.page_context else {},
-        ),
+        generator,
         media_type="text/event-stream",
         headers={
             "Cache-Control": "no-cache",
             "Connection": "keep-alive",
             "X-Accel-Buffering": "no",
-            "Access-Control-Allow-Origin": "*"
         }
     )

@@ -104,6 +104,107 @@ class ChatService:
         )
 
     @staticmethod
+    async def send_message_stream(
+        db: Session,
+        user_id: str,
+        message_content: str,
+        conversation_id: str = None,
+        auth_token: str = None,
+        is_active: bool = True,
+        page_context: Optional[Dict[str, Any]] = None,
+    ):
+        import json
+
+        if conversation_id:
+            conversation = db.query(Conversation).filter(
+                Conversation.id == conversation_id,
+                Conversation.user_id == user_id
+            ).first()
+            if not conversation:
+                raise ValueError("Conversation not found")
+        else:
+            conversation = Conversation(
+                id=str(uuid.uuid4()),
+                user_id=user_id,
+                thread_id=f"thread_{uuid.uuid4().hex[:16]}",
+                title=message_content[:100],
+                created_at=datetime.now(timezone.utc)
+            )
+            db.add(conversation)
+            db.flush()
+
+        user_message = Message(
+            id=str(uuid.uuid4()),
+            conversation_id=conversation.id,
+            role="user",
+            content=message_content,
+            is_active=is_active,
+            created_at=datetime.now(timezone.utc)
+        )
+        db.add(user_message)
+        db.commit()
+
+        user_pref_orm = PreferenceService.get_user_preference(db, user_id)
+        user_prefs_dict = PreferenceService.to_dict(user_pref_orm)
+
+        agent = await get_unified_agent()
+
+        async def event_generator():
+            full_ai_content = ""
+            artifacts = []
+
+            yield f"data: {json.dumps({'type': 'status', 'message': 'thinking', 'stage': 'processing'})}\n\n"
+
+            try:
+                async for event in agent.stream_chat(
+                    user_id=user_id,
+                    message=message_content,
+                    conversation_id=conversation.thread_id,
+                    auth_token=auth_token or "",
+                    preferences=user_prefs_dict,
+                    page_context=page_context or {}
+                ):
+                    if event["type"] == "content":
+                        full_ai_content += event["chunk"]
+
+                    elif event["type"] == "artifact" and "data" in event:
+                        artifacts.append({
+                            "tool_name": event["tool_name"],
+                            "tool_call_id": event.get("tool_call_id", ""),
+                            "data_mcp": event["data"],
+                            "success": event.get("success", True)
+                        })
+
+                    yield f"data: {json.dumps(event, ensure_ascii=False)}\n\n"
+
+                ai_message = Message(
+                    id=str(uuid.uuid4()),
+                    conversation_id=conversation.id,
+                    role="assistant",
+                    content=full_ai_content,
+                    message_metadata={"artifacts": artifacts},
+                    is_active=True,
+                    created_at=datetime.now(timezone.utc)
+                )
+                db.add(ai_message)
+                db.commit()
+
+                done_event = {
+                    "type": "done",
+                    "message_id": ai_message.id,
+                    "conversation_id": conversation.id,
+                    "thread_id": conversation.thread_id
+                }
+                yield f"data: {json.dumps(done_event, ensure_ascii=False)}\n\n"
+
+            except Exception as e:
+                import traceback
+                traceback.print_exc()
+                yield f"data: {json.dumps({'type': 'error', 'message': str(e)}, ensure_ascii=False)}\n\n"
+
+        return event_generator()
+
+    @staticmethod
     def get_conversations(db: Session,
                           user_id: str,
                           page: int = 1,

@@ -6,6 +6,7 @@ import { PopupHeader } from './PopupHeader'
 import { PopupMessageList } from './PopupMessageList'
 import { PopupFAB } from './PopupFAB'
 import { PopupInput } from './PopupInput'
+import { ChatLayoutProvider } from '@/context/ChatLayoutContext'
 
 export function ChatPopup() {
   const { isOpen, setIsOpen, initChat } = useChatStore()
@@ -16,7 +17,7 @@ export function ChatPopup() {
   }, [isOpen, initChat])
 
   return (
-    <>
+    <ChatLayoutProvider layout='compact'>
       {/* Mobile backdrop */}
       {isOpen && (
         <div
@@ -46,6 +47,6 @@ export function ChatPopup() {
       </div>
 
       <PopupFAB />
-    </>
+    </ChatLayoutProvider>
   )
 }

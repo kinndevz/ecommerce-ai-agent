@@ -48,7 +48,7 @@ export function PopupMessageList({ userAvatar }: PopupMessageListProps) {
 
   return (
     <ScrollArea ref={scrollRef} className='flex-1 overflow-hidden'>
-      <div className='pl-3 pr-5 py-4 w-full max-w-full overflow-x-hidden'>
+      <div className='pl-3 pr-4 py-4 w-full overflow-x-hidden'>
         {isInitializing ? (
           <ChatLoadingSkeleton />
         ) : visibleMessages.length === 0 ? (

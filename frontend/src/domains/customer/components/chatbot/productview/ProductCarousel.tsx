@@ -5,6 +5,8 @@ import type { ProductData } from '@/api/chat.api'
 import { useAddToCart } from '@/hooks/useCarts'
 import { toast } from 'sonner'
 import { ProductCard } from './ProductCard'
+import { useChatLayout } from '@/context/ChatLayoutContext'
+import { cn } from '@/lib/utils'
 
 interface ProductCarouselProps {
   products: ProductData[]
@@ -20,6 +22,14 @@ export const ProductCarousel = ({
   const [showRightArrow, setShowRightArrow] = useState(true)
 
   const { mutate: addToCart, isPending } = useAddToCart()
+
+  // Lấy layout hiện tại
+  const layout = useChatLayout()
+  const isCompact = layout === 'compact'
+
+  // Responsive classes
+  const cardWidthClass = isCompact ? 'w-36 md:w-40' : 'w-48 sm:w-56'
+  const carouselGapClass = isCompact ? 'gap-2.5' : 'gap-4'
 
   if (!products || products.length === 0) return null
 
@@ -38,7 +48,7 @@ export const ProductCarousel = ({
 
   const scroll = (direction: 'left' | 'right') => {
     if (!scrollRef.current) return
-    const scrollAmount = 300
+    const scrollAmount = isCompact ? 200 : 300
     const currentScroll = scrollRef.current.scrollLeft
 
     scrollRef.current.scrollTo({
@@ -69,10 +79,15 @@ export const ProductCarousel = ({
         <Button
           variant='outline'
           size='icon'
-          className='absolute left-0 top-1/2 -translate-y-1/2 z-20 h-9 w-9 rounded-full shadow-md bg-background/80 backdrop-blur-sm border-border opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 -ml-4 hidden md:flex'
+          className={cn(
+            'absolute top-1/2 -translate-y-1/2 z-20 rounded-full shadow-md bg-background/90 backdrop-blur-sm border-border transition-all duration-300 flex',
+            isCompact
+              ? 'left-1 h-7 w-7 opacity-80 hover:opacity-100'
+              : 'left-0 h-9 w-9 -ml-4 opacity-0 group-hover/carousel:opacity-100'
+          )}
           onClick={() => scroll('left')}
         >
-          <ChevronLeft className='h-5 w-5 text-foreground' />
+          <ChevronLeft className={isCompact ? 'h-4 w-4' : 'h-5 w-5'} />
         </Button>
       )}
 
@@ -80,20 +95,30 @@ export const ProductCarousel = ({
         <Button
           variant='outline'
           size='icon'
-          className='absolute right-0 top-1/2 -translate-y-1/2 z-20 h-9 w-9 rounded-full shadow-md bg-background/80 backdrop-blur-sm border-border opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 -mr-4 hidden md:flex'
+          className={cn(
+            'absolute top-1/2 -translate-y-1/2 z-20 rounded-full shadow-md bg-background/90 backdrop-blur-sm border-border transition-all duration-300 flex',
+            isCompact
+              ? 'right-1 h-7 w-7 opacity-80 hover:opacity-100'
+              : 'right-0 h-9 w-9 -mr-4 opacity-0 group-hover/carousel:opacity-100'
+          )}
           onClick={() => scroll('right')}
         >
-          <ChevronRight className='h-5 w-5 text-foreground' />
+          <ChevronRight className={isCompact ? 'h-4 w-4' : 'h-5 w-5'} />
         </Button>
       )}
-
       <div
         ref={scrollRef}
         onScroll={checkScroll}
-        className='flex gap-4 overflow-x-auto scrollbar-hide pb-4 px-1 snap-x snap-mandatory scroll-smooth'
+        className={cn(
+          'flex overflow-x-auto scrollbar-hide pb-4 px-1 snap-x snap-mandatory scroll-smooth',
+          carouselGapClass
+        )}
       >
         {products.map((product) => (
-          <div key={product.id} className='flex-none w-50 md:w-55 snap-start'>
+          <div
+            key={product.id}
+            className={cn('flex-none snap-start', cardWidthClass)}
+          >
             <ProductCard
               product={product}
               isAdding={isPending}

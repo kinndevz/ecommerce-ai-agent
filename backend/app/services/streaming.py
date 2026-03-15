@@ -71,6 +71,15 @@ class StreamingService:
             artifacts = self._extract_artifacts(response)
             content = self._extract_content(response)
 
+            if content:
+                yield self._create_event(
+                    StreamEvent.STATUS,
+                    {"message": StreamConfig.STATUS_GENERATING, "stage": "streaming"}
+                )
+
+                async for chunk in self._chunk_content(content):
+                    yield self._create_event(StreamEvent.CONTENT, {"chunk": chunk})
+
             if artifacts:
                 for artifact in artifacts:
                     yield self._create_event(
@@ -83,15 +92,6 @@ class StreamingService:
                         }
                     )
                     await asyncio.sleep(0.1)
-
-            if content:
-                yield self._create_event(
-                    StreamEvent.STATUS,
-                    {"message": StreamConfig.STATUS_GENERATING, "stage": "streaming"}
-                )
-
-                async for chunk in self._chunk_content(content):
-                    yield self._create_event(StreamEvent.CONTENT, {"chunk": chunk})
 
             yield self._create_event(
                 StreamEvent.DONE,
