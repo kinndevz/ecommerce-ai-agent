@@ -53,8 +53,11 @@ class UnifiedAgent:
                     cosmetics_middleware,
                     enforce_plain_text,
                     SummarizationMiddleware(
-                        model=ChatOpenAI(model="gpt-4o-mini",
-                                         api_key=settings.OPENAI_API_KEY),
+                        model=ChatOpenAI(
+                            name="summary_model",
+                            model="gpt-4o-mini",
+                            api_key=settings.OPENAI_API_KEY
+                        ),
                         trigger=("tokens", 4000),
                         keep=("messages", 20),
                     ),
@@ -126,6 +129,10 @@ class UnifiedAgent:
 
         async for event in agent.astream_events(input_payload, config=config, context=context, version="v2"):
             kind = event["event"]
+            name = event.get("name", "")
+
+            if name == "summary_model":
+                continue
 
             if kind == "on_chat_model_stream":
                 chunk = event["data"]["chunk"]

@@ -107,7 +107,7 @@ api.interceptors.response.use(
         {},
         {
           withCredentials: true,
-          timeout: 10000,
+          timeout: 30000,
         }
       )
 
