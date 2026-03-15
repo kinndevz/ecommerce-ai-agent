@@ -10,6 +10,9 @@ import {
   SearchProductsInput,
   NewArrivalsInput,
   GetProductVariantsInput,
+  GetRelatedProductsInputSchema,
+  RelatedProductsOutput,
+  GetRelatedProductsInput,
 } from "../types";
 import {
   apiClient,
@@ -29,6 +32,7 @@ export function registerProductTools(server: McpServer) {
   registerSearchProducts(server);
   registerSearchNewArrivals(server);
   registerGetProductVariants(server);
+  registerGetRelatedProducts(server);
 }
 
 /**
@@ -188,6 +192,53 @@ function registerGetProductVariants(server: McpServer) {
         if (!response.success || !response.data) {
           throw new Error("Product not found or has no variants");
         }
+
+        return formatSuccessResponse(response);
+      } catch (error: any) {
+        return formatErrorResponse(error.message);
+      }
+    }
+  );
+}
+
+/**
+ * Tool: get_related_products
+ *
+ * Get related/similar products for a given product_id.
+ * Useful when user is on a product page and asks for alternatives or similar items.
+ */
+function registerGetRelatedProducts(server: McpServer) {
+  server.registerTool(
+    "get_related_products",
+    {
+      title: "Get Related Products",
+      description: createToolDescription(
+        TOOL_METADATA.PRODUCT_RELATED,
+        "Get related or similar products based on a product ID. " +
+          "Use when user asks for alternatives, similar products, or 'sản phẩm tương tự'. " +
+          "Requires product_id — get it from page_context or previous search results."
+      ),
+      inputSchema: GetRelatedProductsInputSchema,
+      outputSchema: RelatedProductsOutput,
+    },
+    async (args: GetRelatedProductsInput) => {
+      try {
+        console.log(
+          `[MCP] Fetching related products for product_id: ${args.product_id}, limit: ${args.limit}`
+        );
+
+        const response = await apiClient.get(
+          `/products/${args.product_id}/related`,
+          {
+            params: { limit: args.limit },
+          }
+        );
+
+        if (!response.success || !response.data) {
+          throw new Error("No related products found");
+        }
+
+        console.log("[MCP] get_related_products response:", response);
 
         return formatSuccessResponse(response);
       } catch (error: any) {

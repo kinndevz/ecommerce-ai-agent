@@ -73,34 +73,38 @@ const ProductListItemSchema = z.object({
 
 /**
  * Search Products Input Schema
- * 
+ *
  * IMPORTANT USAGE RULES:
  * 1. `search` should contain ONLY the product type/category keywords
  *    Good: "sữa rửa mặt", "kem dưỡng", "serum"
  *    Bad: "sữa rửa mặt cerave da dầu giá dưới 300k" (use filters instead)
- * 
+ *
  * 2. Use structured filters for specific criteria:
  *    - brand: specific brand name
  *    - skin_types: user's skin type (e.g., "da dầu", "da khô")
  *    - concerns: skin concerns (e.g., "mụn", "thâm nám")
  *    - min_price/max_price: price range in VND
- * 
+ *
  * 3. Filters are combined with AND logic
  * 4. All filter values should be in Vietnamese as stored in the database
  */
 export const SearchProductsInputSchema = z.object({
   search: z
     .string()
+    .nullable()
+    .optional()
     .describe(
       "Product type or category keywords ONLY. " +
-      "Example: 'sữa rửa mặt', 'kem chống nắng', 'serum vitamin c'. " +
-      "DO NOT include brand, skin type, or price in this field - use dedicated filters."
+        "Example: 'sữa rửa mặt', 'kem chống nắng', 'serum vitamin c'. " +
+        "DO NOT include brand, skin type, or price in this field - use dedicated filters."
     ),
   brand: z
     .string()
     .nullable()
     .optional()
-    .describe("Brand name to filter by. Example: 'cerave', 'la roche-posay', 'innisfree'"),
+    .describe(
+      "Brand name to filter by. Example: 'cerave', 'la roche-posay', 'innisfree'"
+    ),
   category: z
     .string()
     .nullable()
@@ -112,7 +116,7 @@ export const SearchProductsInputSchema = z.object({
     .optional()
     .describe(
       "Skin types to filter by (Vietnamese). " +
-      "Examples: 'da dầu', 'da khô', 'da hỗn hợp', 'da nhạy cảm', 'da thường'"
+        "Examples: 'da dầu', 'da khô', 'da hỗn hợp', 'da nhạy cảm', 'da thường'"
     ),
   concerns: z
     .array(z.string())
@@ -120,7 +124,7 @@ export const SearchProductsInputSchema = z.object({
     .optional()
     .describe(
       "Skin concerns to filter by (Vietnamese). " +
-      "Examples: 'mụn', 'thâm nám', 'lão hóa', 'khô da', 'lỗ chân lông'"
+        "Examples: 'mụn', 'thâm nám', 'lão hóa', 'khô da', 'lỗ chân lông'"
     ),
   benefits: z
     .array(z.string())
@@ -128,23 +132,11 @@ export const SearchProductsInputSchema = z.object({
     .optional()
     .describe(
       "Product benefits to filter by (Vietnamese). " +
-      "Examples: 'dưỡng ẩm', 'làm sáng da', 'chống lão hóa', 'trị mụn'"
+        "Examples: 'dưỡng ẩm', 'làm sáng da', 'chống lão hóa', 'trị mụn'"
     ),
-  tags: z
-    .array(z.string())
-    .nullable()
-    .optional()
-    .describe("Tags to filter by"),
-  min_price: z
-    .number()
-    .nullable()
-    .optional()
-    .describe("Minimum price in VND"),
-  max_price: z
-    .number()
-    .nullable()
-    .optional()
-    .describe("Maximum price in VND"),
+  tags: z.array(z.string()).nullable().optional().describe("Tags to filter by"),
+  min_price: z.number().nullable().optional().describe("Minimum price in VND"),
+  max_price: z.number().nullable().optional().describe("Maximum price in VND"),
   is_available: z
     .boolean()
     .nullable()
@@ -254,3 +246,53 @@ export const ProductVariantsOutput = z
   .passthrough();
 
 export type ProductVariantsOutputType = z.infer<typeof ProductVariantsOutput>;
+
+export const GetRelatedProductsInputSchema = z.object({
+  product_id: z
+    .string()
+    .describe(
+      "Product ID to get related products for. " +
+        "Use when user is viewing a product and asks 'sản phẩm tương tự', " +
+        "'có sản phẩm nào khác không', 'gợi ý thêm'"
+    ),
+  limit: z
+    .number()
+    .optional()
+    .default(5)
+    .describe("Number of related products to return (default: 5)"),
+});
+
+export type GetRelatedProductsInput = z.infer<
+  typeof GetRelatedProductsInputSchema
+>;
+
+// ─── Output ───────────────────────────────────────────────────────────────────
+
+const RelatedProductItemSchema = z
+  .object({
+    id: z.string(),
+    name: z.string(),
+    slug: z.string(),
+    price: z.number(),
+    sale_price: z.number().nullable().optional(),
+    stock_quantity: z.number(),
+    product_image: z.string().nullable().optional(),
+    brand_name: z.string().nullable().optional(),
+    category_name: z.string().nullable().optional(),
+    rating_average: z.number().nullable().optional(),
+    is_available: z.boolean().optional(),
+    concerns: z.array(z.string()).optional(),
+    skin_types: z.array(z.string()).optional(),
+    benefits: z.array(z.string()).optional(),
+    tags: z.array(z.string()).optional(),
+  })
+  .passthrough();
+
+export const RelatedProductsOutput = z.object({
+  success: z.boolean().optional(),
+  message: z.string().optional(),
+  data: z.array(RelatedProductItemSchema),
+  meta: MetaSchema.optional().nullable(),
+});
+
+export type RelatedProductsOutputType = z.infer<typeof RelatedProductsOutput>;

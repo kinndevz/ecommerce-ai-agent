@@ -26,7 +26,7 @@ export class EcommerceMCP extends McpAgent {
 
     // Register Product Tools
     registerProductTools(this.server);
-    console.log("✅ Product tools registered (3 tools)");
+    console.log("✅ Product tools registered (4 tools)");
 
     // Register Cart Tools
     registerCartTools(this.server);

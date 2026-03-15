@@ -18,6 +18,11 @@ export const TOOL_METADATA = {
     category: "search",
     requires_auth: false,
   },
+  PRODUCT_RELATED: {
+    agent: "product",
+    category: "search",
+    requires_auth: false,
+  },
   PRODUCT_REVIEWS: {
     agent: "product",
     category: "reviews",

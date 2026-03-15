@@ -202,7 +202,7 @@ export function ChatMessage({
             {message.content && (
               <div
                 className={cn(
-                  'text-sm text-foreground leading-relaxed w-full break-words whitespace-pre-wrap',
+                  'text-sm text-foreground leading-relaxed w-full wrap-break-word whitespace-pre-wrap',
                   isStreaming &&
                     "after:content-['▋'] after:ml-1 after:animate-pulse after:text-primary"
                 )}
@@ -233,7 +233,7 @@ export function ChatMessage({
             <AIActionBar onCopy={handleCopy} />
           </div>
         ) : (
-          <p className='text-sm font-medium text-foreground leading-relaxed w-full break-words whitespace-pre-wrap'>
+          <p className='text-sm font-medium text-foreground leading-relaxed w-full wrap-break-word whitespace-pre-wrap'>
             {message.content}
           </p>
         )}
