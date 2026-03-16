@@ -46,7 +46,8 @@ export const extractProducts = (artifacts?: Artifact[]): ProductData[] => {
       (artifact) =>
         artifact.tool_name === 'search_products' ||
         artifact.tool_name === 'search_product_new_arrival' ||
-        artifact.tool_name === 'get_related_products'
+        artifact.tool_name === 'get_related_products' ||
+        artifact.tool_name === 'recommend_from_history'
     )
     .flatMap((artifact) => {
       const data = artifact.data_mcp?.data
